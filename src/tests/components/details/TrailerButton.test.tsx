@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import TrailerButton from "@/components/details/TrailerButton";
+import TrailerButton from "@/components/details/PlayButton";
 
 describe("TrailerButton", () => {
   it("renders correctly", () => {
