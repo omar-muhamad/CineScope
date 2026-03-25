@@ -1,15 +1,15 @@
-import { FC, useEffect, useState } from "react";
 import movieTrailer from "movie-trailer";
+import { FC, useEffect, useState } from "react";
 import { IoCloseCircleOutline } from "react-icons/io5";
 
-import Text from "../ui/Text";
-import Heading from "../ui/Heading";
-import PercentageCircle from "../../icons/PercentageCircle";
-import BookMark from "../ui/BookMark";
-import TrailerButton from "./TrailerButton";
 import { PiTelevisionSimpleFill } from "react-icons/pi";
 import { RiFilmFill } from "react-icons/ri";
+import PercentageCircle from "../../icons/PercentageCircle";
+import BookMark from "../ui/BookMark";
+import Heading from "../ui/Heading";
 import LazyImage from "../ui/LazyImage";
+import Text from "../ui/Text";
+import PlayButton from "./PlayButton";
 
 type DetailsHeaderProps = {
   id: number;
@@ -53,6 +53,10 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
     }
   };
 
+  const handleWatchOnline = () => {
+    window.location.replace(`https://vidsrc.me/embed/${media_type}/${id}`);
+  };
+
   const handleCloseBtn = () => {
     setIsModalOpened(false);
     setTrailerUrl(null);
@@ -77,7 +81,10 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
           className="w-full h-full z-0 bg-black opacity-20 md:rounded-bl-2xl bg-cover bg-center md:bg-top bg-no-repeat"
         ></div>
 
-        <div data-testid='details-poster-image' className="absolute w-full backdrop-blur-[1.5px] z-10 top-0 px-5 md:py-5  h-full flex gap-6">
+        <div
+          data-testid="details-poster-image"
+          className="absolute w-full backdrop-blur-[1.5px] z-10 top-0 px-5 md:py-5  h-full flex gap-6"
+        >
           <div className="h-full hidden md:block">
             <LazyImage
               className="h-full rounded-xl"
@@ -113,16 +120,24 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
               </div>
             </div>
 
-            <div data-testid='details-rating' className="mt-2 flex gap-2">
-              <PercentageCircle rating={rating * 10} />
-              <div className="h-10 w-10">
-                <BookMark
-                  id={id}
-                  media_type={media_type}
-                  className="w-full h-full"
-                />
+            <div className="w-fit">
+              <div data-testid="details-rating" className="mt-2 flex gap-2">
+                <PercentageCircle rating={rating * 10} />
+                <div className="h-10 w-10">
+                  <BookMark
+                    id={id}
+                    media_type={media_type}
+                    className="w-full h-full"
+                  />
+                </div>
+                <PlayButton onClick={handlePlayTrailer}>Trailer</PlayButton>
               </div>
-              <TrailerButton onClick={handlePlayTrailer} />
+              <PlayButton
+                className="w-full h-10 mt-2"
+                onClick={handleWatchOnline}
+              >
+                Watch Online
+              </PlayButton>
             </div>
 
             <div className="hidden md:block mt-2 max-w-[50vw]">
