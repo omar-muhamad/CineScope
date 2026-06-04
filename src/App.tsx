@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Movies from "./pages/Movies";
 import Tv from "./pages/Tv";
 import Details from "./pages/Details";
+import WatchOnline from "./pages/WatchOnline";
 import Bookmarked from "./pages/Bookmarked";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -25,6 +26,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/movies" element={<Movies />} />
           <Route path="/tv" element={<Tv />} />
+          <Route path="/watch/:media_type/:id" element={<WatchOnline />} />
           <Route path="/:media_type/:id" element={<Details />} />
           <Route
             path="/bookmarked"

@@ -1,5 +1,6 @@
 import movieTrailer from "movie-trailer";
 import { FC, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { IoCloseCircleOutline } from "react-icons/io5";
 
 import { PiTelevisionSimpleFill } from "react-icons/pi";
@@ -39,6 +40,7 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
 }) => {
   const [trailerUrl, setTrailerUrl] = useState<null | string>(null);
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const handlePlayTrailer = async () => {
     try {
@@ -54,7 +56,18 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
   };
 
   const handleWatchOnline = () => {
-    window.location.replace(`https://vidsrc.me/embed/${media_type}/${id}`);
+    const validMediaTypes = ["movie", "tv"];
+    const isValidId = typeof id === "number" && Number.isInteger(id) && id > 0;
+    const isValidMediaType = validMediaTypes.includes(media_type);
+
+    if (!isValidId || !isValidMediaType) {
+      console.error(
+        "Invalid media type or id provided for watch online navigation.",
+      );
+      return;
+    }
+
+    navigate(`/watch/${media_type}/${id}`);
   };
 
   const handleCloseBtn = () => {
