@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*,
+*:before,
+*:after {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: "outfit-light";
+  src: url("assets/fonts/Outfit-Light.ttf");
+}
+@font-face {
+  font-family: "outfit-medium";
+  src: url("assets/fonts/Outfit-Medium.ttf");
+}
+
+body {
+  background-color: #10141E;
+}
+
+#root {
+  background-color: #10141E;
+}
+
+@media (max-width: 768px) {
+  .user-card {
+    top: 6rem;
+    right: 1.5rem;
+  }
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.progress-ring__circle {
+  transition: stroke-dashoffset 0.35s;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+.carousel:hover {
+  animation-play-state: paused;
+}

@@ -1,0 +1,88 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Movies Page > renders Movies Page should match the screenshot 1`] = `
+{
+  "asFragment": [Function],
+  "baseElement": <body>
+    <div>
+      <main
+        class="w-full md:w-[calc(100%-8rem)] min-h-screen py-6 md:ml-32 pl-5 md:px-0"
+      >
+        <div
+          class="h-[calc(100vh-12rem)] md:h-full w-full flex justify-center items-center md:pr-6"
+          data-testid="loading-component"
+        >
+          <div
+            class="w-12 h-12 md:w-14 md:h-14 border-[5px] border-t-orange rounded-full border-[#ffffff90] animate-spin"
+          />
+        </div>
+      </main>
+    </div>
+  </body>,
+  "container": <div>
+    <main
+      class="w-full md:w-[calc(100%-8rem)] min-h-screen py-6 md:ml-32 pl-5 md:px-0"
+    >
+      <div
+        class="h-[calc(100vh-12rem)] md:h-full w-full flex justify-center items-center md:pr-6"
+        data-testid="loading-component"
+      >
+        <div
+          class="w-12 h-12 md:w-14 md:h-14 border-[5px] border-t-orange rounded-full border-[#ffffff90] animate-spin"
+        />
+      </div>
+    </main>
+  </div>,
+  "debug": [Function],
+  "findAllByAltText": [Function],
+  "findAllByDisplayValue": [Function],
+  "findAllByLabelText": [Function],
+  "findAllByPlaceholderText": [Function],
+  "findAllByRole": [Function],
+  "findAllByTestId": [Function],
+  "findAllByText": [Function],
+  "findAllByTitle": [Function],
+  "findByAltText": [Function],
+  "findByDisplayValue": [Function],
+  "findByLabelText": [Function],
+  "findByPlaceholderText": [Function],
+  "findByRole": [Function],
+  "findByTestId": [Function],
+  "findByText": [Function],
+  "findByTitle": [Function],
+  "getAllByAltText": [Function],
+  "getAllByDisplayValue": [Function],
+  "getAllByLabelText": [Function],
+  "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllByTestId": [Function],
+  "getAllByText": [Function],
+  "getAllByTitle": [Function],
+  "getByAltText": [Function],
+  "getByDisplayValue": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "queryAllByAltText": [Function],
+  "queryAllByDisplayValue": [Function],
+  "queryAllByLabelText": [Function],
+  "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllByTestId": [Function],
+  "queryAllByText": [Function],
+  "queryAllByTitle": [Function],
+  "queryByAltText": [Function],
+  "queryByDisplayValue": [Function],
+  "queryByLabelText": [Function],
+  "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryByTestId": [Function],
+  "queryByText": [Function],
+  "queryByTitle": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
+`;
