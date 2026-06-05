@@ -22,7 +22,7 @@ const Home: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const { loading, trending, trendingMovies, trendingTv } = data;
-  const trendingData = trending?.slice(0, 5);
+  const trendingData = trending?.slice(0, 10);
   const movies = trendingMovies?.slice(0, TWO_ROWS);
   const tvShows = trendingTv?.slice(0, TWO_ROWS);
 
@@ -34,9 +34,6 @@ const Home: FC = () => {
 
   return (
     <PageLayout loading={loading}>
-      <Heading as="h1" className="mt-6">
-        Trending
-      </Heading>
       <TrendingWrapper>
         {!data.loading && trending && trending.length !== 0
           ? [...(trendingData || []), ...(trendingData || [])].map(

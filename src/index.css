@@ -22,11 +22,11 @@
 }
 
 body {
-  background-color: #10141E;
+  background-color: #10141e;
 }
 
 #root {
-  background-color: #10141E;
+  background-color: #10141e;
 }
 
 @media (max-width: 768px) {
@@ -48,6 +48,21 @@ body {
   transition: stroke-dashoffset 0.35s;
   transform: rotate(-90deg);
   transform-origin: 50% 50%;
+}
+
+@keyframes slideRight {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* Shift by exactly one of the two duplicated card sets so the
+       second set lands where the first began — a seamless loop. */
+    transform: translateX(-50%);
+  }
+}
+
+.carousel {
+  animation: slideRight 40s linear infinite;
 }
 
 .carousel:hover {

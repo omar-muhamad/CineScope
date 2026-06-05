@@ -26,12 +26,12 @@ const TrendingCard: FC<TrendingCardProps> = ({
 }) => {
   const movie = media_type === "movie";
   return (
-    <li className="relative">
+    <li className="relative shrink-0 mr-6">
       <div className="absolute w-8 h-8 z-30 peer right-4 top-4">
         <BookMark id={id} media_type={media_type} className="w-full h-full" />
       </div>
       <NavLink className="relative" to={movie ? `/movie/${id}` : `/tv/${id}`}>
-        <div className="relative item-image w-[80vw] md:w-[30vw]">
+        <div className="relative item-image w-[70vw] md:w-[22vw]">
           <LazyImage
             className="w-full rounded-lg"
             src={`https://image.tmdb.org/t/p/w1280/${imgSrc}`}

@@ -6,7 +6,7 @@ describe("TrendingWrapper", () => {
     render(
       <TrendingWrapper>
         <div>Test Child</div>
-      </TrendingWrapper>
+      </TrendingWrapper>,
     );
     expect(screen.getByText("Test Child")).toBeInTheDocument();
   });
@@ -15,10 +15,10 @@ describe("TrendingWrapper", () => {
     render(
       <TrendingWrapper>
         <button>Click Me</button>
-      </TrendingWrapper>
+      </TrendingWrapper>,
     );
     expect(
-      screen.getByRole("button", { name: "Click Me" })
+      screen.getByRole("button", { name: "Click Me" }),
     ).toBeInTheDocument();
   });
 
@@ -26,14 +26,12 @@ describe("TrendingWrapper", () => {
     render(
       <TrendingWrapper>
         <div>Styling Test</div>
-      </TrendingWrapper>
+      </TrendingWrapper>,
     );
     const wrapperDiv = screen.getByText("Styling Test").parentNode?.parentNode;
     expect(wrapperDiv).toHaveClass(
-      "w-full overflow-x-scroll no-scrollbar mt-6"
+      "w-full overflow-x-scroll no-scrollbar mt-6",
     );
-    expect(wrapperDiv?.firstChild).toHaveClass(
-      "carousel flex gap-6 animate-slide"
-    );
+    expect(wrapperDiv?.firstChild).toHaveClass("carousel flex w-max");
   });
 });
