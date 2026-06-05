@@ -12,7 +12,8 @@ import { fetchRecommendations } from "@/redux/home/homeSlice";
 import GridLayout from "@/components/layout/GridLayout";
 import ItemCard from "@/components/ui/ItemCard";
 import Heading from "@/components/ui/Heading";
-import Loading from "@/components/common/Loading";
+import Skeleton from "@/components/skeletons/Skeleton";
+import SkeletonGrid from "@/components/skeletons/SkeletonGrid";
 import PlayerSelector from "@/components/watch/PlayerSelector";
 import SeasonSelector from "@/components/watch/SeasonSelector";
 import EpisodeList from "@/components/watch/EpisodeList";
@@ -24,7 +25,13 @@ const WatchOnline: FC = () => {
   const data = useSelector((state: RootState) => state.details);
   const dispatch = useDispatch<AppDispatch>();
 
-  const { loading, details, recommendations, episodesLoading } = data;
+  const {
+    loading,
+    details,
+    recommendations,
+    recommendationsLoading,
+    episodesLoading,
+  } = data;
   const episodes = Array.isArray(data.episodes) ? data.episodes : [];
   const { media_type, id } = useParams();
 
@@ -96,94 +103,111 @@ const WatchOnline: FC = () => {
 
   return (
     <main className="w-full pb-6">
-      {loading ? (
-        <Loading />
-      ) : (
-        <PageLayout loading={loading!}>
-          <section>
-            <Heading as="h1" className="text-orange font-bold">{movie ? details?.title : details?.name}</Heading>
+      <PageLayout
+        loading={loading!}
+        skeleton={
+          <>
+            <Skeleton className="h-9 w-1/2 max-w-md rounded" />
+            <div className="mt-8 rounded-xl bg-secondary-dark p-4">
+              <Skeleton className="h-12 w-full rounded-t-lg" />
+              <Skeleton className="w-full aspect-video rounded-b-lg" />
+            </div>
+            <Skeleton className="h-8 w-56 rounded mt-16" />
+            <SkeletonGrid count={14} />
+          </>
+        }
+      >
+        <section>
+          <Heading as="h1" className="text-orange font-bold">
+            {movie ? details?.title : details?.name}
+          </Heading>
 
-            {/* Player module: toggle + nav on top, video below */}
-            <div className="mt-8 rounded-xl overflow-hidden bg-secondary-dark p-4">
-              <div className="flex items-center justify-between gap-2 rounded-t-lg bg-main-dark">
-                <PlayerSelector
-                  providers={providers}
-                  active={providerIndex}
-                  onSelect={setProviderIndex}
-                />
+          {/* Player module: toggle + nav on top, video below */}
+          <div className="mt-8 rounded-xl overflow-hidden bg-secondary-dark p-4">
+            <div className="flex items-center justify-between gap-2 rounded-t-lg bg-main-dark">
+              <PlayerSelector
+                providers={providers}
+                active={providerIndex}
+                onSelect={setProviderIndex}
+              />
 
-                {isTv && episodes.length > 0 && (
-                  <div className="flex">
-                    <button
-                      onClick={goPrev}
-                      disabled={isFirst}
-                      aria-label="Previous episode"
-                      className="flex items-center gap-1 px-5 py-3 text-sm text-gray hover:text-white hover:bg-white/5 transition-colors duration-200 disabled:opacity-40 disabled:hover:text-gray disabled:hover:bg-transparent"
-                    >
-                      <IoChevronBackOutline />
-                      Prev
-                    </button>
-                    <button
-                      onClick={goNext}
-                      disabled={isLast}
-                      aria-label="Next episode"
-                      className="flex items-center gap-1 px-5 py-3 text-sm rounded-tr-lg text-gray hover:text-white hover:bg-white/5 transition-colors duration-200 disabled:opacity-40 disabled:hover:text-gray disabled:hover:bg-transparent"
-                    >
-                      Next
-                      <IoChevronForwardOutline />
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              <div className="w-full aspect-video bg-black rounded-b-lg">
-                <iframe
-                  src={src}
-                  className="w-full h-full rounded-b-lg border-0"
-                  title="Video player"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-                  allowFullScreen
-                  referrerPolicy="no-referrer"
-                ></iframe>
-              </div>
+              {isTv && episodes.length > 0 && (
+                <div className="flex">
+                  <button
+                    onClick={goPrev}
+                    disabled={isFirst}
+                    aria-label="Previous episode"
+                    className="flex items-center gap-1 px-5 py-3 text-sm text-gray hover:text-white hover:bg-white/5 transition-colors duration-200 disabled:opacity-40 disabled:hover:text-gray disabled:hover:bg-transparent"
+                  >
+                    <IoChevronBackOutline />
+                    Prev
+                  </button>
+                  <button
+                    onClick={goNext}
+                    disabled={isLast}
+                    aria-label="Next episode"
+                    className="flex items-center gap-1 px-5 py-3 text-sm rounded-tr-lg text-gray hover:text-white hover:bg-white/5 transition-colors duration-200 disabled:opacity-40 disabled:hover:text-gray disabled:hover:bg-transparent"
+                  >
+                    Next
+                    <IoChevronForwardOutline />
+                  </button>
+                </div>
+              )}
             </div>
 
-            {/* Season selector + episode list (TV only) */}
-            {isTv && availableSeasons.length > 0 && (
-              <div className="mt-6">
-                <div>
-                  <SeasonSelector
-                    seasons={availableSeasons}
-                    season={season}
-                    onSeasonChange={(s) => {
-                      setSeason(s);
-                      setEpisode(1);
-                    }}
-                  />
-                  <div className="flex items-center gap-2 mt-6">
-                    <Heading as="h2">Episodes</Heading>
-                    {episodes.length > 0 && (
-                      <span className="px-2 py-0.5 rounded-full bg-secondary-dark text-sm text-gray">
-                        {episodes.length}
-                      </span>
-                    )}
-                  </div>
-                </div>
+            <div className="w-full aspect-video bg-black rounded-b-lg">
+              <iframe
+                src={src}
+                className="w-full h-full rounded-b-lg border-0"
+                title="Video player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                allowFullScreen
+                referrerPolicy="no-referrer"
+              ></iframe>
+            </div>
+          </div>
 
-                <div className="mt-4">
-                  <EpisodeList
-                    episodes={episodes}
-                    activeEpisode={episode}
-                    loading={episodesLoading}
-                    onSelect={setEpisode}
-                  />
+          {/* Season selector + episode list (TV only) */}
+          {isTv && availableSeasons.length > 0 && (
+            <div className="mt-6">
+              <div>
+                <SeasonSelector
+                  seasons={availableSeasons}
+                  season={season}
+                  onSeasonChange={(s) => {
+                    setSeason(s);
+                    setEpisode(1);
+                  }}
+                />
+                <div className="flex items-center gap-2 mt-6">
+                  <Heading as="h2">Episodes</Heading>
+                  {episodes.length > 0 && (
+                    <span className="px-2 py-0.5 rounded-full bg-secondary-dark text-sm text-gray">
+                      {episodes.length}
+                    </span>
+                  )}
                 </div>
               </div>
-            )}
-          </section>
 
-          <section className="pl-6 md:pl-0 mt-16">
-            <Heading as="h2" className="text-orange font-bold">Recommendations</Heading>
+              <div className="mt-4">
+                <EpisodeList
+                  episodes={episodes}
+                  activeEpisode={episode}
+                  loading={episodesLoading}
+                  onSelect={setEpisode}
+                />
+              </div>
+            </div>
+          )}
+        </section>
+
+        <section className="pl-6 md:pl-0 mt-16">
+          <Heading as="h2" className="text-orange font-bold">
+            Recommendations
+          </Heading>
+          {recommendationsLoading ? (
+            <SkeletonGrid count={14} />
+          ) : (
             <GridLayout>
               {recommendations && recommendations.length !== 0
                 ? recommendations.map((item) => {
@@ -206,9 +230,9 @@ const WatchOnline: FC = () => {
                   })
                 : null}
             </GridLayout>
-          </section>
-        </PageLayout>
-      )}
+          )}
+        </section>
+      </PageLayout>
     </main>
   );
 };

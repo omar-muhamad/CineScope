@@ -35,6 +35,7 @@ interface DataState {
   loading?: boolean;
   details?: DetailsData;
   recommendations?: RecommendationsData[];
+  recommendationsLoading?: boolean;
   episodes?: Episode[];
   episodesLoading?: boolean;
   error: string | undefined;
@@ -45,6 +46,7 @@ type Param = string | undefined;
 const initialState: DataState = {
   loading: false,
   details: undefined,
+  recommendationsLoading: false,
   episodes: [],
   episodesLoading: false,
   error: undefined,
@@ -105,14 +107,14 @@ export const detailsSlice = createSlice({
       });
     builder
       .addCase(fetchRecommendations.pending, (state) => {
-        state.loading = true;
+        state.recommendationsLoading = true;
       })
       .addCase(fetchRecommendations.fulfilled, (state, action) => {
-        state.loading = false;
+        state.recommendationsLoading = false;
         state.recommendations = action.payload;
       })
       .addCase(fetchRecommendations.rejected, (state, action) => {
-        state.loading = false;
+        state.recommendationsLoading = false;
         state.error = action.error.message;
       });
     builder

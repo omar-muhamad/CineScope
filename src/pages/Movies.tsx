@@ -12,6 +12,8 @@ import {
   moviesPagination,
 } from "@/redux/movies/moviesSlice";
 import ReactPagination from "@/components/common/ReactPagination";
+import Skeleton from "@/components/skeletons/Skeleton";
+import SkeletonGrid from "@/components/skeletons/SkeletonGrid";
 
 const Movies: FC = () => {
   const data = useSelector((state: RootState) => state.movies);
@@ -32,7 +34,15 @@ const Movies: FC = () => {
   }, [dispatch]);
 
   return (
-    <PageLayout loading={loading}>
+    <PageLayout
+      loading={loading}
+      skeleton={
+        <>
+          <Skeleton className="h-9 w-60 rounded" />
+          <SkeletonGrid count={20} />
+        </>
+      }
+    >
       <Heading as="h1" className="text-orange font-bold">
         Popular Movies
       </Heading>

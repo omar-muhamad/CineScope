@@ -7,6 +7,8 @@ import Heading from "@/components/ui/Heading";
 import ItemCard from "@/components/ui/ItemCard";
 import { fetchBookmark } from "@/redux/bookmarked/bookmarkSlice";
 import { AppDispatch, RootState } from "@/redux/store";
+import Skeleton from "@/components/skeletons/Skeleton";
+import SkeletonGrid from "@/components/skeletons/SkeletonGrid";
 
 const Bookmarked = () => {
   const { loading, bookmarks } = useSelector(
@@ -22,7 +24,21 @@ const Bookmarked = () => {
   }, [dispatch]);
 
   return (
-    <PageLayout loading={loading}>
+    <PageLayout
+      loading={loading}
+      skeleton={
+        <>
+          <section>
+            <Skeleton className="h-8 w-56 rounded mt-6" />
+            <SkeletonGrid count={7} />
+          </section>
+          <section>
+            <Skeleton className="h-8 w-56 rounded mt-6" />
+            <SkeletonGrid count={7} />
+          </section>
+        </>
+      }
+    >
       {!loading && (
         <>
           <section>

@@ -10,7 +10,7 @@ import {
 import ItemCard from "../ui/ItemCard";
 import GridLayout from "../layout/GridLayout";
 import Heading from "../ui/Heading";
-import Loading from "./Loading";
+import SkeletonGrid from "../skeletons/SkeletonGrid";
 import { AppDispatch } from "@/redux/store";
 import Text from "../ui/Text";
 import ReactPagination from "./ReactPagination";
@@ -45,8 +45,11 @@ const SearchResults: FC<SearchResultsProps> = ({ data }) => {
   return (
     <div>
       {loading ? (
-        <div className="h-[calc(100vh-12rem)]">
-          <Loading />
+        <div>
+          <Heading as="h1" className="mt-6">
+            Search Results
+          </Heading>
+          <SkeletonGrid count={14} />
         </div>
       ) : (
         <div>

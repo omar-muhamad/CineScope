@@ -13,6 +13,9 @@ import {
 import TrendingCarousel from "@/components/home/TrendingCarousel";
 import TrendingCard from "@/components/home/TrendingCard";
 import Heading from "@/components/ui/Heading";
+import Skeleton from "@/components/skeletons/Skeleton";
+import SkeletonGrid from "@/components/skeletons/SkeletonGrid";
+import SkeletonTrendingCard from "@/components/skeletons/SkeletonTrendingCard";
 
 // Two rows of cards at the widest grid layout (5 columns).
 const TWO_ROWS = 14;
@@ -35,28 +38,46 @@ const Home: FC = () => {
   return (
     <div className="">
       <TrendingCarousel>
-        {!data.loading && trending && trending.length !== 0
-          ? trendingData?.map((item) => {
-              const movie = item.media_type === "movie";
-              return (
-                <TrendingCard
-                  key={item.id}
-                  id={item.id}
-                  imgSrc={item.poster_path}
-                  releaseDate={
-                    movie
-                      ? item.release_date?.substring(0, 4)
-                      : item.first_air_date?.substring(0, 4)
-                  }
-                  media_type={movie ? item.media_type : "tv"}
-                  ratings={item.adult ? "18+" : "PG"}
-                  title={movie ? item.title : item.name}
-                />
-              );
-            })
-          : null}
+        {loading
+          ? Array.from({ length: 8 }).map((_, i) => (
+              <SkeletonTrendingCard key={i} />
+            ))
+          : !data.loading && trending && trending.length !== 0
+            ? trendingData?.map((item) => {
+                const movie = item.media_type === "movie";
+                return (
+                  <TrendingCard
+                    key={item.id}
+                    id={item.id}
+                    imgSrc={item.poster_path}
+                    releaseDate={
+                      movie
+                        ? item.release_date?.substring(0, 4)
+                        : item.first_air_date?.substring(0, 4)
+                    }
+                    media_type={movie ? item.media_type : "tv"}
+                    ratings={item.adult ? "18+" : "PG"}
+                    title={movie ? item.title : item.name}
+                  />
+                );
+              })
+            : null}
       </TrendingCarousel>
-      <PageLayout loading={loading}>
+      <PageLayout
+        loading={loading}
+        skeleton={
+          <>
+            <section className="w-full mt-10">
+              <Skeleton className="h-8 w-56 rounded" />
+              <SkeletonGrid count={14} />
+            </section>
+            <section className="w-full">
+              <Skeleton className="h-8 w-56 rounded mt-14" />
+              <SkeletonGrid count={14} />
+            </section>
+          </>
+        }
+      >
         <section className="w-full mt-10">
           <Heading as="h2" className="text-orange font-bold">
             Trending Movies

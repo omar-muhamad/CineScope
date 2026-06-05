@@ -10,6 +10,7 @@ import { Episode } from "@/types";
 import poster from "@/assets/images/default-poster.png";
 import Heading from "../ui/Heading";
 import Text from "../ui/Text";
+import SkeletonEpisode from "../skeletons/SkeletonEpisode";
 
 type EpisodeListProps = {
   episodes: Episode[];
@@ -35,9 +36,11 @@ const EpisodeList: FC<EpisodeListProps> = ({
 }) => {
   if (loading) {
     return (
-      <div className="w-full flex justify-center py-10">
-        <div className="w-10 h-10 border-[5px] border-t-orange rounded-full border-[#ffffff90] animate-spin" />
-      </div>
+      <ul className="flex flex-col gap-3">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <SkeletonEpisode key={i} />
+        ))}
+      </ul>
     );
   }
 
