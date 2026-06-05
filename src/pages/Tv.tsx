@@ -39,7 +39,7 @@ const Tv: FC = () => {
         </>
       }
     >
-      <Heading as="h1" className="text-orange font-bold">
+      <Heading as="h1" className="text-orange font-bold max-md:text-xl">
         Popular TV Shows
       </Heading>
       <GridLayout>

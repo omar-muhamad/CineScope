@@ -46,14 +46,14 @@ const SearchResults: FC<SearchResultsProps> = ({ data }) => {
     <div>
       {loading ? (
         <div>
-          <Heading as="h1" className="mt-6">
+          <Heading as="h1" className="text-orange font-bold max-md:text-xl">
             Search Results
           </Heading>
           <SkeletonGrid count={14} />
         </div>
       ) : (
         <div>
-          <Heading as="h1" className="mt-6">
+          <Heading as="h1" className="text-orange font-bold max-md:text-xl">
             Search Results
           </Heading>
           {items && items.length !== 0 ? (
