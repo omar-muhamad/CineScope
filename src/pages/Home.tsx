@@ -22,7 +22,7 @@ const Home: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const { loading, trending, trendingMovies, trendingTv } = data;
-  const trendingData = trending?.slice(0, 10);
+  const trendingData = trending?.slice(0, 15);
   const movies = trendingMovies?.slice(0, TWO_ROWS);
   const tvShows = trendingTv?.slice(0, TWO_ROWS);
 
@@ -34,31 +34,33 @@ const Home: FC = () => {
 
   return (
     <div className="">
+      <TrendingCarousel>
+        {!data.loading && trending && trending.length !== 0
+          ? trendingData?.map((item) => {
+              const movie = item.media_type === "movie";
+              return (
+                <TrendingCard
+                  key={item.id}
+                  id={item.id}
+                  imgSrc={item.poster_path}
+                  releaseDate={
+                    movie
+                      ? item.release_date?.substring(0, 4)
+                      : item.first_air_date?.substring(0, 4)
+                  }
+                  media_type={movie ? item.media_type : "tv"}
+                  ratings={item.adult ? "18+" : "PG"}
+                  title={movie ? item.title : item.name}
+                />
+              );
+            })
+          : null}
+      </TrendingCarousel>
       <PageLayout loading={loading}>
-        <TrendingCarousel>
-          {!data.loading && trending && trending.length !== 0
-            ? trendingData?.map((item) => {
-                const movie = item.media_type === "movie";
-                return (
-                  <TrendingCard
-                    key={item.id}
-                    id={item.id}
-                    imgSrc={item.poster_path}
-                    releaseDate={
-                      movie
-                        ? item.release_date?.substring(0, 4)
-                        : item.first_air_date?.substring(0, 4)
-                    }
-                    media_type={movie ? item.media_type : "tv"}
-                    ratings={item.adult ? "18+" : "PG"}
-                    title={movie ? item.title : item.name}
-                  />
-                );
-              })
-            : null}
-        </TrendingCarousel>
-        <section className="w-full">
-          <Heading as="h2">Trending Movies</Heading>
+        <section className="w-full mt-10">
+          <Heading as="h2" className="text-orange font-bold">
+            Trending Movies
+          </Heading>
           <GridLayout>
             {!loading && movies && movies.length !== 0
               ? movies.map((item) => (
@@ -77,7 +79,7 @@ const Home: FC = () => {
         </section>
 
         <section className="w-full">
-          <Heading as="h2" className="mt-14">
+          <Heading as="h2" className="mt-14 text-orange font-bold">
             Trending TV Shows
           </Heading>
           <GridLayout>

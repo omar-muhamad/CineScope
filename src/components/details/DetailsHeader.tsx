@@ -96,7 +96,7 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
 
         <div
           data-testid="details-poster-image"
-          className="absolute w-full backdrop-blur-[1.5px] z-10 top-0 px-5 md:py-5  h-full flex gap-6"
+          className="absolute w-full backdrop-blur-[1.5px] z-10 top-0 px-16 md:py-5  h-full flex gap-6"
         >
           <div className="h-full hidden md:block">
             <LazyImage

@@ -33,7 +33,7 @@ const Movies: FC = () => {
 
   return (
     <PageLayout loading={loading}>
-      <Heading as="h1" className="mt-6">
+      <Heading as="h1" className="text-orange font-bold">
         Popular Movies
       </Heading>
       <GridLayout>

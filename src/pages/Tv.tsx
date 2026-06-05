@@ -29,7 +29,7 @@ const Tv: FC = () => {
 
   return (
     <PageLayout loading={loading}>
-      <Heading as="h1" className="mt-6">
+      <Heading as="h1" className="text-orange font-bold">
         Popular TV Shows
       </Heading>
       <GridLayout>

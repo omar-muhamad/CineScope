@@ -18,6 +18,7 @@ import SeasonSelector from "@/components/watch/SeasonSelector";
 import EpisodeList from "@/components/watch/EpisodeList";
 import { providers } from "@/components/watch/providers";
 import NotFound from "./NotFound";
+import PageLayout from "@/components/layout/PageLayout";
 
 const WatchOnline: FC = () => {
   const data = useSelector((state: RootState) => state.details);
@@ -98,12 +99,12 @@ const WatchOnline: FC = () => {
       {loading ? (
         <Loading />
       ) : (
-        <>
-          <section className="px-6 md:pl-0 md:pr-6 pt-6">
-            <Heading as="h1">{movie ? details?.title : details?.name}</Heading>
+        <PageLayout loading={loading!}>
+          <section>
+            <Heading as="h1" className="text-orange font-bold">{movie ? details?.title : details?.name}</Heading>
 
             {/* Player module: toggle + nav on top, video below */}
-            <div className="mt-4 rounded-xl overflow-hidden bg-secondary-dark p-4">
+            <div className="mt-8 rounded-xl overflow-hidden bg-secondary-dark p-4">
               <div className="flex items-center justify-between gap-2 rounded-t-lg bg-main-dark">
                 <PlayerSelector
                   providers={providers}
@@ -181,8 +182,8 @@ const WatchOnline: FC = () => {
             )}
           </section>
 
-          <section className="pl-6 md:pl-0 mt-6">
-            <Heading as="h2">Recommendations</Heading>
+          <section className="pl-6 md:pl-0 mt-16">
+            <Heading as="h2" className="text-orange font-bold">Recommendations</Heading>
             <GridLayout>
               {recommendations && recommendations.length !== 0
                 ? recommendations.map((item) => {
@@ -206,7 +207,7 @@ const WatchOnline: FC = () => {
                 : null}
             </GridLayout>
           </section>
-        </>
+        </PageLayout>
       )}
     </main>
   );

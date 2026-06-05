@@ -53,8 +53,10 @@ const Details: FC = () => {
               />
             ) : null}
           </div>
-          <section className="pl-6 md:pl-0">
-            <Heading as="h2">Recommendations</Heading>
+          <section className="px-16 mt-10">
+            <Heading as="h2" className="text-orange font-bold">
+              Recommendations
+            </Heading>
             <GridLayout>
               {!loading && recommendations && recommendations.length !== 0
                 ? recommendations.map((item) => {
