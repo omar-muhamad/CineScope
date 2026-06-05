@@ -94,7 +94,7 @@ const WatchOnline: FC = () => {
   };
 
   return (
-    <main className="w-full md:w-[calc(100%-8rem)] pb-6 md:ml-32 md:pl-0">
+    <main className="w-full pb-6">
       {loading ? (
         <Loading />
       ) : (

@@ -15,9 +15,9 @@ import ErrorBoundary from "./components/common/ErrorBoundary";
 function App() {
   const { pathname } = useLocation();
   return (
-    <div className="font-outfitLight min-h-screen w-full  flex bg-main-dark text-white flex-col md:flex-row md:mx-auto relative">
+    <div className="font-outfitLight min-h-screen w-full  flex bg-main-dark text-white flex-col mx-auto relative">
       {pathname !== "/login" && (
-        <header className="md:h-[100svh] md:fixed z-50">
+        <header className="sticky top-0 z-50">
           <Navbar />
         </header>
       )}

@@ -21,9 +21,7 @@ const navLinks = [
 const Navbar: FC = () => {
   const [isUserIconClicked, setIsUserIconClicked] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
-  const { loading, user } = useSelector(
-    (state: RootState) => state.user
-  );
+  const { loading, user } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
 
   const handleClick = () => {
@@ -39,7 +37,7 @@ const Navbar: FC = () => {
   }, [dispatch]);
 
   return (
-    <nav className="relative h-[calc(100%-3rem)] flex md:flex-col justify-between items-center md:m-6 p-6 md:px-5 bg-secondary-dark md:rounded-2xl">
+    <nav className="relative flex justify-between items-center m-4 md:m-6 p-4 md:px-6 bg-secondary-dark rounded-2xl">
       <NavLink
         to="/"
         aria-label="link to main page"
@@ -47,7 +45,10 @@ const Navbar: FC = () => {
       >
         <Logo />
       </NavLink>
-      <div data-testid='nav-links' className="md:-mt-72 flex md:flex-col items-center gap-6">
+      <div
+        data-testid="nav-links"
+        className="absolute left-1/2 -translate-x-1/2 flex items-center gap-6"
+      >
         {navLinks.map((link) => (
           <NavIcon key={link.id} link={link} />
         ))}

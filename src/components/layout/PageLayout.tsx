@@ -24,7 +24,7 @@ const PageLayout: FC<PageLayoutProps> = ({ children, loading }) => {
     }
   }, [searchParams, dispatch]);
   return (
-    <main className="w-full md:w-[calc(100%-8rem)] min-h-screen py-6 md:ml-32 pl-5 md:px-0">
+    <main className="w-full min-h-screen py-6 px-5">
       {loading ? (
         <Loading />
       ) : (

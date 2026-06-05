@@ -20,7 +20,7 @@ const UserCard: FC<UserCardProps> = ({ user, isLogged }) => {
     }
   };
   return (
-    <div className="user-card absolute z-50 md:bottom-10 md:left-[102px] bg-secondary-dark rounded-lg h-32 w-44 px-4 flex items-center justify-center">
+    <div className="user-card absolute z-50 top-full right-0 mt-2 bg-secondary-dark rounded-lg h-32 w-44 px-4 flex items-center justify-center">
       <div className="w-full text-center">
         <Heading as="h3" className="mt-0 text-lg">
           {isLogged ? `Hi, ${user?.name}!` : "Hi, User!"}
