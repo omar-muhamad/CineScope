@@ -2,7 +2,17 @@ import { FC, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoSearch } from "react-icons/io5";
 
-const NavSearch: FC = () => {
+type NavSearchProps = {
+  variant?: "nav" | "block";
+  onSearch?: () => void;
+};
+
+const variantClasses = {
+  nav: "w-32 sm:w-40 focus-within:w-56 sm:focus-within:w-72 transition-[width] duration-300 ease-in-out",
+  block: "w-full",
+};
+
+const NavSearch: FC<NavSearchProps> = ({ variant = "nav", onSearch }) => {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
@@ -11,13 +21,14 @@ const NavSearch: FC = () => {
     const trimmed = query.trim();
     if (!trimmed) return;
     navigate(`/search?search=${encodeURIComponent(trimmed)}`);
+    onSearch?.();
   };
 
   return (
     <form
       role="search"
       onSubmit={handleSubmit}
-      className="flex items-center gap-2 rounded-full bg-main-dark p-3 w-32 sm:w-40 focus-within:w-56 sm:focus-within:w-72 transition-[width] duration-300 ease-in-out focus-within:ring-1 focus-within:ring-orange"
+      className={`flex items-center gap-2 rounded-full bg-main-dark p-3 focus-within:ring-1 focus-within:ring-orange ${variantClasses[variant]}`}
     >
       <button
         type="submit"
