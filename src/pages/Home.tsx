@@ -17,8 +17,7 @@ import Skeleton from "@/components/skeletons/Skeleton";
 import SkeletonGrid from "@/components/skeletons/SkeletonGrid";
 import SkeletonTrendingCard from "@/components/skeletons/SkeletonTrendingCard";
 
-// Two rows of cards at the widest grid layout (5 columns).
-const TWO_ROWS = 14;
+// Two rows of cards at the widest grid layout (7 columns at 2xl).
 
 const Home: FC = () => {
   const data = useSelector((state: RootState) => state.home);
