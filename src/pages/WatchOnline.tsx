@@ -123,7 +123,7 @@ const WatchOnline: FC = () => {
           </Heading>
 
           {/* Player module: toggle + nav on top, video below */}
-          <div className="mt-8 rounded-xl overflow-hidden bg-secondary-dark p-4">
+          <div className="mt-8 rounded-xl overflow-hidden bg-secondary-dark md:p-4">
             <div className="flex items-center justify-between gap-2 rounded-t-lg bg-main-dark">
               <PlayerSelector
                 providers={providers}
