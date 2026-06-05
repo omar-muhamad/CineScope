@@ -58,7 +58,7 @@ const TrendingCard: FC<TrendingCardProps> = ({
               ) : (
                 <PiTelevisionSimpleFill className="text-sm" />
               )}
-              <Text size="sm">{media_type}</Text>
+              <Text size="sm" className="hidden md:block">{media_type}</Text>
             </div>
             {rating > 0 && (
               <>

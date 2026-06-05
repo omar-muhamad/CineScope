@@ -11,7 +11,7 @@ type PageLayoutProps = {
 
 const PageLayout: FC<PageLayoutProps> = ({ children, loading, skeleton }) => {
   return (
-    <main className="w-full min-h-screen py-6 px-16">
+    <main className="w-full min-h-screen py-4 md:py-6 px-4 md:px-16">
       {loading ? (skeleton ?? <Loading />) : children}
     </main>
   );

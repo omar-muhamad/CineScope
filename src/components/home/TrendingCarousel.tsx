@@ -44,7 +44,7 @@ const TrendingWrapper: FC<TrendingWrapperProps> = ({ children }) => {
 
   return (
     <div
-      className="relative w-full px-6 mt-6"
+      className="relative w-full px-4 md:px-6 mt-6"
       onMouseEnter={() => (isPausedRef.current = true)}
       onMouseLeave={() => (isPausedRef.current = false)}
     >

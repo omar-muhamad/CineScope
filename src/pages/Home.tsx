@@ -78,8 +78,8 @@ const Home: FC = () => {
           </>
         }
       >
-        <section className="w-full mt-10">
-          <Heading as="h2" className="text-orange font-bold">
+        <section className="w-full mt-6 md:mt-10">
+          <Heading as="h2" className="text-orange font-bold max-md:text-xl">
             Trending Movies
           </Heading>
           <GridLayout>
@@ -99,8 +99,8 @@ const Home: FC = () => {
           </GridLayout>
         </section>
 
-        <section className="w-full">
-          <Heading as="h2" className="mt-14 text-orange font-bold">
+        <section className="w-full mt-6 md:mt-10">
+          <Heading as="h2" className="text-orange font-bold max-md:text-xl">
             Trending TV Shows
           </Heading>
           <GridLayout>

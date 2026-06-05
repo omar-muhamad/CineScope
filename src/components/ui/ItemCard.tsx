@@ -61,7 +61,7 @@ const ItemCard: FC<ItemCardProps> = ({
             ) : (
               <PiTelevisionSimpleFill className="text-md" />
             )}
-            <Text>{media_type}</Text>
+            <Text className="hidden md:block">{media_type}</Text>
           </div>
           {rating > 0 && (
             <>
@@ -74,7 +74,7 @@ const ItemCard: FC<ItemCardProps> = ({
           )}
         </div>
         <NavLink to={media_type === "movie" ? `/movie/${id}` : `/tv/${id}`}>
-          <Heading as="h3" size="sm">
+          <Heading as="h3" size="sm" className="line-clamp-2 text-ellipsis md:truncate">
             {title}
           </Heading>
         </NavLink>

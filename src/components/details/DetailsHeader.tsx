@@ -88,28 +88,26 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
 
   return (
     <>
-      <section className="relative w-full h-[25vh] md:h-[450px]">
-        <div
-          style={{
-            backgroundImage: `url(https://image.tmdb.org/t/p/w1280/${imageSrc})`,
-          }}
-          className="w-full h-full z-0 bg-black opacity-20 md:rounded-bl-2xl bg-cover bg-center md:bg-top bg-no-repeat"
-        ></div>
-
+      <section
+        style={{
+          backgroundImage: `url(https://image.tmdb.org/t/p/w1280/${imageSrc})`,
+        }}
+        className="w-full md:rounded-bl-2xl bg-cover bg-center md:bg-top bg-no-repeat"
+      >
         <div
           data-testid="details-poster-image"
-          className="absolute w-full backdrop-blur-[1.5px] z-10 top-0 px-16 md:py-5  h-full flex gap-6"
+          className="w-full max-md:py-5 px-4 md:px-16 md:py-5  h-full flex gap-4 md:gap-6 backdrop-blur-[3px] md:rounded-bl-2xl bg-black/70"
         >
-          <div className="h-full hidden md:block">
+          <div className="h-full">
             <LazyImage
-              className="h-full aspect-[2/3] rounded-xl bg-secondary-dark object-cover"
+              className="aspect-[2/3] rounded-md md:rounded-xl bg-secondary-dark object-cover"
               src={`https://image.tmdb.org/t/p/w300/${posterUrl}`}
               alt={`${title} poster`}
             />
           </div>
 
-          <div className="h-full md:mt-5 grow">
-            <Heading as="h1" className="mt-6">
+          <div className="md:mt-5 grow">
+            <Heading as="h1" className="md:mt-6">
               {title}
             </Heading>
 
@@ -174,6 +172,7 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
           </div>
         </div>
       </section>
+
       {trailerUrl === null ? (
         isModalOpened && (
           <div className="fixed z-50 inset-0 max-h-screen bg-black/80 backdrop-blur-[2px] flex justify-center overflow-y-hidden items-center">
