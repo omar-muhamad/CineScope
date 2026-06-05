@@ -23,6 +23,7 @@ type RecommendationsData = {
   id: number;
   media_type: string;
   backdrop_path: string;
+  poster_path: string;
   release_date: string;
   first_air_date: string;
   adult: boolean;

@@ -191,7 +191,7 @@ const WatchOnline: FC = () => {
                       <ItemCard
                         key={item.id}
                         id={item.id}
-                        imgSrc={item.backdrop_path}
+                        imgSrc={item.poster_path}
                         releaseDate={
                           isMovie
                             ? item.release_date?.substring(0, 4)

@@ -26,8 +26,7 @@ const ItemCard: FC<ItemCardProps> = ({
   ratings,
   title,
 }) => {
-  const imageSrc = `https://image.tmdb.org/t/p/w533_and_h300_bestv2/${imgSrc}`;
-  const nullImageSrc = "https://image.tmdb.org/t/p/w533_and_h300_bestv2/null";
+  const imageSrc = `https://image.tmdb.org/t/p/w500/${imgSrc}`;
 
   return (
     <li>
@@ -36,17 +35,17 @@ const ItemCard: FC<ItemCardProps> = ({
           <BookMark id={id} media_type={media_type} className="w-full h-full" />
         </div>
         <NavLink to={media_type === "movie" ? `/movie/${id}` : `/tv/${id}`}>
-        <div className="absolute z-10 inset-0 opacity-0 hover:opacity-100 hover:duration-300 bg-[#00000070] backdrop-blur-[2px] flex justify-center items-center">
-          <Text
-            size="sm"
-            className="bg-white/70 text-black py-2 px-3 rounded-full"
-          >
-            See Details
-          </Text>
-        </div>
+          <div className="absolute z-10 inset-0 opacity-0 hover:opacity-100 hover:duration-300 bg-[#00000070] backdrop-blur-[2px] flex justify-center items-center">
+            <Text
+              size="sm"
+              className="bg-white/70 text-black py-2 px-3 rounded-full"
+            >
+              See Details
+            </Text>
+          </div>
           <LazyImage
-            className="w-full rounded-lg aspect-[16/9] object-cover"
-            src={imageSrc === nullImageSrc ? poster : imageSrc}
+            className="w-full rounded-lg aspect-[2/3] object-cover"
+            src={imgSrc ? imageSrc : poster}
             alt={`${title} poster`}
           />
         </NavLink>

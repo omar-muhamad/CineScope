@@ -63,7 +63,7 @@ const Details: FC = () => {
                       <ItemCard
                         key={item.id}
                         id={item.id}
-                        imgSrc={item.backdrop_path}
+                        imgSrc={item.poster_path}
                         releaseDate={
                           movie
                             ? item.release_date?.substring(0, 4)

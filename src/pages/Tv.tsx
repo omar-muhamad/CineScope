@@ -38,7 +38,7 @@ const Tv: FC = () => {
               <ItemCard
                 key={tvShow.id}
                 id={tvShow.id}
-                imgSrc={tvShow.backdrop_path}
+                imgSrc={tvShow.poster_path}
                 releaseDate={tvShow.first_air_date?.substring(0, 4)}
                 media_type="tv"
                 ratings={tvShow.adult ? "18+" : "PG"}

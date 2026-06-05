@@ -15,7 +15,7 @@ import TrendingCard from "@/components/home/TrendingCard";
 import Heading from "@/components/ui/Heading";
 
 // Two rows of cards at the widest grid layout (5 columns).
-const TWO_ROWS = 10;
+const TWO_ROWS = 14;
 
 const Home: FC = () => {
   const data = useSelector((state: RootState) => state.home);
@@ -67,7 +67,7 @@ const Home: FC = () => {
                   <ItemCard
                     key={item.id}
                     id={item.id}
-                    imgSrc={item.backdrop_path}
+                    imgSrc={item.poster_path}
                     releaseDate={item.release_date?.substring(0, 4)}
                     media_type="movie"
                     ratings={item.adult ? "18+" : "PG"}
@@ -79,7 +79,7 @@ const Home: FC = () => {
         </section>
 
         <section className="w-full">
-          <Heading as="h2" className="mt-6">
+          <Heading as="h2" className="mt-14">
             Trending TV Shows
           </Heading>
           <GridLayout>
@@ -88,7 +88,7 @@ const Home: FC = () => {
                   <ItemCard
                     key={item.id}
                     id={item.id}
-                    imgSrc={item.backdrop_path}
+                    imgSrc={item.poster_path}
                     releaseDate={item.first_air_date?.substring(0, 4)}
                     media_type="tv"
                     ratings={item.adult ? "18+" : "PG"}

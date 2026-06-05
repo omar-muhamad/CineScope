@@ -61,7 +61,7 @@ const SearchResults: FC<SearchResultsProps> = ({ data }) => {
                   <ItemCard
                     key={`${item.media_type}-${item.id}`}
                     id={item.id}
-                    imgSrc={item.backdrop_path}
+                    imgSrc={item.poster_path}
                     releaseDate={(isMovie
                       ? item.release_date
                       : item.first_air_date

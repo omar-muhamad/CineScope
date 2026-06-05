@@ -10,7 +10,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 
 const Bookmarked = () => {
   const { loading, bookmarks } = useSelector(
-    (state: RootState) => state.bookmark
+    (state: RootState) => state.bookmark,
   );
   const dispatch = useDispatch<AppDispatch>();
 
@@ -35,7 +35,7 @@ const Bookmarked = () => {
                   <ItemCard
                     key={movie.id}
                     id={movie.id}
-                    imgSrc={movie.backdrop_path}
+                    imgSrc={movie.poster_path}
                     releaseDate={movie.release_date?.substring(0, 4)}
                     media_type="movie"
                     ratings={movie.adult ? "18+" : "PG"}
@@ -57,7 +57,7 @@ const Bookmarked = () => {
                   <ItemCard
                     key={tvShow.id}
                     id={tvShow.id}
-                    imgSrc={tvShow.backdrop_path}
+                    imgSrc={tvShow.poster_path}
                     releaseDate={tvShow.first_air_date?.substring(0, 4)}
                     media_type="tv"
                     ratings={tvShow.adult ? "18+" : "PG"}

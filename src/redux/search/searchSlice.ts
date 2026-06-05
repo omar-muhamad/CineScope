@@ -5,6 +5,7 @@ export type SearchResult = {
   id: number;
   media_type: string;
   backdrop_path: string;
+  poster_path: string;
   release_date: string;
   first_air_date: string;
   adult: boolean;
@@ -44,7 +45,7 @@ export const fetchSearch = createAsyncThunk(
       };
       const response = await axios.get(
         `https://api.themoviedb.org/3/search/multi`,
-        { params }
+        { params },
       );
       const { page, results, total_pages } = response.data;
       const data = { page, results, total_pages };
@@ -52,7 +53,7 @@ export const fetchSearch = createAsyncThunk(
     } catch (error) {
       return error;
     }
-  }
+  },
 );
 
 export const searchPagination = createAsyncThunk(
@@ -72,7 +73,7 @@ export const searchPagination = createAsyncThunk(
       };
       const response = await axios.get(
         `https://api.themoviedb.org/3/search/multi`,
-        { params }
+        { params },
       );
       const { page, results, total_pages } = response.data;
       const data = { page, results, total_pages };
@@ -80,7 +81,7 @@ export const searchPagination = createAsyncThunk(
     } catch (err) {
       return err;
     }
-  }
+  },
 );
 
 export const searchSlice = createSlice({

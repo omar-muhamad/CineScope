@@ -7,6 +7,7 @@ type ItemData = {
   release_date: string;
   title: string;
   backdrop_path: string;
+  poster_path: string;
   ratings: string;
   adult: boolean;
   first_air_date: string;
@@ -41,7 +42,7 @@ export const fetchBookmark = createAsyncThunk(
 
     const data = response.data.items;
     return data;
-  }
+  },
 );
 
 export const addBookmark = createAsyncThunk(
@@ -65,11 +66,11 @@ export const addBookmark = createAsyncThunk(
         media_id: id,
         media_type,
       },
-      { params }
+      { params },
     );
 
     return response.data;
-  }
+  },
 );
 
 export const removeBookmark = createAsyncThunk(
@@ -93,11 +94,11 @@ export const removeBookmark = createAsyncThunk(
         media_id: id,
         media_type,
       },
-      { params }
+      { params },
     );
 
     return response.data;
-  }
+  },
 );
 
 const bookmarkSlice = createSlice({
