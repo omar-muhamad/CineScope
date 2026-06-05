@@ -8,9 +8,17 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { fetchSearch } from "@/redux/search/searchSlice";
 import Loading from "../common/Loading";
 
-type PageLayoutProps = { children: ReactNode; loading: boolean };
+type PageLayoutProps = {
+  children: ReactNode;
+  loading: boolean;
+  showSearch?: boolean;
+};
 
-const PageLayout: FC<PageLayoutProps> = ({ children, loading }) => {
+const PageLayout: FC<PageLayoutProps> = ({
+  children,
+  loading,
+  showSearch = true,
+}) => {
   const searchData = useSelector((state: RootState) => state.search);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -27,11 +35,13 @@ const PageLayout: FC<PageLayoutProps> = ({ children, loading }) => {
     <main className="w-full min-h-screen py-6 px-5">
       {loading ? (
         <Loading />
-      ) : (
+      ) : showSearch ? (
         <>
           <SearchBox />
           {searchQuery ? <SearchResults data={searchData} /> : children}
         </>
+      ) : (
+        children
       )}
     </main>
   );

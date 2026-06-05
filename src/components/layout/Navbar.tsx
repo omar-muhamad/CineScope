@@ -37,13 +37,15 @@ const Navbar: FC = () => {
   }, [dispatch]);
 
   return (
-    <nav className="relative flex justify-between items-center m-4 md:m-6 p-4 md:px-6 bg-secondary-dark rounded-2xl">
-      <NavLink
-        to="/"
-        aria-label="link to main page"
-        className="h-7 w-7 md:h-8 md:w-8"
-      >
-        <Logo />
+    <nav className="relative flex justify-between items-center p-4 md:p-6 bg-secondary-dark">
+      <NavLink to="/" aria-label="link to main page" className="flex items-center gap-4">
+        <span className="flex items-center justify-center size-7 md:size-8">
+          <Logo />
+        </span>
+        <span className="text-lg md:text-xl">
+          <span className="font-outfit font-bold">CINE</span>
+          <span className="text-orange">SCOPE</span>
+        </span>
       </NavLink>
       <div
         data-testid="nav-links"
@@ -54,7 +56,7 @@ const Navbar: FC = () => {
         ))}
       </div>
       <button
-        className="h-10 w-10"
+        className="size-8"
         type="button"
         aria-label="User image"
         onClick={handleClick}

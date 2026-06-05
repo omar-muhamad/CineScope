@@ -33,7 +33,7 @@ const Home: FC = () => {
   }, [dispatch]);
 
   return (
-    <PageLayout loading={loading}>
+    <div className="">
       <TrendingWrapper>
         {!data.loading && trending && trending.length !== 0
           ? [...(trendingData || []), ...(trendingData || [])].map(
@@ -58,49 +58,50 @@ const Home: FC = () => {
             )
           : null}
       </TrendingWrapper>
+      <PageLayout loading={loading} showSearch={false}>
+        <section className="w-full">
+          <Heading as="h2">
+            Trending Movies
+          </Heading>
+          <GridLayout>
+            {!loading && movies && movies.length !== 0
+              ? movies.map((item) => (
+                  <ItemCard
+                    key={item.id}
+                    id={item.id}
+                    imgSrc={item.backdrop_path}
+                    releaseDate={item.release_date?.substring(0, 4)}
+                    media_type="movie"
+                    ratings={item.adult ? "18+" : "PG"}
+                    title={item.title}
+                  />
+                ))
+              : null}
+          </GridLayout>
+        </section>
 
-      <section className="w-full">
-        <Heading as="h2" className="mt-6">
-          Trending Movies
-        </Heading>
-        <GridLayout>
-          {!loading && movies && movies.length !== 0
-            ? movies.map((item) => (
-                <ItemCard
-                  key={item.id}
-                  id={item.id}
-                  imgSrc={item.backdrop_path}
-                  releaseDate={item.release_date?.substring(0, 4)}
-                  media_type="movie"
-                  ratings={item.adult ? "18+" : "PG"}
-                  title={item.title}
-                />
-              ))
-            : null}
-        </GridLayout>
-      </section>
-
-      <section className="w-full">
-        <Heading as="h2" className="mt-6">
-          Trending TV Shows
-        </Heading>
-        <GridLayout>
-          {!loading && tvShows && tvShows.length !== 0
-            ? tvShows.map((item) => (
-                <ItemCard
-                  key={item.id}
-                  id={item.id}
-                  imgSrc={item.backdrop_path}
-                  releaseDate={item.first_air_date?.substring(0, 4)}
-                  media_type="tv"
-                  ratings={item.adult ? "18+" : "PG"}
-                  title={item.name}
-                />
-              ))
-            : null}
-        </GridLayout>
-      </section>
-    </PageLayout>
+        <section className="w-full">
+          <Heading as="h2" className="mt-6">
+            Trending TV Shows
+          </Heading>
+          <GridLayout>
+            {!loading && tvShows && tvShows.length !== 0
+              ? tvShows.map((item) => (
+                  <ItemCard
+                    key={item.id}
+                    id={item.id}
+                    imgSrc={item.backdrop_path}
+                    releaseDate={item.first_air_date?.substring(0, 4)}
+                    media_type="tv"
+                    ratings={item.adult ? "18+" : "PG"}
+                    title={item.name}
+                  />
+                ))
+              : null}
+          </GridLayout>
+        </section>
+      </PageLayout>
+    </div>
   );
 };
 export default Home;

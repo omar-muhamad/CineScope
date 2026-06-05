@@ -10,6 +10,7 @@ export default {
         orange: "#FC4747",
       },
       fontFamily: {
+        outfit: ["Outfit", "sans-serif"],
         outfitLight: ["outfit-light", "sans-serif"],
         outfitMedium: ["outfit-medium", "sans-serif"],
       },
