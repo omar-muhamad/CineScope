@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { FaUserCircle } from "react-icons/fa";
 
 import { AppDispatch, RootState } from "@/redux/store";
-import NavIcon from "../ui/NavIcon";
 import Logo from "@/assets/icons/logo.svg";
 import { getUserDetails } from "@/redux/user/userSlice";
 import UserCard from "../ui/UserCard";
@@ -38,22 +37,31 @@ const Navbar: FC = () => {
 
   return (
     <nav className="relative flex justify-between items-center p-4 md:p-6 bg-secondary-dark">
-      <NavLink to="/" aria-label="link to main page" className="flex items-center gap-4">
-        <span className="flex items-center justify-center size-7 md:size-8">
-          <Logo />
-        </span>
-        <span className="text-lg md:text-xl">
-          <span className="font-outfit font-bold">CINE</span>
-          <span className="text-orange">SCOPE</span>
-        </span>
-      </NavLink>
-      <div
-        data-testid="nav-links"
-        className="absolute left-1/2 -translate-x-1/2 flex items-center gap-6"
-      >
-        {navLinks.map((link) => (
-          <NavIcon key={link.id} link={link} />
-        ))}
+      <div className="flex items-center gap-8">
+        <NavLink
+          to="/"
+          aria-label="link to main page"
+          className="flex items-center gap-4"
+        >
+          <span className="flex items-center justify-center size-7 md:size-8">
+            <Logo />
+          </span>
+          <span className="text-lg md:text-xl">
+            <span className="font-outfit font-bold">CINE</span>
+            <span className="text-orange">SCOPE</span>
+          </span>
+        </NavLink>
+        <div data-testid="nav-links" className="flex items-center gap-4">
+          {navLinks.map((link) => (
+            <NavLink
+              to={link.path}
+              className="flex items-center gap-1 capitalize text-2xl text-gray hover:text-white aria-[current=page]:text-white"
+              area-label={`Link to ${link.title} page click to show more`}
+            >
+              <span className="text-xl">{link.title}</span>
+            </NavLink>
+          ))}
+        </div>
       </div>
       <button
         className="size-8"
