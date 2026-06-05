@@ -10,6 +10,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import Logo from "@/assets/icons/logo.svg";
 import { getUserDetails } from "@/redux/user/userSlice";
 import UserCard from "../ui/UserCard";
+import NavSearch from "../common/NavSearch";
 
 const navLinks = [
   { id: 1, title: "movies", path: "/movies", icon: RiFilmFill },
@@ -63,22 +64,25 @@ const Navbar: FC = () => {
           ))}
         </div>
       </div>
-      <button
-        className="size-8"
-        type="button"
-        aria-label="User image"
-        onClick={handleClick}
-      >
-        {isLogged && !loading ? (
-          <img
-            className="h-full w-full rounded-full"
-            src={`https://gravatar.com/avatar/${user?.gravatar}`}
-            alt="User logo"
-          />
-        ) : (
-          <FaUserCircle className="h-full w-full rounded-full text-orange hover:text-white" />
-        )}
-      </button>
+      <div className="flex items-center gap-4 md:gap-6">
+        <NavSearch />
+        <button
+          className="size-8 shrink-0"
+          type="button"
+          aria-label="User image"
+          onClick={handleClick}
+        >
+          {isLogged && !loading ? (
+            <img
+              className="h-full w-full rounded-full"
+              src={`https://gravatar.com/avatar/${user?.gravatar}`}
+              alt="User logo"
+            />
+          ) : (
+            <FaUserCircle className="h-full w-full rounded-full text-orange hover:text-white" />
+          )}
+        </button>
+      </div>
       {isUserIconClicked && <UserCard user={user} isLogged={isLogged} />}
     </nav>
   );

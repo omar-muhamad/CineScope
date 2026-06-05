@@ -58,11 +58,9 @@ const Home: FC = () => {
             )
           : null}
       </TrendingWrapper>
-      <PageLayout loading={loading} showSearch={false}>
+      <PageLayout loading={loading}>
         <section className="w-full">
-          <Heading as="h2">
-            Trending Movies
-          </Heading>
+          <Heading as="h2">Trending Movies</Heading>
           <GridLayout>
             {!loading && movies && movies.length !== 0
               ? movies.map((item) => (

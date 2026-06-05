@@ -4,6 +4,7 @@ import Navbar from "./components/layout/Navbar";
 import Home from "./pages/Home";
 import Movies from "./pages/Movies";
 import Tv from "./pages/Tv";
+import Search from "./pages/Search";
 import Details from "./pages/Details";
 import WatchOnline from "./pages/WatchOnline";
 import Bookmarked from "./pages/Bookmarked";
@@ -26,6 +27,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/movies" element={<Movies />} />
           <Route path="/tv" element={<Tv />} />
+          <Route path="/search" element={<Search />} />
           <Route path="/watch/:media_type/:id" element={<WatchOnline />} />
           <Route path="/:media_type/:id" element={<Details />} />
           <Route
