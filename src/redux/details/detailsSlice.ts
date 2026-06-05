@@ -92,12 +92,10 @@ export const fetchSeasonEpisodes = createAsyncThunk(
       const response = await axios.get(
         `https://api.themoviedb.org/3/tv/${id}/season/${season_number}`,
         { params },
-      );
       return response.data.episodes;
     } catch (err) {
-      return err;
+      throw err;
     }
-  },
 );
 
 export const detailsSlice = createSlice({
