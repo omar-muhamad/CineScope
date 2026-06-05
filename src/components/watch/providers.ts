@@ -15,8 +15,8 @@ export const providers: Provider[] = [
     name: "Player 1",
     build: ({ media_type, id, season, episode }) =>
       media_type === "tv"
-        ? `https://vidsrc.me/embed/tv/${id}/${season}-${episode}`
-        : `https://vidsrc.me/embed/movie/${id}`,
+        ? `https://vidsrcme.ru/embed/tv/${id}/${season}-${episode}`
+        : `https://vidsrcme.ru/embed/movie/${id}`,
   },
   {
     name: "Player 2",
