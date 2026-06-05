@@ -27,20 +27,18 @@ const SearchResults: FC<SearchResultsProps> = ({ data }) => {
   const { loading, searchData } = data;
   const { page, total_pages, results } = searchData;
 
-
-  const currentItems = results
   const pageCount = total_pages > 100 ? 100 : total_pages;
 
-  const movies = currentItems?.filter(
-    (item: SearchResult) => item.media_type === "movie"
-  );
-  const tvShows = currentItems?.filter(
-    (item: SearchResult) => item.media_type === "tv"
+  // Keep the API's relevance order (closest match first) and only drop the
+  // "person" entries that /search/multi mixes in, since we only show titles.
+  const items = results?.filter(
+    (item: SearchResult) =>
+      item.media_type === "movie" || item.media_type === "tv",
   );
 
   const handlePageClick = async (event: { selected: number }) => {
     await dispatch(
-      searchPagination({ currentPage: event.selected + 1, query })
+      searchPagination({ currentPage: event.selected + 1, query }),
     );
   };
 
@@ -55,56 +53,37 @@ const SearchResults: FC<SearchResultsProps> = ({ data }) => {
           <Heading as="h1" className="mt-6">
             Search Results
           </Heading>
-          <section>
-            <Heading as="h2" className="mt-6">
-              Movies
-            </Heading>
-            {!loading && movies && movies?.length !== 0 ? (
-              <GridLayout>
-                {movies?.map((movie: SearchResult) => (
+          {items && items.length !== 0 ? (
+            <GridLayout>
+              {items.map((item: SearchResult) => {
+                const isMovie = item.media_type === "movie";
+                return (
                   <ItemCard
-                    key={movie.id}
-                    id={movie.id}
-                    imgSrc={movie.backdrop_path}
-                    releaseDate={movie.release_date?.substring(0, 4)}
-                    media_type={movie.media_type}
-                    ratings={movie.adult ? "18+" : "PG"}
-                    title={movie.title}
+                    key={`${item.media_type}-${item.id}`}
+                    id={item.id}
+                    imgSrc={item.backdrop_path}
+                    releaseDate={(isMovie
+                      ? item.release_date
+                      : item.first_air_date
+                    )?.substring(0, 4)}
+                    media_type={item.media_type}
+                    ratings={item.adult ? "18+" : "PG"}
+                    title={isMovie ? item.title : item.name}
                   />
-                ))}
-              </GridLayout>
-            ) : (
-              <Text className="text-lg py-2 text-center text-orange">
-                No movies match your search
-              </Text>
-            )}
-          </section>
-          <section>
-            <Heading as="h2" className="mt-6">
-              TV Shows
-            </Heading>
-            {!loading && tvShows && tvShows?.length !== 0 ? (
-              <GridLayout>
-                {tvShows?.map((tvShow: SearchResult) => (
-                  <ItemCard
-                    key={tvShow.id}
-                    id={tvShow.id}
-                    imgSrc={tvShow.backdrop_path}
-                    releaseDate={tvShow.first_air_date?.substring(0, 4)}
-                    media_type="tv"
-                    ratings={tvShow.adult ? "18+" : "PG"}
-                    title={tvShow.name}
-                  />
-                ))}
-              </GridLayout>
-            ) : (
-              <Text className="text-lg py-2 text-center text-orange">
-                No TV shows match your search
-              </Text>
-            )}
-          </section>
+                );
+              })}
+            </GridLayout>
+          ) : (
+            <Text className="text-lg py-2 text-center text-orange">
+              No results match your search
+            </Text>
+          )}
           <div className="pr-6 md:pr-0">
-            <ReactPagination pageCount={pageCount} handlePageClick={handlePageClick} page={page}/>
+            <ReactPagination
+              pageCount={pageCount}
+              handlePageClick={handlePageClick}
+              page={page}
+            />
           </div>
         </div>
       )}
