@@ -12,9 +12,7 @@ import Text from "@/components/ui/Text";
 const Login = () => {
   const [isLogged, setIsLogged] = useState(false);
   const navigate = useNavigate();
-  const { loading, session_id } = useSelector(
-    (state: RootState) => state.user
-  );
+  const { loading, session_id } = useSelector((state: RootState) => state.user);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -22,11 +20,10 @@ const Login = () => {
     dispatch(userLogin());
   };
 
-  const handleNavigate = () => {
-    setTimeout(() => navigate("/", { replace: true }), 3000);
-  };
-
   useEffect(() => {
+    const handleNavigate = () => {
+      setTimeout(() => navigate("/", { replace: true }), 3000);
+    };
     if (localStorage.getItem("session_id")) {
       setIsLogged(true);
       handleNavigate();
@@ -35,21 +32,22 @@ const Login = () => {
       setIsLogged(true);
       handleNavigate();
     }
-  }, [isLogged, session_id]);
+  }, [isLogged, session_id, navigate]);
 
   return (
     <div className="w-screen h-screen px-6 md:px-0 flex justify-center items-center">
-
       {loading && (
         <div className="bg-secondary-dark w-[500px] p-10 flex flex-col justify-center items-center gap-6 rounded-xl">
           <div className="w-14 h-14 border-[5px] border-t-orange rounded-full border-[#ffffff90] animate-spin" />
-          <Heading as="h1" className="mt-0">Logging in...</Heading>
+          <Heading as="h1" className="mt-0">
+            Logging in...
+          </Heading>
         </div>
       )}
 
       {!loading && !isLogged && (
         <div className="bg-secondary-dark w-[500px] p-10 flex flex-col justify-center gap-6 rounded-xl">
-          <Heading as="h1" className="-mt-1" data-test-id='login-heading'>
+          <Heading as="h1" className="-mt-1" data-test-id="login-heading">
             Login
           </Heading>
           <Text>
@@ -57,7 +55,11 @@ const Login = () => {
             <br />
             To create a new session for you.
           </Text>
-          <Button data-test-id='login-button' className="w-full py-4" onClick={handleLogin}>
+          <Button
+            data-test-id="login-button"
+            className="w-full py-4"
+            onClick={handleLogin}
+          >
             Login
           </Button>
         </div>
