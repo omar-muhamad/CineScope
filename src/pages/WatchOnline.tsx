@@ -140,7 +140,6 @@ const WatchOnline: FC = () => {
                     className="flex items-center gap-1 px-5 py-3 text-sm text-gray hover:text-white hover:bg-white/5 transition-colors duration-200 disabled:opacity-40 disabled:hover:text-gray disabled:hover:bg-transparent"
                   >
                     <IoChevronBackOutline />
-                    Prev
                   </button>
                   <button
                     onClick={goNext}
@@ -148,7 +147,6 @@ const WatchOnline: FC = () => {
                     aria-label="Next episode"
                     className="flex items-center gap-1 px-5 py-3 text-sm rounded-tr-lg text-gray hover:text-white hover:bg-white/5 transition-colors duration-200 disabled:opacity-40 disabled:hover:text-gray disabled:hover:bg-transparent"
                   >
-                    Next
                     <IoChevronForwardOutline />
                   </button>
                 </div>

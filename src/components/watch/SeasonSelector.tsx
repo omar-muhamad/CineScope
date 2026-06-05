@@ -43,18 +43,18 @@ const SeasonSelector: FC<SeasonSelectorProps> = ({
   };
 
   return (
-    <div ref={containerRef} className="relative w-[350px]">
+    <div ref={containerRef} className="relative w-full md:w-[350px]">
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label="Select season"
-        className="flex w-full h-16 items-center justify-between bg-secondary-dark text-white font-outfitMedium text-lg rounded-lg pl-5 pr-5 py-3 outline-none cursor-pointer border border-white/10 hover:border-orange focus:border-orange transition-colors"
+        className="flex w-full h-12 md:h-16 items-center justify-between bg-secondary-dark text-white font-outfitMedium text-lg rounded-lg pl-5 pr-5 py-3 outline-none cursor-pointer border border-white/10 hover:border-orange focus:border-orange transition-colors"
       >
         <span className="truncate">{selected?.name}</span>
         <IoChevronDown
-          className={`ml-3 shrink-0 text-2xl text-white transition-transform duration-200 ${
+          className={`ml-3 shrink-0 text-xl md:text-2xl text-white transition-transform duration-200 ${
             open ? "rotate-180" : ""
           }`}
         />
