@@ -9,11 +9,57 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
         class=""
       >
         <div
-          class="w-full overflow-x-scroll no-scrollbar mt-6"
+          class="relative w-full mt-6"
         >
           <ul
-            class="carousel flex w-max"
+            class="flex gap-4 overflow-x-scroll no-scrollbar scroll-smooth"
           />
+          <button
+            aria-label="Previous"
+            class="absolute top-1/2 -translate-y-1/2 z-40 hidden sm:flex items-center justify-center w-11 h-11 rounded-full text-white text-xl bg-secondary-dark/80 border border-white/10 backdrop-blur-sm shadow-lg transition-all duration-300 hover:bg-orange hover:scale-105 left-2 pointer-events-none opacity-0"
+            type="button"
+          >
+            <svg
+              fill="currentColor"
+              height="1em"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 512 512"
+              width="1em"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M328 112 184 256l144 144"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="48"
+              />
+            </svg>
+          </button>
+          <button
+            aria-label="Next"
+            class="absolute top-1/2 -translate-y-1/2 z-40 hidden sm:flex items-center justify-center w-11 h-11 rounded-full text-white text-xl bg-secondary-dark/80 border border-white/10 backdrop-blur-sm shadow-lg transition-all duration-300 hover:bg-orange hover:scale-105 right-2 pointer-events-none opacity-0"
+            type="button"
+          >
+            <svg
+              fill="currentColor"
+              height="1em"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 512 512"
+              width="1em"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m184 112 144 144-144 144"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="48"
+              />
+            </svg>
+          </button>
         </div>
         <main
           class="w-full min-h-screen py-6 px-5"
@@ -35,11 +81,57 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
       class=""
     >
       <div
-        class="w-full overflow-x-scroll no-scrollbar mt-6"
+        class="relative w-full mt-6"
       >
         <ul
-          class="carousel flex w-max"
+          class="flex gap-4 overflow-x-scroll no-scrollbar scroll-smooth"
         />
+        <button
+          aria-label="Previous"
+          class="absolute top-1/2 -translate-y-1/2 z-40 hidden sm:flex items-center justify-center w-11 h-11 rounded-full text-white text-xl bg-secondary-dark/80 border border-white/10 backdrop-blur-sm shadow-lg transition-all duration-300 hover:bg-orange hover:scale-105 left-2 pointer-events-none opacity-0"
+          type="button"
+        >
+          <svg
+            fill="currentColor"
+            height="1em"
+            stroke="currentColor"
+            stroke-width="0"
+            viewBox="0 0 512 512"
+            width="1em"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M328 112 184 256l144 144"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="48"
+            />
+          </svg>
+        </button>
+        <button
+          aria-label="Next"
+          class="absolute top-1/2 -translate-y-1/2 z-40 hidden sm:flex items-center justify-center w-11 h-11 rounded-full text-white text-xl bg-secondary-dark/80 border border-white/10 backdrop-blur-sm shadow-lg transition-all duration-300 hover:bg-orange hover:scale-105 right-2 pointer-events-none opacity-0"
+          type="button"
+        >
+          <svg
+            fill="currentColor"
+            height="1em"
+            stroke="currentColor"
+            stroke-width="0"
+            viewBox="0 0 512 512"
+            width="1em"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m184 112 144 144-144 144"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="48"
+            />
+          </svg>
+        </button>
       </div>
       <main
         class="w-full min-h-screen py-6 px-5"

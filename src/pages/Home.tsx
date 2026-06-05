@@ -10,7 +10,7 @@ import {
   fetchTrendingMovies,
   fetchTrendingTv,
 } from "@/redux/home/homeSlice";
-import TrendingWrapper from "@/components/home/TrendingWrapper";
+import TrendingCarousel from "@/components/home/TrendingCarousel";
 import TrendingCard from "@/components/home/TrendingCard";
 import Heading from "@/components/ui/Heading";
 
@@ -34,16 +34,16 @@ const Home: FC = () => {
 
   return (
     <div className="">
-      <TrendingWrapper>
-        {!data.loading && trending && trending.length !== 0
-          ? [...(trendingData || []), ...(trendingData || [])].map(
-              (item, index: number) => {
+      <PageLayout loading={loading}>
+        <TrendingCarousel>
+          {!data.loading && trending && trending.length !== 0
+            ? trendingData?.map((item) => {
                 const movie = item.media_type === "movie";
                 return (
                   <TrendingCard
-                    key={item.id + index}
+                    key={item.id}
                     id={item.id}
-                    imgSrc={item.backdrop_path}
+                    imgSrc={item.poster_path}
                     releaseDate={
                       movie
                         ? item.release_date?.substring(0, 4)
@@ -54,11 +54,9 @@ const Home: FC = () => {
                     title={movie ? item.title : item.name}
                   />
                 );
-              },
-            )
-          : null}
-      </TrendingWrapper>
-      <PageLayout loading={loading}>
+              })
+            : null}
+        </TrendingCarousel>
         <section className="w-full">
           <Heading as="h2">Trending Movies</Heading>
           <GridLayout>
