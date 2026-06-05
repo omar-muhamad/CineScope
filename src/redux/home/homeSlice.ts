@@ -54,30 +54,30 @@ export const fetchTrending = createAsyncThunk(
 export const fetchTrendingMovies = createAsyncThunk(
   "data/fetchTrendingMovies",
   async () => {
-    try {
-      const params = {
-        api_key: import.meta.env.VITE_APP_API_KEY,
-        language: "en-US",
-      };
-      return response.data.results;
-    } catch (err) {
-      throw err;
-    }
+    const params = {
+      api_key: import.meta.env.VITE_APP_API_KEY,
+      language: "en-US",
+    };
+    const response = await axios.get(
+      "https://api.themoviedb.org/3/trending/movie/week",
+      { params },
+    );
+    return response.data.results;
   },
 );
 
 export const fetchTrendingTv = createAsyncThunk(
   "data/fetchTrendingTv",
   async () => {
-    try {
-      const params = {
-        api_key: import.meta.env.VITE_APP_API_KEY,
-        language: "en-US",
-      };
-      return response.data.results;
-    } catch (err) {
-      throw err;
-    }
+    const params = {
+      api_key: import.meta.env.VITE_APP_API_KEY,
+      language: "en-US",
+    };
+    const response = await axios.get(
+      "https://api.themoviedb.org/3/trending/tv/week",
+      { params },
+    );
+    return response.data.results;
   },
 );
 
