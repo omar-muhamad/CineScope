@@ -24,6 +24,7 @@ type DetailsHeaderProps = {
     name: string;
   }[];
   posterUrl: string;
+  certification?: string;
   overview: string;
 };
 
@@ -36,6 +37,7 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
   media_type,
   genres,
   imageSrc,
+  certification,
   overview,
 }) => {
   const [trailerUrl, setTrailerUrl] = useState<null | string>(null);
@@ -120,7 +122,7 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
               ))}
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <Text>{release_date}</Text>
               <span>•</span>
               <div className="media-type flex items-center gap-1">
@@ -131,6 +133,14 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
                 )}
                 <Text>{media_type}</Text>
               </div>
+              {certification ? (
+                <>
+                  <span>•</span>
+                  <span className="rounded border border-white/40 px-1.5 text-sm leading-tight">
+                    {certification}
+                  </span>
+                </>
+              ) : null}
             </div>
 
             <div className="w-fit">

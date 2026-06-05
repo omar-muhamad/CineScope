@@ -10,6 +10,7 @@ type ItemData = {
   poster_path: string;
   ratings: string;
   adult: boolean;
+  vote_average: number;
   first_air_date: string;
   name: string;
 };

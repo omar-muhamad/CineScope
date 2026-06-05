@@ -54,7 +54,7 @@ const Bookmarked = () => {
                     imgSrc={movie.poster_path}
                     releaseDate={movie.release_date?.substring(0, 4)}
                     media_type="movie"
-                    ratings={movie.adult ? "18+" : "PG"}
+                    rating={movie.vote_average}
                     title={movie.title}
                   />
                 ))}
@@ -76,7 +76,7 @@ const Bookmarked = () => {
                     imgSrc={tvShow.poster_path}
                     releaseDate={tvShow.first_air_date?.substring(0, 4)}
                     media_type="tv"
-                    ratings={tvShow.adult ? "18+" : "PG"}
+                    rating={tvShow.vote_average}
                     title={tvShow.name}
                   />
                 ))}

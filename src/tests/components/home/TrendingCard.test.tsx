@@ -10,7 +10,7 @@ describe("TrendingCard", () => {
     imgSrc: "test.jpg",
     releaseDate: "2023-01-01",
     media_type: "movie",
-    ratings: "PG",
+    rating: 8.5,
     title: "Test Movie",
   };
 
@@ -20,7 +20,7 @@ describe("TrendingCard", () => {
         <MemoryRouter>
           <TrendingCard {...baseProps} />
         </MemoryRouter>
-      </Provider>
+      </Provider>,
     );
     expect(screen.getByAltText("Test Movie poster")).toBeInTheDocument();
   });
@@ -31,7 +31,7 @@ describe("TrendingCard", () => {
         <MemoryRouter>
           <TrendingCard {...baseProps} />
         </MemoryRouter>
-      </Provider>
+      </Provider>,
     );
     expect(screen.getByRole("link")).toHaveAttribute("href", "/movie/1");
   });
@@ -42,7 +42,7 @@ describe("TrendingCard", () => {
         <MemoryRouter>
           <TrendingCard {...{ ...baseProps, media_type: "tv" }} />
         </MemoryRouter>
-      </Provider>
+      </Provider>,
     );
     expect(screen.getByRole("link")).toHaveAttribute("href", "/tv/1");
   });

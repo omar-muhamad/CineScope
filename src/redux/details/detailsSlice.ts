@@ -17,6 +17,15 @@ type DetailsData = {
   overview: string;
   seasons?: Season[];
   number_of_seasons?: number;
+  release_dates?: {
+    results: {
+      iso_3166_1: string;
+      release_dates: { certification: string }[];
+    }[];
+  };
+  content_ratings?: {
+    results: { iso_3166_1: string; rating: string }[];
+  };
 };
 
 type RecommendationsData = {
@@ -27,6 +36,7 @@ type RecommendationsData = {
   release_date: string;
   first_air_date: string;
   adult: boolean;
+  vote_average: number;
   title: string;
   name: string;
 };
@@ -58,6 +68,8 @@ export const fetchDetails = createAsyncThunk(
     try {
       const params = {
         api_key: import.meta.env.VITE_APP_API_KEY,
+        append_to_response:
+          media_type === "tv" ? "content_ratings" : "release_dates",
       };
       const response = await axios.get(
         `https://api.themoviedb.org/3/${media_type}/${id}`,

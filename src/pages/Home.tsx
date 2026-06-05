@@ -56,7 +56,7 @@ const Home: FC = () => {
                         : item.first_air_date?.substring(0, 4)
                     }
                     media_type={movie ? item.media_type : "tv"}
-                    ratings={item.adult ? "18+" : "PG"}
+                    rating={item.vote_average}
                     title={movie ? item.title : item.name}
                   />
                 );
@@ -91,7 +91,7 @@ const Home: FC = () => {
                     imgSrc={item.poster_path}
                     releaseDate={item.release_date?.substring(0, 4)}
                     media_type="movie"
-                    ratings={item.adult ? "18+" : "PG"}
+                    rating={item.vote_average}
                     title={item.title}
                   />
                 ))
@@ -112,7 +112,7 @@ const Home: FC = () => {
                     imgSrc={item.poster_path}
                     releaseDate={item.first_air_date?.substring(0, 4)}
                     media_type="tv"
-                    ratings={item.adult ? "18+" : "PG"}
+                    rating={item.vote_average}
                     title={item.name}
                   />
                 ))

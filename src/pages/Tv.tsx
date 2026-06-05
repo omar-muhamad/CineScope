@@ -51,7 +51,7 @@ const Tv: FC = () => {
                 imgSrc={tvShow.poster_path}
                 releaseDate={tvShow.first_air_date?.substring(0, 4)}
                 media_type="tv"
-                ratings={tvShow.adult ? "18+" : "PG"}
+                rating={tvShow.vote_average}
                 title={tvShow.name}
               />
             ))

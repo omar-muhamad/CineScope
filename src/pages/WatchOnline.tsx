@@ -223,7 +223,7 @@ const WatchOnline: FC = () => {
                             : item.first_air_date?.substring(0, 4)
                         }
                         media_type={isMovie ? "movie" : "tv"}
-                        ratings={item.adult ? "18+" : "PG"}
+                        rating={item.vote_average}
                         title={isMovie ? item.title : item.name}
                       />
                     );

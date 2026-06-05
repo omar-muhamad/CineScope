@@ -2,6 +2,7 @@ import { FC } from "react";
 import { NavLink } from "react-router-dom";
 import { RiFilmFill } from "react-icons/ri";
 import { PiTelevisionSimpleFill } from "react-icons/pi";
+import { IoStar } from "react-icons/io5";
 import poster from "@/assets/images/default-poster.png";
 
 import Heading from "./Heading";
@@ -14,7 +15,7 @@ type ItemCardProps = {
   imgSrc: string;
   releaseDate: string;
   media_type: string;
-  ratings: string;
+  rating: number;
   title: string;
 };
 
@@ -23,7 +24,7 @@ const ItemCard: FC<ItemCardProps> = ({
   imgSrc,
   releaseDate,
   media_type,
-  ratings,
+  rating,
   title,
 }) => {
   const imageSrc = `https://image.tmdb.org/t/p/w500/${imgSrc}`;
@@ -62,8 +63,15 @@ const ItemCard: FC<ItemCardProps> = ({
             )}
             <Text>{media_type}</Text>
           </div>
-          <span>•</span>
-          <Text>{ratings}</Text>
+          {rating > 0 && (
+            <>
+              <span>•</span>
+              <div className="flex items-center gap-1">
+                <IoStar className="text-orange" />
+                <Text>{rating.toFixed(1)}</Text>
+              </div>
+            </>
+          )}
         </div>
         <NavLink to={media_type === "movie" ? `/movie/${id}` : `/tv/${id}`}>
           <Heading as="h3" size="sm">

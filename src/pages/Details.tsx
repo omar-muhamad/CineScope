@@ -11,6 +11,7 @@ import ItemCard from "@/components/ui/ItemCard";
 import Heading from "@/components/ui/Heading";
 import SkeletonDetailsHeader from "@/components/skeletons/SkeletonDetailsHeader";
 import SkeletonGrid from "@/components/skeletons/SkeletonGrid";
+import { getCertification } from "@/lib/ratings";
 
 const Details: FC = () => {
   const data = useSelector((state: RootState) => state.details);
@@ -48,6 +49,7 @@ const Details: FC = () => {
             media_type={media_type === "movie" ? "movie" : "tv"}
             genres={details.genres}
             rating={details.vote_average}
+            certification={getCertification(details, media_type)}
             overview={details.overview}
           />
         ) : null}
@@ -74,7 +76,7 @@ const Details: FC = () => {
                           : item.first_air_date?.substring(0, 4)
                       }
                       media_type={movie ? "movie" : "tv"}
-                      ratings={item.adult ? "18+" : "PG"}
+                      rating={item.vote_average}
                       title={movie ? item.title : item.name}
                     />
                   );

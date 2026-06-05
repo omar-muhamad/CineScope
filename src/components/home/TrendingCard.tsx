@@ -5,6 +5,7 @@ import Text from "../ui/Text";
 import BookMark from "../ui/BookMark";
 import { RiFilmFill } from "react-icons/ri";
 import { PiTelevisionSimpleFill } from "react-icons/pi";
+import { IoStar } from "react-icons/io5";
 import LazyImage from "../ui/LazyImage";
 import poster from "@/assets/images/default-poster.png";
 
@@ -13,7 +14,7 @@ type TrendingCardProps = {
   imgSrc: string;
   releaseDate: string;
   media_type: string;
-  ratings: string;
+  rating: number;
   title: string;
 };
 
@@ -22,7 +23,7 @@ const TrendingCard: FC<TrendingCardProps> = ({
   imgSrc,
   releaseDate,
   media_type,
-  ratings,
+  rating,
   title,
 }) => {
   const movie = media_type === "movie";
@@ -59,8 +60,15 @@ const TrendingCard: FC<TrendingCardProps> = ({
               )}
               <Text size="sm">{media_type}</Text>
             </div>
-            <span className="text-xs">•</span>
-            <Text size="sm">{ratings}</Text>
+            {rating > 0 && (
+              <>
+                <span className="text-xs">•</span>
+                <div className="flex items-center gap-1">
+                  <IoStar className="text-orange text-sm" />
+                  <Text size="sm">{rating.toFixed(1)}</Text>
+                </div>
+              </>
+            )}
           </div>
           <h2 className="font-outfitMedium text-base md:text-lg truncate text-ellipsis">
             {title}

@@ -9,6 +9,7 @@ export type SearchResult = {
   release_date: string;
   first_air_date: string;
   adult: boolean;
+  vote_average: number;
   title: string;
   name: string;
 };

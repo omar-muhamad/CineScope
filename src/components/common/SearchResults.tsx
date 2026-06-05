@@ -70,7 +70,7 @@ const SearchResults: FC<SearchResultsProps> = ({ data }) => {
                       : item.first_air_date
                     )?.substring(0, 4)}
                     media_type={item.media_type}
-                    ratings={item.adult ? "18+" : "PG"}
+                    rating={item.vote_average}
                     title={isMovie ? item.title : item.name}
                   />
                 );

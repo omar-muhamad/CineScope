@@ -55,7 +55,7 @@ const Movies: FC = () => {
                 imgSrc={movie.poster_path}
                 releaseDate={movie.release_date?.substring(0, 4)}
                 media_type="movie"
-                ratings={movie.adult ? "18+" : "PG"}
+                rating={movie.vote_average}
                 title={movie.title}
               />
             ))
