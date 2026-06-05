@@ -160,6 +160,7 @@ const WatchOnline: FC = () => {
                 src={src}
                 className="w-full h-full rounded-b-lg border-0"
                 title="Video player"
+                // sandbox="allow-scripts allow-same-origin allow-presentation"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                 allowFullScreen
                 referrerPolicy="no-referrer"
