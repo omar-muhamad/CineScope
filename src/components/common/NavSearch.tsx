@@ -17,7 +17,7 @@ const NavSearch: FC = () => {
     <form
       role="search"
       onSubmit={handleSubmit}
-      className="flex items-center gap-2 rounded-full bg-main-dark px-3 py-2 w-32 sm:w-48 md:w-64 focus-within:ring-1 focus-within:ring-orange"
+      className="flex items-center gap-2 rounded-full bg-main-dark p-3 w-32 sm:w-40 focus-within:w-56 sm:focus-within:w-72 transition-[width] duration-300 ease-in-out focus-within:ring-1 focus-within:ring-orange"
     >
       <button
         type="submit"
