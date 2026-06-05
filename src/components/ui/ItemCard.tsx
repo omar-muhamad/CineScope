@@ -74,7 +74,7 @@ const ItemCard: FC<ItemCardProps> = ({
           )}
         </div>
         <NavLink to={media_type === "movie" ? `/movie/${id}` : `/tv/${id}`}>
-          <Heading as="h3" size="sm" className="line-clamp-2 text-ellipsis md:truncate">
+          <Heading as="h3" size="sm" className="line-clamp-2 text-ellipsis md:truncate max-md:text-base">
             {title}
           </Heading>
         </NavLink>

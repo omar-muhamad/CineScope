@@ -85,18 +85,14 @@ export const fetchDetails = createAsyncThunk(
 export const fetchSeasonEpisodes = createAsyncThunk(
   "data/fetchSeasonEpisodes",
   async ({ id, season_number }: { id: Param; season_number: number }) => {
-    try {
-      const params = {
-        api_key: import.meta.env.VITE_APP_API_KEY,
-      };
-      const response = await axios.get(
-        `https://api.themoviedb.org/3/tv/${id}/season/${season_number}`,
-        { params },
-      );
-      return response.data.episodes;
-    } catch (err) {
-      throw err;
-    }
+    const params = {
+      api_key: import.meta.env.VITE_APP_API_KEY,
+    };
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/tv/${id}/season/${season_number}`,
+      { params },
+    );
+    return response.data.episodes;
   },
 );
 

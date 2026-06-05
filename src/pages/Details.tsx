@@ -55,7 +55,7 @@ const Details: FC = () => {
         ) : null}
       </div>
       <section className="px-4 md:px-16 mt-6 md:mt-10">
-        <Heading as="h2" className="text-orange font-bold">
+        <Heading as="h2" className="text-orange font-bold max-md:text-xl">
           Recommendations
         </Heading>
         {loading || recommendationsLoading ? (

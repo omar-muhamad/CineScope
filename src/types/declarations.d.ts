@@ -1,1 +1,1 @@
-declare module 'movie-trailer';
+declare module "movie-trailer";

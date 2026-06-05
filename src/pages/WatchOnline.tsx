@@ -118,7 +118,7 @@ const WatchOnline: FC = () => {
         }
       >
         <section>
-          <Heading as="h1" className="text-orange font-bold">
+          <Heading as="h1" className="text-orange font-bold max-md:text-xl">
             {movie ? details?.title : details?.name}
           </Heading>
 
@@ -203,7 +203,7 @@ const WatchOnline: FC = () => {
         </section>
 
         <section className="pl-6 md:pl-0 mt-16">
-          <Heading as="h2" className="text-orange font-bold">
+          <Heading as="h2" className="text-orange font-bold max-md:text-xl">
             Recommendations
           </Heading>
           {recommendationsLoading ? (

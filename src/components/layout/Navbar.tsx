@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { FaUserCircle } from "react-icons/fa";
 
 import { AppDispatch, RootState } from "@/redux/store";
-import Logo from "@/assets/icons/logo.svg";
+import Logo from "@/assets/icons/logo.svg?react";
 import { getUserDetails } from "@/redux/user/userSlice";
 import UserCard from "../ui/UserCard";
 import NavSearch from "../common/NavSearch";
@@ -50,10 +50,10 @@ const Navbar: FC = () => {
         <NavLink
           to="/"
           aria-label="link to main page"
-          className="flex items-center gap-4"
+          className="flex items-center gap-2"
         >
-          <span className="flex items-center justify-center size-7 md:size-8">
-            <Logo />
+          <span className="size-5 md:size-6">
+            <Logo className="w-full h-full" aria-label="CineScope logo" />
           </span>
           <span className="text-lg md:text-xl">
             <span className="font-outfit font-bold">CINE</span>
