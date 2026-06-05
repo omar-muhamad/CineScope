@@ -13,6 +13,7 @@ exports[`Login Page > renders Login Page should match the screenshot 1`] = `
         >
           <h1
             class="antialiased text-3xl font-outfitLight -mt-1"
+            data-test-id="login-heading"
           >
             Login
           </h1>
@@ -25,6 +26,7 @@ exports[`Login Page > renders Login Page should match the screenshot 1`] = `
           </p>
           <button
             class="bg-orange hover:bg-white px-2 hover:text-black rounded-md text-base w-full py-4"
+            data-test-id="login-button"
           >
             Login
           </button>
@@ -41,6 +43,7 @@ exports[`Login Page > renders Login Page should match the screenshot 1`] = `
       >
         <h1
           class="antialiased text-3xl font-outfitLight -mt-1"
+          data-test-id="login-heading"
         >
           Login
         </h1>
@@ -53,6 +56,7 @@ exports[`Login Page > renders Login Page should match the screenshot 1`] = `
         </p>
         <button
           class="bg-orange hover:bg-white px-2 hover:text-black rounded-md text-base w-full py-4"
+          data-test-id="login-button"
         >
           Login
         </button>

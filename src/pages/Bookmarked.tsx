@@ -7,10 +7,12 @@ import Heading from "@/components/ui/Heading";
 import ItemCard from "@/components/ui/ItemCard";
 import { fetchBookmark } from "@/redux/bookmarked/bookmarkSlice";
 import { AppDispatch, RootState } from "@/redux/store";
+import Skeleton from "@/components/skeletons/Skeleton";
+import SkeletonGrid from "@/components/skeletons/SkeletonGrid";
 
 const Bookmarked = () => {
   const { loading, bookmarks } = useSelector(
-    (state: RootState) => state.bookmark
+    (state: RootState) => state.bookmark,
   );
   const dispatch = useDispatch<AppDispatch>();
 
@@ -22,7 +24,21 @@ const Bookmarked = () => {
   }, [dispatch]);
 
   return (
-    <PageLayout loading={loading}>
+    <PageLayout
+      loading={loading}
+      skeleton={
+        <>
+          <section>
+            <Skeleton className="h-8 w-56 rounded mt-6" />
+            <SkeletonGrid count={7} />
+          </section>
+          <section>
+            <Skeleton className="h-8 w-56 rounded mt-6" />
+            <SkeletonGrid count={7} />
+          </section>
+        </>
+      }
+    >
       {!loading && (
         <>
           <section>
@@ -35,10 +51,10 @@ const Bookmarked = () => {
                   <ItemCard
                     key={movie.id}
                     id={movie.id}
-                    imgSrc={movie.backdrop_path}
+                    imgSrc={movie.poster_path}
                     releaseDate={movie.release_date?.substring(0, 4)}
                     media_type="movie"
-                    ratings={movie.adult ? "18+" : "PG"}
+                    rating={movie.vote_average}
                     title={movie.title}
                   />
                 ))}
@@ -57,10 +73,10 @@ const Bookmarked = () => {
                   <ItemCard
                     key={tvShow.id}
                     id={tvShow.id}
-                    imgSrc={tvShow.backdrop_path}
+                    imgSrc={tvShow.poster_path}
                     releaseDate={tvShow.first_air_date?.substring(0, 4)}
                     media_type="tv"
-                    ratings={tvShow.adult ? "18+" : "PG"}
+                    rating={tvShow.vote_average}
                     title={tvShow.name}
                   />
                 ))}

@@ -1,4 +1,3 @@
-
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -6,9 +5,11 @@ type TvData = {
   id: number;
   media_type: string;
   backdrop_path: string;
+  poster_path: string;
   release_date: string;
   first_air_date: string;
   adult: boolean;
+  vote_average: number;
   title: string;
   name: string;
 };
@@ -42,7 +43,7 @@ export const fetchTv = createAsyncThunk("tv/fetchTv", async () => {
     };
     const response = await axios.get(
       "https://api.themoviedb.org/3/tv/popular",
-      { params }
+      { params },
     );
     const { page, results, total_pages } = response.data;
     const data = { page, results, total_pages };
@@ -62,7 +63,7 @@ export const tvPagination = createAsyncThunk(
       };
       const response = await axios.get(
         "https://api.themoviedb.org/3/tv/popular",
-        { params }
+        { params },
       );
       const { page, results, total_pages } = response.data;
       const data = { page, results, total_pages };
@@ -70,7 +71,7 @@ export const tvPagination = createAsyncThunk(
     } catch (err) {
       return err;
     }
-  }
+  },
 );
 
 export const tvSlice = createSlice({
@@ -90,7 +91,7 @@ export const tvSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       });
-      builder
+    builder
       .addCase(tvPagination.pending, (state) => {
         state.loading = true;
       })

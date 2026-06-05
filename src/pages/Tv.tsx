@@ -8,6 +8,8 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { fetchTv, tvPagination } from "@/redux/tv/tvSlice";
 import Heading from "@/components/ui/Heading";
 import ReactPagination from "@/components/common/ReactPagination";
+import Skeleton from "@/components/skeletons/Skeleton";
+import SkeletonGrid from "@/components/skeletons/SkeletonGrid";
 
 const Tv: FC = () => {
   const data = useSelector((state: RootState) => state.tv);
@@ -28,8 +30,16 @@ const Tv: FC = () => {
   }, [dispatch]);
 
   return (
-    <PageLayout loading={loading}>
-      <Heading as="h1" className="mt-6">
+    <PageLayout
+      loading={loading}
+      skeleton={
+        <>
+          <Skeleton className="h-9 w-60 rounded" />
+          <SkeletonGrid count={20} />
+        </>
+      }
+    >
+      <Heading as="h1" className="text-orange font-bold">
         Popular TV Shows
       </Heading>
       <GridLayout>
@@ -38,10 +48,10 @@ const Tv: FC = () => {
               <ItemCard
                 key={tvShow.id}
                 id={tvShow.id}
-                imgSrc={tvShow.backdrop_path}
+                imgSrc={tvShow.poster_path}
                 releaseDate={tvShow.first_air_date?.substring(0, 4)}
                 media_type="tv"
-                ratings={tvShow.adult ? "18+" : "PG"}
+                rating={tvShow.vote_average}
                 title={tvShow.name}
               />
             ))

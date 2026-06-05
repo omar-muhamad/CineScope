@@ -12,6 +12,8 @@ import {
   moviesPagination,
 } from "@/redux/movies/moviesSlice";
 import ReactPagination from "@/components/common/ReactPagination";
+import Skeleton from "@/components/skeletons/Skeleton";
+import SkeletonGrid from "@/components/skeletons/SkeletonGrid";
 
 const Movies: FC = () => {
   const data = useSelector((state: RootState) => state.movies);
@@ -20,7 +22,7 @@ const Movies: FC = () => {
   const { loading, movies } = data;
   const { page, total_pages, results } = movies;
 
-  const currentItems = results
+  const currentItems = results;
   const pageCount = total_pages > 100 ? 100 : total_pages;
 
   const handlePageClick = async (event: { selected: number }) => {
@@ -32,8 +34,16 @@ const Movies: FC = () => {
   }, [dispatch]);
 
   return (
-    <PageLayout loading={loading}>
-      <Heading as="h1" className="mt-6">
+    <PageLayout
+      loading={loading}
+      skeleton={
+        <>
+          <Skeleton className="h-9 w-60 rounded" />
+          <SkeletonGrid count={20} />
+        </>
+      }
+    >
+      <Heading as="h1" className="text-orange font-bold">
         Popular Movies
       </Heading>
       <GridLayout>
@@ -42,17 +52,21 @@ const Movies: FC = () => {
               <ItemCard
                 key={movie.id}
                 id={movie.id}
-                imgSrc={movie.backdrop_path}
+                imgSrc={movie.poster_path}
                 releaseDate={movie.release_date?.substring(0, 4)}
                 media_type="movie"
-                ratings={movie.adult ? "18+" : "PG"}
+                rating={movie.vote_average}
                 title={movie.title}
               />
             ))
           : null}
       </GridLayout>
       <div className="pr-6 md:pr-0">
-      <ReactPagination pageCount={pageCount} handlePageClick={handlePageClick} page={page}/>
+        <ReactPagination
+          pageCount={pageCount}
+          handlePageClick={handlePageClick}
+          page={page}
+        />
       </div>
     </PageLayout>
   );

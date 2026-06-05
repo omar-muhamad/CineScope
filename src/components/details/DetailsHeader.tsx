@@ -1,5 +1,6 @@
 import movieTrailer from "movie-trailer";
 import { FC, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { IoCloseCircleOutline } from "react-icons/io5";
 
 import { PiTelevisionSimpleFill } from "react-icons/pi";
@@ -23,6 +24,7 @@ type DetailsHeaderProps = {
     name: string;
   }[];
   posterUrl: string;
+  certification?: string;
   overview: string;
 };
 
@@ -35,10 +37,12 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
   media_type,
   genres,
   imageSrc,
+  certification,
   overview,
 }) => {
   const [trailerUrl, setTrailerUrl] = useState<null | string>(null);
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const handlePlayTrailer = async () => {
     try {
@@ -54,7 +58,18 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
   };
 
   const handleWatchOnline = () => {
-    window.location.replace(`https://vidsrc.me/embed/${media_type}/${id}`);
+    const validMediaTypes = ["movie", "tv"];
+    const isValidId = typeof id === "number" && Number.isInteger(id) && id > 0;
+    const isValidMediaType = validMediaTypes.includes(media_type);
+
+    if (!isValidId || !isValidMediaType) {
+      console.error(
+        "Invalid media type or id provided for watch online navigation.",
+      );
+      return;
+    }
+
+    navigate(`/watch/${media_type}/${id}`);
   };
 
   const handleCloseBtn = () => {
@@ -83,7 +98,7 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
 
         <div
           data-testid="details-poster-image"
-          className="absolute w-full backdrop-blur-[1.5px] z-10 top-0 px-5 md:py-5  h-full flex gap-6"
+          className="absolute w-full backdrop-blur-[1.5px] z-10 top-0 px-16 md:py-5  h-full flex gap-6"
         >
           <div className="h-full hidden md:block">
             <LazyImage
@@ -107,7 +122,7 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
               ))}
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <Text>{release_date}</Text>
               <span>•</span>
               <div className="media-type flex items-center gap-1">
@@ -118,6 +133,14 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
                 )}
                 <Text>{media_type}</Text>
               </div>
+              {certification ? (
+                <>
+                  <span>•</span>
+                  <span className="rounded border border-white/40 px-1.5 text-sm leading-tight">
+                    {certification}
+                  </span>
+                </>
+              ) : null}
             </div>
 
             <div className="w-fit">

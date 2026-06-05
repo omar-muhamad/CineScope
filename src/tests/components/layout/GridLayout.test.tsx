@@ -6,7 +6,7 @@ describe("GridLayout", () => {
     const { container } = render(
       <GridLayout>
         <div />
-      </GridLayout>
+      </GridLayout>,
     );
     expect(container).toBeDefined();
   });
@@ -17,7 +17,7 @@ describe("GridLayout", () => {
         <li>Child 1</li>
         <li>Child 2</li>
         <li>Child 3</li>
-      </GridLayout>
+      </GridLayout>,
     );
     expect(getAllByRole("listitem").length).toBe(3);
   });
@@ -26,10 +26,10 @@ describe("GridLayout", () => {
     const { container } = render(
       <GridLayout>
         <div />
-      </GridLayout>
+      </GridLayout>,
     );
     expect(container.firstChild).toHaveClass(
-      "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+      "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7",
     );
   });
 });

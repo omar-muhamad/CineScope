@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { fetchRecommendations } from "../home/homeSlice";
+import { Episode, Season } from "@/types";
 
 type DetailsData = {
   id: number;
@@ -14,15 +15,28 @@ type DetailsData = {
   genres: { id: number; name: string }[];
   vote_average: number;
   overview: string;
+  seasons?: Season[];
+  number_of_seasons?: number;
+  release_dates?: {
+    results: {
+      iso_3166_1: string;
+      release_dates: { certification: string }[];
+    }[];
+  };
+  content_ratings?: {
+    results: { iso_3166_1: string; rating: string }[];
+  };
 };
 
 type RecommendationsData = {
   id: number;
   media_type: string;
   backdrop_path: string;
+  poster_path: string;
   release_date: string;
   first_air_date: string;
   adult: boolean;
+  vote_average: number;
   title: string;
   name: string;
 };
@@ -31,6 +45,9 @@ interface DataState {
   loading?: boolean;
   details?: DetailsData;
   recommendations?: RecommendationsData[];
+  recommendationsLoading?: boolean;
+  episodes?: Episode[];
+  episodesLoading?: boolean;
   error: string | undefined;
 }
 
@@ -39,6 +56,9 @@ type Param = string | undefined;
 const initialState: DataState = {
   loading: false,
   details: undefined,
+  recommendationsLoading: false,
+  episodes: [],
+  episodesLoading: false,
   error: undefined,
 };
 
@@ -48,16 +68,36 @@ export const fetchDetails = createAsyncThunk(
     try {
       const params = {
         api_key: import.meta.env.VITE_APP_API_KEY,
+        append_to_response:
+          media_type === "tv" ? "content_ratings" : "release_dates",
       };
       const response = await axios.get(
         `https://api.themoviedb.org/3/${media_type}/${id}`,
-        { params }
+        { params },
       );
       return response.data;
     } catch (err) {
       return err;
     }
-  }
+  },
+);
+
+export const fetchSeasonEpisodes = createAsyncThunk(
+  "data/fetchSeasonEpisodes",
+  async ({ id, season_number }: { id: Param; season_number: number }) => {
+    try {
+      const params = {
+        api_key: import.meta.env.VITE_APP_API_KEY,
+      };
+      const response = await axios.get(
+        `https://api.themoviedb.org/3/tv/${id}/season/${season_number}`,
+        { params },
+      );
+      return response.data.episodes;
+    } catch (err) {
+      throw err;
+    }
+  },
 );
 
 export const detailsSlice = createSlice({
@@ -79,14 +119,26 @@ export const detailsSlice = createSlice({
       });
     builder
       .addCase(fetchRecommendations.pending, (state) => {
-        state.loading = true;
+        state.recommendationsLoading = true;
       })
       .addCase(fetchRecommendations.fulfilled, (state, action) => {
-        state.loading = false;
+        state.recommendationsLoading = false;
         state.recommendations = action.payload;
       })
       .addCase(fetchRecommendations.rejected, (state, action) => {
-        state.loading = false;
+        state.recommendationsLoading = false;
+        state.error = action.error.message;
+      });
+    builder
+      .addCase(fetchSeasonEpisodes.pending, (state) => {
+        state.episodesLoading = true;
+      })
+      .addCase(fetchSeasonEpisodes.fulfilled, (state, action) => {
+        state.episodesLoading = false;
+        state.episodes = action.payload;
+      })
+      .addCase(fetchSeasonEpisodes.rejected, (state, action) => {
+        state.episodesLoading = false;
         state.error = action.error.message;
       });
   },
