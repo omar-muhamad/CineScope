@@ -1,12 +1,12 @@
 import { render, screen } from "@testing-library/react";
-import TrendingWrapper from "@/components/home/TrendingWrapper";
+import TrendingWrapper from "@/components/home/TrendingCarousel";
 
 describe("TrendingWrapper", () => {
   it("renders without crashing", () => {
     render(
       <TrendingWrapper>
         <div>Test Child</div>
-      </TrendingWrapper>
+      </TrendingWrapper>,
     );
     expect(screen.getByText("Test Child")).toBeInTheDocument();
   });
@@ -15,10 +15,10 @@ describe("TrendingWrapper", () => {
     render(
       <TrendingWrapper>
         <button>Click Me</button>
-      </TrendingWrapper>
+      </TrendingWrapper>,
     );
     expect(
-      screen.getByRole("button", { name: "Click Me" })
+      screen.getByRole("button", { name: "Click Me" }),
     ).toBeInTheDocument();
   });
 
@@ -26,14 +26,24 @@ describe("TrendingWrapper", () => {
     render(
       <TrendingWrapper>
         <div>Styling Test</div>
-      </TrendingWrapper>
+      </TrendingWrapper>,
     );
-    const wrapperDiv = screen.getByText("Styling Test").parentNode?.parentNode;
-    expect(wrapperDiv).toHaveClass(
-      "w-full overflow-x-scroll no-scrollbar mt-6"
+    const list = screen.getByText("Styling Test").parentNode;
+    expect(list).toHaveClass(
+      "flex gap-4 overflow-x-scroll no-scrollbar scroll-smooth",
     );
-    expect(wrapperDiv?.firstChild).toHaveClass(
-      "carousel flex gap-6 animate-slide"
+    expect(list?.parentNode).toHaveClass("relative w-full mt-6");
+  });
+
+  it("renders previous and next carousel controls", () => {
+    render(
+      <TrendingWrapper>
+        <div>Styling Test</div>
+      </TrendingWrapper>,
     );
+    expect(
+      screen.getByRole("button", { name: "Previous" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Next" })).toBeInTheDocument();
   });
 });

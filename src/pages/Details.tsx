@@ -9,13 +9,15 @@ import GridLayout from "@/components/layout/GridLayout";
 import { fetchRecommendations } from "@/redux/home/homeSlice";
 import ItemCard from "@/components/ui/ItemCard";
 import Heading from "@/components/ui/Heading";
-import Loading from "@/components/common/Loading";
+import SkeletonDetailsHeader from "@/components/skeletons/SkeletonDetailsHeader";
+import SkeletonGrid from "@/components/skeletons/SkeletonGrid";
+import { getCertification } from "@/lib/ratings";
 
 const Details: FC = () => {
   const data = useSelector((state: RootState) => state.details);
   const dispatch = useDispatch<AppDispatch>();
 
-  const { loading, details, recommendations } = data;
+  const { loading, details, recommendations, recommendationsLoading } = data;
   const { media_type, id } = useParams();
 
   useEffect(() => {
@@ -29,57 +31,60 @@ const Details: FC = () => {
   }, [dispatch, id, media_type]);
 
   return (
-    <main className="w-full md:w-[calc(100%-8rem)] pb-6 md:ml-32 md:pl-0">
-      {loading ? (
-        <Loading />
-      ) : (
-        <>
-          <div>
-            {!loading && details ? (
-              <DetailsHeader
-                id={details.id}
-                posterUrl={details.poster_path}
-                title={media_type === "movie" ? details.title : details.name}
-                imageSrc={details.backdrop_path}
-                release_date={
-                  media_type === "movie"
-                    ? details.release_date?.substring(0, 4)
-                    : details.first_air_date?.substring(0, 4)
-                }
-                media_type={media_type === "movie" ? "movie" : "tv"}
-                genres={details.genres}
-                rating={details.vote_average}
-                overview={details.overview}
-              />
-            ) : null}
-          </div>
-          <section className="pl-6 md:pl-0">
-            <Heading as="h2">Recommendations</Heading>
-            <GridLayout>
-              {!loading && recommendations && recommendations.length !== 0
-                ? recommendations.map((item) => {
-                    const movie = item.media_type === "movie";
-                    return (
-                      <ItemCard
-                        key={item.id}
-                        id={item.id}
-                        imgSrc={item.backdrop_path}
-                        releaseDate={
-                          movie
-                            ? item.release_date?.substring(0, 4)
-                            : item.first_air_date?.substring(0, 4)
-                        }
-                        media_type={movie ? "movie" : "tv"}
-                        ratings={item.adult ? "18+" : "PG"}
-                        title={movie ? item.title : item.name}
-                      />
-                    );
-                  })
-                : null}
-            </GridLayout>
-          </section>
-        </>
-      )}
+    <main className="w-full pb-6">
+      <div>
+        {loading ? (
+          <SkeletonDetailsHeader />
+        ) : details ? (
+          <DetailsHeader
+            id={details.id}
+            posterUrl={details.poster_path}
+            title={media_type === "movie" ? details.title : details.name}
+            imageSrc={details.backdrop_path}
+            release_date={
+              media_type === "movie"
+                ? details.release_date?.substring(0, 4)
+                : details.first_air_date?.substring(0, 4)
+            }
+            media_type={media_type === "movie" ? "movie" : "tv"}
+            genres={details.genres}
+            rating={details.vote_average}
+            certification={getCertification(details, media_type)}
+            overview={details.overview}
+          />
+        ) : null}
+      </div>
+      <section className="px-16 mt-10">
+        <Heading as="h2" className="text-orange font-bold">
+          Recommendations
+        </Heading>
+        {loading || recommendationsLoading ? (
+          <SkeletonGrid count={14} />
+        ) : (
+          <GridLayout>
+            {recommendations && recommendations.length !== 0
+              ? recommendations.map((item) => {
+                  const movie = item.media_type === "movie";
+                  return (
+                    <ItemCard
+                      key={item.id}
+                      id={item.id}
+                      imgSrc={item.poster_path}
+                      releaseDate={
+                        movie
+                          ? item.release_date?.substring(0, 4)
+                          : item.first_air_date?.substring(0, 4)
+                      }
+                      media_type={movie ? "movie" : "tv"}
+                      rating={item.vote_average}
+                      title={movie ? item.title : item.name}
+                    />
+                  );
+                })
+              : null}
+          </GridLayout>
+        )}
+      </section>
     </main>
   );
 };

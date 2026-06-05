@@ -16,6 +16,7 @@ describe("SearchResults", () => {
           id: 1,
           media_type: "movie",
           backdrop_path: "backdrop_path",
+          poster_path: "poster_path",
           release_date: "2021-01-01",
           adult: false,
           title: "title",
@@ -25,14 +26,13 @@ describe("SearchResults", () => {
     error: "",
   };
 
-
   it("renders without crashing", () => {
     render(
       <Provider store={store}>
         <BrowserRouter>
           <SearchResults data={data} />
         </BrowserRouter>
-      </Provider>
+      </Provider>,
     );
   });
 });

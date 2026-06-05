@@ -22,11 +22,11 @@
 }
 
 body {
-  background-color: #10141E;
+  background-color: #10141e;
 }
 
 #root {
-  background-color: #10141E;
+  background-color: #10141e;
 }
 
 @media (max-width: 768px) {
@@ -48,8 +48,4 @@ body {
   transition: stroke-dashoffset 0.35s;
   transform: rotate(-90deg);
   transform-origin: 50% 50%;
-}
-
-.carousel:hover {
-  animation-play-state: paused;
 }
