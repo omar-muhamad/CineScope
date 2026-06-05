@@ -74,13 +74,9 @@ export const fetchTrendingTv = createAsyncThunk(
         api_key: import.meta.env.VITE_APP_API_KEY,
         language: "en-US",
       };
-      const response = await axios.get(
-        "https://api.themoviedb.org/3/trending/tv/week",
-        { params },
-      );
       return response.data.results;
     } catch (err) {
-      return err;
+      throw err;
     }
   },
 );
