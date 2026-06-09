@@ -18,6 +18,7 @@ describe("DetailsHeader", () => {
       { id: 2, name: "Adventure" },
     ],
     posterUrl: "testPosterUrl.jpg",
+    trailerKey: "dQw4w9WgXcQ",
     overview: "Test overview",
   };
 
@@ -27,7 +28,7 @@ describe("DetailsHeader", () => {
         <MemoryRouter>
           <DetailsHeader {...defaultProps} />
         </MemoryRouter>
-      </Provider>
+      </Provider>,
     );
     expect(screen.getByTestId("details-poster-image")).toBeInTheDocument();
     expect(screen.getByTestId("details-rating")).toBeInTheDocument();

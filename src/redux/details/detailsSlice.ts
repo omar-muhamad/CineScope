@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { fetchRecommendations } from "../home/homeSlice";
-import { Episode, Season } from "@/types";
+import { Episode, Season, Video } from "@/types";
 
 type DetailsData = {
   id: number;
@@ -25,6 +25,9 @@ type DetailsData = {
   };
   content_ratings?: {
     results: { iso_3166_1: string; rating: string }[];
+  };
+  videos?: {
+    results: Video[];
   };
 };
 
@@ -69,7 +72,9 @@ export const fetchDetails = createAsyncThunk(
       const params = {
         api_key: import.meta.env.VITE_APP_API_KEY,
         append_to_response:
-          media_type === "tv" ? "content_ratings" : "release_dates",
+          media_type === "tv"
+            ? "content_ratings,videos"
+            : "release_dates,videos",
       };
       const response = await axios.get(
         `https://api.themoviedb.org/3/${media_type}/${id}`,

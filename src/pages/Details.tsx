@@ -12,6 +12,7 @@ import Heading from "@/components/ui/Heading";
 import SkeletonDetailsHeader from "@/components/skeletons/SkeletonDetailsHeader";
 import SkeletonGrid from "@/components/skeletons/SkeletonGrid";
 import { getCertification } from "@/lib/ratings";
+import { getTrailerKey } from "@/lib/trailers";
 
 const Details: FC = () => {
   const data = useSelector((state: RootState) => state.details);
@@ -50,6 +51,7 @@ const Details: FC = () => {
             genres={details.genres}
             rating={details.vote_average}
             certification={getCertification(details, media_type)}
+            trailerKey={getTrailerKey(details)}
             overview={details.overview}
           />
         ) : null}

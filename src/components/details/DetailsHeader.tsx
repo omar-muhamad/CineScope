@@ -1,4 +1,3 @@
-import movieTrailer from "movie-trailer";
 import { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoCloseCircleOutline } from "react-icons/io5";
@@ -25,6 +24,7 @@ type DetailsHeaderProps = {
   }[];
   posterUrl: string;
   certification?: string;
+  trailerKey: string | null;
   overview: string;
 };
 
@@ -38,23 +38,20 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
   genres,
   imageSrc,
   certification,
+  trailerKey,
   overview,
 }) => {
   const [trailerUrl, setTrailerUrl] = useState<null | string>(null);
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const handlePlayTrailer = async () => {
-    try {
-      const url = await movieTrailer(title || "top 10 movies 2024");
-      if (url !== null && url !== "") {
-        const embedUrl = `https://youtube.com/embed/${url.split("v=")[1]}`;
-        setTrailerUrl(embedUrl);
-      }
-      setIsModalOpened(true);
-    } catch {
-      setTrailerUrl(null);
+  const handlePlayTrailer = () => {
+    if (trailerKey) {
+      setTrailerUrl(
+        `https://www.youtube.com/embed/${trailerKey}?autoplay=1&rel=0`,
+      );
     }
+    setIsModalOpened(true);
   };
 
   const handleWatchOnline = () => {

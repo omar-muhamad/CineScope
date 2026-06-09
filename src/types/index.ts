@@ -7,6 +7,17 @@ export type Season = {
   air_date: string | null;
 };
 
+export type Video = {
+  id: string;
+  key: string;
+  name: string;
+  site: string;
+  type: string;
+  official: boolean;
+  iso_639_1: string;
+  published_at: string;
+};
+
 export type Episode = {
   id: number;
   episode_number: number;
