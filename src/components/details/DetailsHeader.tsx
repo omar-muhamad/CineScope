@@ -15,6 +15,7 @@ type DetailsHeaderProps = {
   id: number;
   title: string;
   rating: number;
+  imdbRating?: string | null;
   release_date: string;
   media_type: string;
   imageSrc: string;
@@ -33,6 +34,7 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
   posterUrl,
   title,
   rating,
+  imdbRating,
   release_date,
   media_type,
   genres,
@@ -103,8 +105,18 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
             />
 
             <div className="w-fit">
-              <div data-testid="details-rating" className="mt-2 flex gap-2">
+              <div
+                data-testid="details-rating"
+                className="mt-2 flex items-center gap-2"
+              >
                 <PercentageCircle rating={rating * 10} />
+                {imdbRating && (
+                  <PercentageCircle
+                    rating={Number(imdbRating) * 10}
+                    className="text-[#F5C518]"
+                  />
+                )}
+
                 <div className="h-10 w-10">
                   <BookMark
                     id={id}
@@ -112,14 +124,18 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
                     className="w-full h-full"
                   />
                 </div>
-                <PlayButton onClick={openTrailer}>Trailer</PlayButton>
               </div>
+             <div className="mt-3 flex gap-2">
+               <PlayButton className="h-10" onClick={openTrailer}>
+                Trailer
+              </PlayButton>
               <PlayButton
-                className="w-full h-10 mt-2"
+                className="w-full h-10"
                 onClick={handleWatchOnline}
               >
                 Watch Online
               </PlayButton>
+             </div>
             </div>
 
             <div className="hidden md:block mt-2 max-w-[50vw]">

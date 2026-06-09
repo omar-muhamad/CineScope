@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import { AppDispatch, RootState } from "@/redux/store";
-import { fetchDetails } from "@/redux/details/detailsSlice";
+import { fetchDetails, fetchImdbRating } from "@/redux/details/detailsSlice";
 import DetailsHeader from "@/components/details/DetailsHeader";
 import GridLayout from "@/components/layout/GridLayout";
 import { fetchRecommendations } from "@/redux/home/homeSlice";
@@ -18,7 +18,13 @@ const Details: FC = () => {
   const data = useSelector((state: RootState) => state.details);
   const dispatch = useDispatch<AppDispatch>();
 
-  const { loading, details, recommendations, recommendationsLoading } = data;
+  const {
+    loading,
+    details,
+    recommendations,
+    recommendationsLoading,
+    imdbRating,
+  } = data;
   const { media_type, id } = useParams();
 
   useEffect(() => {
@@ -27,6 +33,10 @@ const Details: FC = () => {
         const detailsData = data.payload;
         const { id } = detailsData;
         dispatch(fetchRecommendations({ id, media_type }));
+
+        const imdb_id =
+          detailsData.external_ids?.imdb_id ?? detailsData.imdb_id;
+        if (imdb_id) dispatch(fetchImdbRating({ imdb_id }));
       }
     });
   }, [dispatch, id, media_type]);
@@ -50,6 +60,7 @@ const Details: FC = () => {
             media_type={media_type === "movie" ? "movie" : "tv"}
             genres={details.genres}
             rating={details.vote_average}
+            imdbRating={imdbRating}
             certification={getCertification(details, media_type)}
             trailerKey={getTrailerKey(details)}
             overview={details.overview}
