@@ -11,6 +11,7 @@ import {
 } from "@/api/tmdb";
 import { queryKeys } from "@/lib/queryKeys";
 import { useAuth } from "@/auth/useAuth";
+import type { MediaItem } from "@/types";
 
 /** The signed-in user's full favorites list. Disabled without a TMDB account. */
 export const useFavorites = () => {
@@ -50,13 +51,18 @@ export type ToggleVars = { mediaType: MediaType; id: number; next: boolean };
 type ToggleContext = {
   statesKey: ReturnType<typeof queryKeys.accountStates>;
   previous: AccountStates | undefined;
+  listKey: readonly unknown[];
+  previousList: MediaItem[] | undefined;
 };
 
 /**
  * Shared toggle factory for favorite / watch-later. Optimistically flips the
- * cached account-states for the title (so the icon updates instantly), rolls
- * back on error, and on settle invalidates BOTH the per-title account-states
- * AND the relevant full list so the list pages stay in sync.
+ * cached account-states for the title (so the icon updates instantly) and, when
+ * removing, drops the item from the cached list page immediately (matching the
+ * old slice's local filter, so an unfavorited title doesn't briefly reappear if
+ * TMDB's list endpoint lags). Rolls both back on error, and on settle
+ * invalidates BOTH the per-title account-states AND the list to reconcile with
+ * the server.
  */
 const useToggle = (kind: "favorite" | "watchlist") => {
   const { tmdb } = useAuth();
@@ -77,17 +83,34 @@ const useToggle = (kind: "favorite" | "watchlist") => {
         id,
         tmdb?.session_id,
       );
-      await qc.cancelQueries({ queryKey: statesKey });
+      const key = listKey();
+      await Promise.all([
+        qc.cancelQueries({ queryKey: statesKey }),
+        qc.cancelQueries({ queryKey: key }),
+      ]);
+
       const previous = qc.getQueryData<AccountStates>(statesKey);
       const optimistic: AccountStates = {
         favorite: kind === "favorite" ? next : (previous?.favorite ?? false),
         watchlist: kind === "watchlist" ? next : (previous?.watchlist ?? false),
       };
       qc.setQueryData<AccountStates>(statesKey, optimistic);
-      return { statesKey, previous };
+
+      // When removing, drop it from the cached list right away.
+      const previousList = qc.getQueryData<MediaItem[]>(key);
+      if (!next && previousList) {
+        qc.setQueryData<MediaItem[]>(
+          key,
+          previousList.filter((item) => item.id !== id),
+        );
+      }
+
+      return { statesKey, previous, listKey: key, previousList };
     },
     onError: (_err, _vars, context) => {
-      if (context) qc.setQueryData(context.statesKey, context.previous);
+      if (!context) return;
+      qc.setQueryData(context.statesKey, context.previous);
+      qc.setQueryData(context.listKey, context.previousList);
     },
     onSettled: (_data, _err, { mediaType, id }) => {
       qc.invalidateQueries({
