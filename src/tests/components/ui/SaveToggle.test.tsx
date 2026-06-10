@@ -1,49 +1,57 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 
 import SaveToggle from "@/components/ui/SaveToggle";
-import {
-  googleUser,
-  renderWithProviders,
-  tmdbAccount,
-} from "@/tests/test-utils";
+import type { MediaItem } from "@/types";
+import { renderWithProviders, testSession } from "@/tests/test-utils";
 
-const { getAccountStatesMock, setFavoriteMock } = vi.hoisted(() => ({
-  getAccountStatesMock: vi.fn(),
-  setFavoriteMock: vi.fn(),
-}));
+const { fetchFavoritesMock, fetchWatchlistMock, addSavedMock } = vi.hoisted(
+  () => ({
+    fetchFavoritesMock: vi.fn(),
+    fetchWatchlistMock: vi.fn(),
+    addSavedMock: vi.fn(),
+  }),
+);
 
-vi.mock("@/api/tmdb", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/api/tmdb")>();
+vi.mock("@/api/saved", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/api/saved")>();
   return {
     ...actual,
-    getAccountStates: getAccountStatesMock,
-    setFavorite: setFavoriteMock,
+    fetchFavorites: fetchFavoritesMock,
+    fetchWatchlist: fetchWatchlistMock,
+    addSaved: addSavedMock,
   };
 });
 
+const meta = {
+  title: "Fav",
+  poster_path: "p",
+  release_date: "2024",
+  vote_average: 7,
+};
+
 const renderToggle = () =>
   renderWithProviders(
-    <SaveToggle id={1} media_type="movie" kind="favorite" />,
-    {
-      auth: { google: googleUser, tmdb: tmdbAccount },
-    },
+    <SaveToggle id={1} media_type="movie" kind="favorite" meta={meta} />,
+    { session: testSession },
   );
 
 beforeEach(() => {
-  getAccountStatesMock.mockReset();
-  setFavoriteMock.mockReset();
+  fetchFavoritesMock.mockReset();
+  fetchWatchlistMock.mockReset();
+  addSavedMock.mockReset();
+  fetchWatchlistMock.mockResolvedValue([]);
 });
 
 describe("SaveToggle", () => {
   it("optimistically marks the title as favorited and persists on success", async () => {
-    // The mock server mirrors whatever setFavorite writes.
-    let serverFavorite = false;
-    getAccountStatesMock.mockImplementation(() =>
-      Promise.resolve({ favorite: serverFavorite, watchlist: false }),
+    // The mock server mirrors whatever addSaved writes.
+    let favorites: MediaItem[] = [];
+    fetchFavoritesMock.mockImplementation(() =>
+      Promise.resolve([...favorites]),
     );
-    setFavoriteMock.mockImplementation((_a, _s, _m, _id, favorite: boolean) => {
-      serverFavorite = favorite;
-      return Promise.resolve({});
+    addSavedMock.mockImplementation((_listType, _mediaType, id: number) => {
+      favorites = [{ id, media_type: "movie", title: "Fav" }];
+      return Promise.resolve();
     });
 
     renderToggle();
@@ -55,21 +63,17 @@ describe("SaveToggle", () => {
     fireEvent.click(button);
 
     await waitFor(() => expect(button).toHaveAttribute("aria-pressed", "true"));
-    expect(setFavoriteMock).toHaveBeenCalledWith(
-      tmdbAccount.account_id,
-      tmdbAccount.session_id,
+    expect(addSavedMock).toHaveBeenCalledWith(
+      "favorite",
       "movie",
       1,
-      true,
+      expect.objectContaining({ title: "Fav" }),
     );
   });
 
   it("rolls back when the toggle request fails", async () => {
-    getAccountStatesMock.mockResolvedValue({
-      favorite: false,
-      watchlist: false,
-    });
-    setFavoriteMock.mockRejectedValue(new Error("network down"));
+    fetchFavoritesMock.mockResolvedValue([]);
+    addSavedMock.mockRejectedValue(new Error("network down"));
 
     renderToggle();
     const button = await screen.findByRole("button");
@@ -79,7 +83,7 @@ describe("SaveToggle", () => {
 
     fireEvent.click(button);
 
-    await waitFor(() => expect(setFavoriteMock).toHaveBeenCalled());
+    await waitFor(() => expect(addSavedMock).toHaveBeenCalled());
     // After the failed write settles, the optimistic flip is reverted.
     await waitFor(() =>
       expect(button).toHaveAttribute("aria-pressed", "false"),

@@ -30,13 +30,13 @@ const MobileMenu: FC<MobileMenuProps> = ({
   isLogged,
   onClose,
 }) => {
-  const { logout } = useAuth();
+  const { signOut } = useAuth();
   const navigate = useNavigate();
 
   const handleAuth = async () => {
     onClose();
     if (isLogged) {
-      await logout();
+      await signOut();
       navigate("/", { replace: true });
     } else {
       navigate("/login");

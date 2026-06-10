@@ -34,7 +34,16 @@ const ItemCard: FC<ItemCardProps> = ({
       <div className="group/card relative w-full">
         <NavLink to={media_type === "movie" ? `/movie/${id}` : `/tv/${id}`}>
           <div className="absolute z-10 inset-0 opacity-0 hover:opacity-100 hover:duration-300 bg-[#00000070] backdrop-blur-[2px] flex flex-col gap-3 justify-center items-center">
-            <SaveActions id={id} media_type={media_type} />
+            <SaveActions
+              id={id}
+              media_type={media_type}
+              meta={{
+                title,
+                poster_path: imgSrc,
+                release_date: releaseDate,
+                vote_average: rating,
+              }}
+            />
             <Text
               size="sm"
               className="bg-white/70 text-black py-2 px-3 rounded-full"

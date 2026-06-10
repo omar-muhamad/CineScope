@@ -11,11 +11,10 @@ import Favorites from "./pages/Favorites";
 import WatchLater from "./pages/WatchLater";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
-import AuthTmdbCallback from "./pages/AuthTmdbCallback";
 import RequireAuth from "./components/common/RequireAuth";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 
-const AUTH_ROUTES = ["/login", "/auth/tmdb/callback"];
+const AUTH_ROUTES = ["/login"];
 
 function App() {
   const { pathname } = useLocation();
@@ -37,7 +36,7 @@ function App() {
           <Route
             path="/favorites"
             element={
-              <RequireAuth requireTmdb>
+              <RequireAuth>
                 <Favorites />
               </RequireAuth>
             }
@@ -45,13 +44,12 @@ function App() {
           <Route
             path="/watch-later"
             element={
-              <RequireAuth requireTmdb>
+              <RequireAuth>
                 <WatchLater />
               </RequireAuth>
             }
           />
           <Route path="/login" element={<Login />} />
-          <Route path="/auth/tmdb/callback" element={<AuthTmdbCallback />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </ErrorBoundary>

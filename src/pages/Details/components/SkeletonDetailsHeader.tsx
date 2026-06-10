@@ -9,7 +9,7 @@ import Skeleton from "@/components/skeletons/Skeleton";
  */
 const SkeletonDetailsHeader: FC = () => {
   return (
-    <section className="relative w-full h-[25vh] md:h-[450px]">
+    <section className="relative w-full h-[25vh] md:h-112.5">
       <div className="absolute w-full z-10 top-0 px-16 md:py-5 h-full flex gap-6">
         <div className="h-full hidden md:block">
           <Skeleton className="h-full aspect-2/3 rounded-xl" />

@@ -1,23 +1,17 @@
 import { createContext } from "react";
-
-import type { GoogleUser } from "@/lib/jwt";
-import type { TmdbAccount } from "@/lib/tmdbAuth";
+import type { Session, User } from "@supabase/supabase-js";
 
 export type AuthContextValue = {
-  /** Identity from Google OAuth — who the user is, and the app login gate. */
-  google: GoogleUser | null;
-  /** The user's own linked TMDB account/session — powers their lists. */
-  tmdb: TmdbAccount | null;
-  /** True while a TMDB session is being exchanged. */
+  /** The signed-in Supabase user (Google identity), or null when logged out. */
+  user: User | null;
+  /** The full Supabase session (token used by RLS), or null when logged out. */
+  session: Session | null;
+  /** True until the initial session lookup resolves. */
   loading: boolean;
-  error: string | null;
-  /** Decode a Google credential, persist it, and re-link any TMDB account. */
-  signIn: (credential: string) => void;
-  /** Exchange an approved TMDB request token for a session and link it. */
-  connectTmdb: (requestToken: string) => void;
-  /** Revoke the TMDB session, clear stored identity, and reset cached data. */
-  logout: () => Promise<void>;
-  clearError: () => void;
+  /** Start the Google OAuth redirect flow. */
+  signIn: () => Promise<void>;
+  /** Sign out and clear cached per-user data. */
+  signOut: () => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthContextValue | null>(null);

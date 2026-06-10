@@ -75,8 +75,20 @@ const TrendingCard: FC<TrendingCardProps> = ({
         </div>
 
         <div className="absolute inset-0 rounded-lg opacity-0 hover:opacity-100 hover:duration-300 group-hover/card:opacity-100 bg-[#00000070] backdrop-blur-[2px] flex flex-col gap-3 justify-center items-center">
-          <SaveActions id={id} media_type={media_type} />
-          <Text size="sm" className="bg-white/70 text-black py-2 px-3 rounded-full">
+          <SaveActions
+            id={id}
+            media_type={media_type}
+            meta={{
+              title,
+              poster_path: imgSrc,
+              release_date: releaseDate,
+              vote_average: rating,
+            }}
+          />
+          <Text
+            size="sm"
+            className="bg-white/70 text-black py-2 px-3 rounded-full"
+          >
             See Details
           </Text>
         </div>

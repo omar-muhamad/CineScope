@@ -1,17 +1,11 @@
 import { screen, fireEvent } from "@testing-library/react";
 
 import UserCard from "@/components/ui/UserCard";
-import {
-  googleUser,
-  renderWithProviders,
-  tmdbAccount,
-} from "@/tests/test-utils";
+import { renderWithProviders, testSession } from "@/tests/test-utils";
 
 describe("UserCard", () => {
   it("greets the signed-in user by first name", () => {
-    renderWithProviders(<UserCard />, {
-      auth: { google: googleUser, tmdb: tmdbAccount },
-    });
+    renderWithProviders(<UserCard />, { session: testSession });
     expect(screen.getByText("Hi, Omar!")).toBeInTheDocument();
   });
 
@@ -21,9 +15,7 @@ describe("UserCard", () => {
   });
 
   it('shows the "Logout" button when signed in', () => {
-    renderWithProviders(<UserCard />, {
-      auth: { google: googleUser, tmdb: tmdbAccount },
-    });
+    renderWithProviders(<UserCard />, { session: testSession });
     expect(screen.getByText("Logout")).toBeInTheDocument();
   });
 
@@ -32,13 +24,8 @@ describe("UserCard", () => {
     expect(screen.getByText("Login")).toBeInTheDocument();
   });
 
-  it("prompts to connect TMDB when Google is linked but TMDB is not", () => {
-    renderWithProviders(<UserCard />, { auth: { google: googleUser } });
-    expect(screen.getByText("Connect TMDB account")).toBeInTheDocument();
-  });
-
   it("returns to a signed-out state after logout", async () => {
-    renderWithProviders(<UserCard />, { auth: { google: googleUser } });
+    renderWithProviders(<UserCard />, { session: testSession });
     fireEvent.click(screen.getByText("Logout"));
     expect(await screen.findByText("Login")).toBeInTheDocument();
   });

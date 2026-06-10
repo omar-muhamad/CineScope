@@ -43,7 +43,7 @@ const SeasonSelector: FC<SeasonSelectorProps> = ({
   };
 
   return (
-    <div ref={containerRef} className="relative w-full md:w-[350px]">
+    <div ref={containerRef} className="relative w-full md:w-87.5">
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}

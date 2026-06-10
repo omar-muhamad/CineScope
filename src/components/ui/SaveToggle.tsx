@@ -7,10 +7,10 @@ import {
   IoTimeOutline,
 } from "react-icons/io5";
 
-import { type MediaType } from "@/api/tmdb";
+import { type MediaType, type SavedMeta } from "@/api/saved";
 import { useAuth } from "@/auth/useAuth";
 import {
-  useAccountStates,
+  useSavedState,
   useToggleFavorite,
   useToggleWatchlist,
 } from "@/queries/useBookmarks";
@@ -21,6 +21,8 @@ type SaveToggleProps = {
   id: number;
   media_type: string;
   kind: SaveKind;
+  /** Card metadata stored on add so saved pages render without re-hitting TMDB. */
+  meta?: SavedMeta;
   className?: string;
 };
 
@@ -36,36 +38,32 @@ const SaveToggle: FC<SaveToggleProps> = ({
   id,
   media_type,
   kind,
+  meta,
   className,
 }) => {
   const navigate = useNavigate();
-  const { google, tmdb } = useAuth();
+  const { user } = useAuth();
 
   const mediaType = media_type as MediaType;
 
-  // Current favorite/watchlist status, fetched once per title and shared with
-  // the sibling toggle. Optimistic updates flow through this cache entry.
-  const { data: states } = useAccountStates(mediaType, id);
+  // Current favorite/watchlist status, derived from the cached list (no
+  // per-title request). Optimistic updates flow through that list cache.
+  const { active } = useSavedState(kind, mediaType, id);
   const toggleFavorite = useToggleFavorite();
   const toggleWatchlist = useToggleWatchlist();
-
-  const active =
-    kind === "favorite"
-      ? Boolean(states?.favorite)
-      : Boolean(states?.watchlist);
 
   const handleClick = (event: MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
 
-    // Not authenticated (or no TMDB linked) → route to the login/connect flow.
-    if (!google || !tmdb) {
+    // Not signed in → route to the login flow.
+    if (!user) {
       navigate("/login");
       return;
     }
 
     // Optimistic flip + rollback-on-error are handled inside the mutation.
-    const vars = { mediaType, id, next: !active };
+    const vars = { mediaType, id, next: !active, meta: meta ?? {} };
     if (kind === "favorite") {
       toggleFavorite.mutate(vars);
     } else {
@@ -74,7 +72,7 @@ const SaveToggle: FC<SaveToggleProps> = ({
   };
 
   const { on: OnIcon, off: OffIcon, label } = ICONS[kind];
-  const loggedIn = Boolean(google);
+  const loggedIn = Boolean(user);
 
   // Logged out: render a non-interactive, disabled-looking toggle with a
   // hover tooltip explaining why. This branch only ever shows on the details

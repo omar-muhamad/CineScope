@@ -1,8 +1,8 @@
 import type { MediaType } from "@/lib/tmdb";
 
 /**
- * Central factory for every query key. Account-scoped keys include the
- * account/session id so a login or logout naturally swaps the cached data.
+ * Central factory for every query key. User-scoped keys include the Supabase
+ * user id so a login or logout naturally swaps the cached data.
  */
 export const queryKeys = {
   trending: (scope: "all" | "movie" | "tv") => ["trending", scope] as const,
@@ -19,13 +19,6 @@ export const queryKeys = {
     ["imdbRating", imdbId] as const,
   episodes: (id: string | undefined, season: number) =>
     ["episodes", id, season] as const,
-  favorites: (accountId: number | undefined) =>
-    ["favorites", accountId] as const,
-  watchlist: (accountId: number | undefined) =>
-    ["watchlist", accountId] as const,
-  accountStates: (
-    mediaType: MediaType,
-    id: number,
-    sessionId: string | undefined,
-  ) => ["accountStates", mediaType, id, sessionId] as const,
+  favorites: (userId: string | undefined) => ["favorites", userId] as const,
+  watchlist: (userId: string | undefined) => ["watchlist", userId] as const,
 };

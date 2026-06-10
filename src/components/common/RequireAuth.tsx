@@ -9,8 +9,6 @@ import Button from "../ui/Button";
 
 type RequireAuthProps = {
   children: React.ReactNode;
-  /** Also require a linked TMDB account (for pages backed by TMDB lists). */
-  requireTmdb?: boolean;
 };
 
 type GateProps = {
@@ -39,25 +37,19 @@ const Gate: FC<GateProps> = ({ title, subtitle, actionLabel }) => {
   );
 };
 
-const RequireAuth: FC<RequireAuthProps> = ({ children, requireTmdb }) => {
-  const { google, tmdb } = useAuth();
+const RequireAuth: FC<RequireAuthProps> = ({ children }) => {
+  const { user, loading } = useAuth();
 
-  if (!google) {
+  // Session rehydration (getSession) is async, so wait for it before deciding —
+  // otherwise a logged-in user briefly sees the gate flash on a hard refresh.
+  if (loading) return null;
+
+  if (!user) {
     return (
       <Gate
         title="Page content is protected"
         subtitle="Please Login First"
         actionLabel="Login"
-      />
-    );
-  }
-
-  if (requireTmdb && !tmdb) {
-    return (
-      <Gate
-        title="Connect your TMDB account"
-        subtitle="Link your TMDB account to use your bookmarks and watch-later list."
-        actionLabel="Connect TMDB"
       />
     );
   }

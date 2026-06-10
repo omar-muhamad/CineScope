@@ -41,7 +41,7 @@ const TrailerModal: FC<TrailerModalProps> = ({ trailerUrl, onClose }) => {
 
   return (
     <div className={overlayClassName}>
-      <div className="relative w-[320px] h-[200px] md:w-[640px] md:h-[360px] lg:w-[854px] lg:h-[480px]">
+      <div className="relative w-[320px] h-50 md:w-160 md:h-90 lg:w-213.5 lg:h-120">
         <button
           className="absolute text-4xl -right-5 -top-8 md:-right-10 md:-top-10  hover:text-red-500 z-30"
           onClick={onClose}

@@ -23,11 +23,12 @@ const MOBILE_MENU_ID = "mobile-menu";
 const Navbar: FC = () => {
   const [isUserIconClicked, setIsUserIconClicked] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { google, tmdb } = useAuth();
-  const isLogged = Boolean(google);
+  const { user } = useAuth();
+  const isLogged = Boolean(user);
   const avatarUrl =
-    google?.picture ||
-    (tmdb?.avatarHash ? `https://gravatar.com/avatar/${tmdb.avatarHash}` : "");
+    (user?.user_metadata?.avatar_url as string | undefined) ||
+    (user?.user_metadata?.picture as string | undefined) ||
+    "";
 
   const handleClick = () => {
     setIsUserIconClicked(!isUserIconClicked);

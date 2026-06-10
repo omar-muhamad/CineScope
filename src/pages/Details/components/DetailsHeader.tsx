@@ -50,6 +50,15 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
 
   const topGenres = genres?.slice(0, 3) ?? [];
 
+  // Persisted with the title when it's added to favorites / watch-later, so the
+  // saved pages render without re-fetching from TMDB.
+  const saveMeta = {
+    title,
+    poster_path: posterUrl,
+    release_date,
+    vote_average: rating,
+  };
+
   const handleWatchOnline = () => {
     const validMediaTypes = ["movie", "tv"];
     const isValidId = typeof id === "number" && Number.isInteger(id) && id > 0;
@@ -122,6 +131,7 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
                   <BookMark
                     id={id}
                     media_type={media_type}
+                    meta={saveMeta}
                     className="w-full h-full"
                   />
                 </div>
@@ -129,6 +139,7 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
                   <WatchLater
                     id={id}
                     media_type={media_type}
+                    meta={saveMeta}
                     className="w-full h-full"
                   />
                 </div>

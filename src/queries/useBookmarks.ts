@@ -1,121 +1,129 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
+  addSaved,
   fetchFavorites,
   fetchWatchlist,
-  getAccountStates,
-  setFavorite,
-  setWatchlist,
-  type AccountStates,
+  removeSaved,
+  type ListType,
   type MediaType,
-} from "@/api/tmdb";
+  type SavedMeta,
+} from "@/api/saved";
 import { queryKeys } from "@/lib/queryKeys";
 import { useAuth } from "@/auth/useAuth";
 import type { MediaItem } from "@/types";
 
-/** The signed-in user's full favorites list. Disabled without a TMDB account. */
+/** The signed-in user's full favorites list. Disabled when logged out. */
 export const useFavorites = () => {
-  const { tmdb } = useAuth();
+  const { user } = useAuth();
   return useQuery({
-    queryKey: queryKeys.favorites(tmdb?.account_id),
-    queryFn: () => fetchFavorites(tmdb!.account_id, tmdb!.session_id),
-    enabled: Boolean(tmdb),
+    queryKey: queryKeys.favorites(user?.id),
+    queryFn: fetchFavorites,
+    enabled: Boolean(user),
   });
 };
 
-/** The signed-in user's full watch-later list. Disabled without a TMDB account. */
+/** The signed-in user's full watch-later list. Disabled when logged out. */
 export const useWatchlist = () => {
-  const { tmdb } = useAuth();
+  const { user } = useAuth();
   return useQuery({
-    queryKey: queryKeys.watchlist(tmdb?.account_id),
-    queryFn: () => fetchWatchlist(tmdb!.account_id, tmdb!.session_id),
-    enabled: Boolean(tmdb),
+    queryKey: queryKeys.watchlist(user?.id),
+    queryFn: fetchWatchlist,
+    enabled: Boolean(user),
   });
 };
 
 /**
- * Whether a single title is favorited / watchlisted by the signed-in user.
- * Both SaveToggles on a card share this key, so it's fetched once per title.
+ * Whether a single title is in the user's favorites / watch-later, derived from
+ * the already-fetched list (no per-title network call). Both lists are fetched
+ * once and shared via the query cache, so this is cheap for every card. Matches
+ * on id AND media_type — movie 123 and tv 123 are distinct titles.
  */
-export const useAccountStates = (mediaType: MediaType, id: number) => {
-  const { tmdb } = useAuth();
-  return useQuery({
-    queryKey: queryKeys.accountStates(mediaType, id, tmdb?.session_id),
-    queryFn: () => getAccountStates(mediaType, id, tmdb!.session_id),
-    enabled: Boolean(tmdb),
-  });
+export const useSavedState = (
+  kind: ListType,
+  mediaType: MediaType,
+  id: number,
+) => {
+  const favorites = useFavorites();
+  const watchlist = useWatchlist();
+  const list = kind === "favorite" ? favorites : watchlist;
+  const active = (list.data ?? []).some(
+    (item) => item.id === id && item.media_type === mediaType,
+  );
+  return { active, isLoading: list.isLoading };
 };
 
-export type ToggleVars = { mediaType: MediaType; id: number; next: boolean };
+export type ToggleVars = {
+  mediaType: MediaType;
+  id: number;
+  next: boolean;
+  /** Card metadata persisted on add so saved pages render without TMDB. */
+  meta: SavedMeta;
+};
 
 type ToggleContext = {
-  statesKey: ReturnType<typeof queryKeys.accountStates>;
-  previous: AccountStates | undefined;
   listKey: readonly unknown[];
   previousList: MediaItem[] | undefined;
 };
 
+/** Build the MediaItem we optimistically insert, matching rowToMediaItem. */
+const buildItem = (
+  mediaType: MediaType,
+  id: number,
+  meta: SavedMeta,
+): MediaItem => ({
+  id,
+  media_type: mediaType,
+  poster_path: meta.poster_path,
+  vote_average: meta.vote_average,
+  ...(mediaType === "movie"
+    ? { title: meta.title, release_date: meta.release_date }
+    : { name: meta.title, first_air_date: meta.release_date }),
+});
+
 /**
- * Shared toggle factory for favorite / watch-later. Optimistically flips the
- * cached account-states for the title (so the icon updates instantly) and, when
- * removing, drops the item from the cached list page immediately (matching the
- * old slice's local filter, so an unfavorited title doesn't briefly reappear if
- * TMDB's list endpoint lags). Rolls both back on error, and on settle
- * invalidates BOTH the per-title account-states AND the list to reconcile with
- * the server.
+ * Shared toggle factory for favorite / watch-later. Writes to Supabase and
+ * optimistically updates the cached list: on add it prepends the item (so the
+ * derived state flips instantly and it shows up on the list page); on remove it
+ * drops the matching item. Rolls back on error, and on settle invalidates the
+ * list to reconcile with the server.
  */
-const useToggle = (kind: "favorite" | "watchlist") => {
-  const { tmdb } = useAuth();
+const useToggle = (kind: ListType) => {
+  const { user } = useAuth();
   const qc = useQueryClient();
 
-  const write = kind === "favorite" ? setFavorite : setWatchlist;
   const listKey = () =>
     kind === "favorite"
-      ? queryKeys.favorites(tmdb?.account_id)
-      : queryKeys.watchlist(tmdb?.account_id);
+      ? queryKeys.favorites(user?.id)
+      : queryKeys.watchlist(user?.id);
 
   return useMutation<unknown, Error, ToggleVars, ToggleContext>({
-    mutationFn: ({ mediaType, id, next }) =>
-      write(tmdb!.account_id, tmdb!.session_id, mediaType, id, next),
-    onMutate: async ({ mediaType, id, next }) => {
-      const statesKey = queryKeys.accountStates(
-        mediaType,
-        id,
-        tmdb?.session_id,
-      );
+    mutationFn: ({ mediaType, id, next, meta }) =>
+      next
+        ? addSaved(kind, mediaType, id, meta)
+        : removeSaved(kind, mediaType, id),
+    onMutate: async ({ mediaType, id, next, meta }) => {
       const key = listKey();
-      await Promise.all([
-        qc.cancelQueries({ queryKey: statesKey }),
-        qc.cancelQueries({ queryKey: key }),
-      ]);
+      await qc.cancelQueries({ queryKey: key });
 
-      const previous = qc.getQueryData<AccountStates>(statesKey);
-      const optimistic: AccountStates = {
-        favorite: kind === "favorite" ? next : (previous?.favorite ?? false),
-        watchlist: kind === "watchlist" ? next : (previous?.watchlist ?? false),
-      };
-      qc.setQueryData<AccountStates>(statesKey, optimistic);
-
-      // When removing, drop it from the cached list right away.
       const previousList = qc.getQueryData<MediaItem[]>(key);
-      if (!next && previousList) {
+      if (previousList) {
+        const without = previousList.filter(
+          (item) => !(item.id === id && item.media_type === mediaType),
+        );
         qc.setQueryData<MediaItem[]>(
           key,
-          previousList.filter((item) => item.id !== id),
+          next ? [buildItem(mediaType, id, meta), ...without] : without,
         );
       }
 
-      return { statesKey, previous, listKey: key, previousList };
+      return { listKey: key, previousList };
     },
     onError: (_err, _vars, context) => {
       if (!context) return;
-      qc.setQueryData(context.statesKey, context.previous);
       qc.setQueryData(context.listKey, context.previousList);
     },
-    onSettled: (_data, _err, { mediaType, id }) => {
-      qc.invalidateQueries({
-        queryKey: queryKeys.accountStates(mediaType, id, tmdb?.session_id),
-      });
+    onSettled: () => {
       qc.invalidateQueries({ queryKey: listKey() });
     },
   });

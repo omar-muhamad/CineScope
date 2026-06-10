@@ -2,26 +2,23 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 
 import Favorites from "@/pages/Favorites";
 import type { MediaItem } from "@/types";
-import {
-  googleUser,
-  renderWithProviders,
-  tmdbAccount,
-} from "@/tests/test-utils";
+import { renderWithProviders, testSession } from "@/tests/test-utils";
 
-const { fetchFavoritesMock, getAccountStatesMock, setFavoriteMock } =
-  vi.hoisted(() => ({
+const { fetchFavoritesMock, fetchWatchlistMock, removeSavedMock } = vi.hoisted(
+  () => ({
     fetchFavoritesMock: vi.fn(),
-    getAccountStatesMock: vi.fn(),
-    setFavoriteMock: vi.fn(),
-  }));
+    fetchWatchlistMock: vi.fn(),
+    removeSavedMock: vi.fn(),
+  }),
+);
 
-vi.mock("@/api/tmdb", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/api/tmdb")>();
+vi.mock("@/api/saved", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/api/saved")>();
   return {
     ...actual,
     fetchFavorites: fetchFavoritesMock,
-    getAccountStates: getAccountStatesMock,
-    setFavorite: setFavoriteMock,
+    fetchWatchlist: fetchWatchlistMock,
+    removeSaved: removeSavedMock,
   };
 });
 
@@ -36,21 +33,16 @@ const favMovie: MediaItem = {
 
 beforeEach(() => {
   fetchFavoritesMock.mockReset();
-  getAccountStatesMock.mockReset();
-  setFavoriteMock.mockReset();
+  fetchWatchlistMock.mockReset();
+  removeSavedMock.mockReset();
+  fetchWatchlistMock.mockResolvedValue([]);
 });
 
 describe("Favorites Page", () => {
   it("renders the signed-in user's favorites", async () => {
     fetchFavoritesMock.mockResolvedValue([favMovie]);
-    getAccountStatesMock.mockResolvedValue({
-      favorite: true,
-      watchlist: false,
-    });
 
-    renderWithProviders(<Favorites />, {
-      auth: { google: googleUser, tmdb: tmdbAccount },
-    });
+    renderWithProviders(<Favorites />, { session: testSession });
     expect(await screen.findByText("Fav Movie")).toBeInTheDocument();
   });
 
@@ -60,24 +52,14 @@ describe("Favorites Page", () => {
     fetchFavoritesMock.mockImplementation(() =>
       Promise.resolve([...favorites]),
     );
-    getAccountStatesMock.mockImplementation((_m, id: number) =>
-      Promise.resolve({
-        favorite: favorites.some((item) => item.id === id),
-        watchlist: false,
-      }),
-    );
-    setFavoriteMock.mockImplementation(
-      (_a, _s, _m, mediaId: number, favorite: boolean) => {
-        if (!favorite) {
-          favorites = favorites.filter((item) => item.id !== mediaId);
-        }
-        return Promise.resolve({});
+    removeSavedMock.mockImplementation(
+      (_listType, _mediaType, mediaId: number) => {
+        favorites = favorites.filter((item) => item.id !== mediaId);
+        return Promise.resolve();
       },
     );
 
-    renderWithProviders(<Favorites />, {
-      auth: { google: googleUser, tmdb: tmdbAccount },
-    });
+    renderWithProviders(<Favorites />, { session: testSession });
 
     expect(await screen.findByText("Fav Movie")).toBeInTheDocument();
     // The card's favorite toggle reflects the favorited state ("Remove …").
@@ -87,12 +69,6 @@ describe("Favorites Page", () => {
     await waitFor(() =>
       expect(screen.queryByText("Fav Movie")).not.toBeInTheDocument(),
     );
-    expect(setFavoriteMock).toHaveBeenCalledWith(
-      tmdbAccount.account_id,
-      tmdbAccount.session_id,
-      "movie",
-      10,
-      false,
-    );
+    expect(removeSavedMock).toHaveBeenCalledWith("favorite", "movie", 10);
   });
 });
