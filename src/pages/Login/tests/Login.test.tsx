@@ -32,9 +32,9 @@ describe("Login Page", () => {
     expect(signInWithOtp).toHaveBeenCalledWith(
       expect.objectContaining({ email: "viewer@example.com" }),
     );
-    expect(await screen.findByText(/check your inbox/i)).toHaveTextContent(
-      "viewer@example.com",
-    );
+    // Confirmation heading and the echoed address now live in separate nodes.
+    expect(await screen.findByText(/check your inbox/i)).toBeInTheDocument();
+    expect(screen.getByText("viewer@example.com")).toBeInTheDocument();
   });
 
   test("does not show the confirmation when Supabase rejects the send", async () => {
