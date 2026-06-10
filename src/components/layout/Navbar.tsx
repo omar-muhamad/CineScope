@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { PiTelevisionSimpleFill } from "react-icons/pi";
 import { IoBookmark, IoMenu, IoClose, IoTime } from "react-icons/io5";
@@ -35,6 +35,7 @@ const MOBILE_MENU_ID = "mobile-menu";
 const Navbar: FC = () => {
   const [isUserIconClicked, setIsUserIconClicked] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const isLogged = Boolean(user);
   // Auth-gated links (favorites, watch later) only show once signed in.
@@ -49,6 +50,26 @@ const Navbar: FC = () => {
   const handleClick = () => {
     setIsUserIconClicked(!isUserIconClicked);
   };
+
+  // Close the user card on outside click or Escape.
+  useEffect(() => {
+    if (!isUserIconClicked) return;
+
+    const handlePointerDown = (e: MouseEvent) => {
+      if (!userMenuRef.current?.contains(e.target as Node))
+        setIsUserIconClicked(false);
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsUserIconClicked(false);
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isUserIconClicked]);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen((prev) => !prev);
@@ -90,23 +111,28 @@ const Navbar: FC = () => {
         <div className="hidden md:block">
           <NavSearch />
         </div>
-        <button
-          className="hidden md:block size-8 shrink-0"
-          type="button"
-          aria-label="User image"
-          onClick={handleClick}
-        >
-          {isLogged && avatarUrl ? (
-            <img
-              className="h-full w-full rounded-full object-cover"
-              src={avatarUrl}
-              alt="User avatar"
-              referrerPolicy="no-referrer"
-            />
-          ) : (
-            <FaUserCircle className="h-full w-full rounded-full text-orange hover:text-white" />
-          )}
-        </button>
+        <div ref={userMenuRef} className="hidden md:block">
+          <button
+            className="size-8 shrink-0"
+            type="button"
+            aria-label="User image"
+            aria-haspopup="menu"
+            aria-expanded={isUserIconClicked}
+            onClick={handleClick}
+          >
+            {isLogged && avatarUrl ? (
+              <img
+                className="h-full w-full rounded-full object-cover"
+                src={avatarUrl}
+                alt="User avatar"
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <FaUserCircle className="h-full w-full rounded-full text-orange hover:text-white" />
+            )}
+          </button>
+          {isUserIconClicked && <UserCard />}
+        </div>
         <button
           className="md:hidden flex items-center justify-center size-8 shrink-0 text-2xl text-gray hover:text-white"
           type="button"
@@ -118,7 +144,6 @@ const Navbar: FC = () => {
           {isMobileMenuOpen ? <IoClose /> : <IoMenu />}
         </button>
       </div>
-      {isUserIconClicked && <UserCard />}
       <MobileMenu
         id={MOBILE_MENU_ID}
         isOpen={isMobileMenuOpen}
