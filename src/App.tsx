@@ -11,7 +11,6 @@ import Favorites from "./pages/Favorites";
 import WatchLater from "./pages/WatchLater";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
-import RequireAuth from "./components/common/RequireAuth";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 
 const AUTH_ROUTES = ["/login"];
@@ -33,22 +32,8 @@ function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/watch/:media_type/:id" element={<WatchOnline />} />
           <Route path="/:media_type/:id" element={<Details />} />
-          <Route
-            path="/favorites"
-            element={
-              <RequireAuth>
-                <Favorites />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/watch-later"
-            element={
-              <RequireAuth>
-                <WatchLater />
-              </RequireAuth>
-            }
-          />
+          <Route path="/favorites" element={<Favorites />} />
+          <Route path="/watch-later" element={<WatchLater />} />
           <Route path="/login" element={<Login />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

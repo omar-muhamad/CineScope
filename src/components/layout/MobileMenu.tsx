@@ -13,6 +13,8 @@ export type NavLinkItem = {
   title: string;
   path: string;
   icon: IconType;
+  /** Hide this link from the navbar until the user is signed in. */
+  requiresAuth?: boolean;
 };
 
 type MobileMenuProps = {
@@ -70,7 +72,7 @@ const MobileMenu: FC<MobileMenuProps> = ({
           type="button"
           aria-label="Close menu"
           onClick={onClose}
-          className="self-end text-3xl text-gray hover:text-white"
+          className="self-end text-2xl text-gray hover:text-white"
         >
           <IoClose />
         </button>
@@ -92,7 +94,7 @@ const MobileMenu: FC<MobileMenuProps> = ({
             );
           })}
         </nav>
-        <Button className="w-full py-1 mt-auto" onClick={handleAuth}>
+        <Button className="w-full py-2 mt-auto text-white" onClick={handleAuth}>
           {isLogged ? "Logout" : "Login"}
         </Button>
       </div>

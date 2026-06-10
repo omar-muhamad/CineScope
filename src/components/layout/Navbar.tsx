@@ -14,8 +14,20 @@ import MobileMenu, { NavLinkItem } from "./MobileMenu";
 const navLinks: NavLinkItem[] = [
   { id: 1, title: "movies", path: "/movies", icon: RiFilmFill },
   { id: 2, title: "tv shows", path: "/tv", icon: PiTelevisionSimpleFill },
-  { id: 3, title: "favorites", path: "/favorites", icon: IoBookmark },
-  { id: 4, title: "watch later", path: "/watch-later", icon: IoTime },
+  {
+    id: 3,
+    title: "favorites",
+    path: "/favorites",
+    icon: IoBookmark,
+    requiresAuth: true,
+  },
+  {
+    id: 4,
+    title: "watch later",
+    path: "/watch-later",
+    icon: IoTime,
+    requiresAuth: true,
+  },
 ];
 
 const MOBILE_MENU_ID = "mobile-menu";
@@ -25,6 +37,10 @@ const Navbar: FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user } = useAuth();
   const isLogged = Boolean(user);
+  // Auth-gated links (favorites, watch later) only show once signed in.
+  const visibleLinks = navLinks.filter(
+    (link) => !link.requiresAuth || isLogged,
+  );
   const avatarUrl =
     (user?.user_metadata?.avatar_url as string | undefined) ||
     (user?.user_metadata?.picture as string | undefined) ||
@@ -58,7 +74,7 @@ const Navbar: FC = () => {
           data-testid="nav-links"
           className="hidden md:flex items-center gap-4"
         >
-          {navLinks.map((link) => (
+          {visibleLinks.map((link) => (
             <NavLink
               key={link.id}
               to={link.path}
@@ -106,7 +122,7 @@ const Navbar: FC = () => {
       <MobileMenu
         id={MOBILE_MENU_ID}
         isOpen={isMobileMenuOpen}
-        navLinks={navLinks}
+        navLinks={visibleLinks}
         isLogged={isLogged}
         onClose={() => setIsMobileMenuOpen(false)}
       />
