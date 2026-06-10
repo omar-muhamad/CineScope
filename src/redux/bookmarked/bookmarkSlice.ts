@@ -1,104 +1,121 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 
-type ItemData = {
+import {
+  fetchFavorites,
+  fetchWatchlist,
+  setFavorite,
+  setWatchlist,
+  type MediaType,
+} from "@/lib/tmdb";
+import type { RootState } from "@/redux/store";
+
+export type MediaItem = {
   id: number;
   media_type: string;
-  release_date: string;
-  title: string;
-  backdrop_path: string;
-  poster_path: string;
-  ratings: string;
-  adult: boolean;
-  vote_average: number;
-  first_air_date: string;
-  name: string;
+  title?: string;
+  name?: string;
+  release_date?: string;
+  first_air_date?: string;
+  poster_path?: string;
+  backdrop_path?: string;
+  vote_average?: number;
 };
 
-type BookmarkData = ItemData[];
-
 export interface BookmarkState {
-  loading: boolean;
-  bookmarks: BookmarkData | null;
-  status: boolean;
+  favorites: MediaItem[] | null;
+  watchlist: MediaItem[] | null;
+  favoritesLoading: boolean;
+  watchlistLoading: boolean;
   error: string | null;
 }
 
 const initialState: BookmarkState = {
-  loading: false,
-  bookmarks: null,
-  status: false,
+  favorites: null,
+  watchlist: null,
+  favoritesLoading: false,
+  watchlistLoading: false,
   error: null,
 };
 
-export const fetchBookmark = createAsyncThunk(
-  "bookmark/fetchBookmark",
-  async () => {
-    const params = {
-      api_key: import.meta.env.VITE_APP_API_KEY,
-    };
-    const response = await axios("https://api.themoviedb.org/3/list/8299412", {
-      params,
-    });
+type ToggleArgs = { media_type: MediaType; id: number };
 
-    const data = response.data.items;
-    return data;
+const NO_TMDB = "Connect a TMDB account to use this feature.";
+
+export const fetchFavoritesList = createAsyncThunk(
+  "bookmark/fetchFavorites",
+  async (_, { getState, rejectWithValue }) => {
+    const { tmdb } = (getState() as RootState).user;
+    if (!tmdb) return rejectWithValue(NO_TMDB);
+    try {
+      return (await fetchFavorites(
+        tmdb.account_id,
+        tmdb.session_id,
+      )) as MediaItem[];
+    } catch {
+      return rejectWithValue("Failed to load your bookmarked titles.");
+    }
   },
 );
 
-export const addBookmark = createAsyncThunk(
-  "bookmark/addBookmark",
-  async ({
-    id,
-    media_type,
-    session_id,
-  }: {
-    id: number | undefined;
-    media_type: string | undefined;
-    session_id: string | null;
-  }) => {
-    const params = {
-      api_key: import.meta.env.VITE_APP_API_KEY,
-      session_id,
-    };
-    const response = await axios.post(
-      "https://api.themoviedb.org/3/list/8299412/add_item",
-      {
-        media_id: id,
-        media_type,
-      },
-      { params },
-    );
-
-    return response.data;
+export const fetchWatchlistList = createAsyncThunk(
+  "bookmark/fetchWatchlist",
+  async (_, { getState, rejectWithValue }) => {
+    const { tmdb } = (getState() as RootState).user;
+    if (!tmdb) return rejectWithValue(NO_TMDB);
+    try {
+      return (await fetchWatchlist(
+        tmdb.account_id,
+        tmdb.session_id,
+      )) as MediaItem[];
+    } catch {
+      return rejectWithValue("Failed to load your watch-later list.");
+    }
   },
 );
 
-export const removeBookmark = createAsyncThunk(
-  "bookmark/removeBookmark",
-  async ({
-    id,
-    media_type,
-    session_id,
-  }: {
-    id: number | undefined;
-    media_type: string | undefined;
-    session_id: string | null;
-  }) => {
-    const params = {
-      api_key: import.meta.env.VITE_APP_API_KEY,
-      session_id,
-    };
-    const response = await axios.post(
-      "https://api.themoviedb.org/3/list/8299412/remove_item",
-      {
-        media_id: id,
+export const toggleFavorite = createAsyncThunk(
+  "bookmark/toggleFavorite",
+  async (
+    { media_type, id, favorite }: ToggleArgs & { favorite: boolean },
+    { getState, rejectWithValue },
+  ) => {
+    const { tmdb } = (getState() as RootState).user;
+    if (!tmdb) return rejectWithValue(NO_TMDB);
+    try {
+      await setFavorite(
+        tmdb.account_id,
+        tmdb.session_id,
         media_type,
-      },
-      { params },
-    );
+        id,
+        favorite,
+      );
+      return { id, favorite };
+    } catch {
+      return rejectWithValue("Failed to update your bookmarks.");
+    }
+  },
+);
 
-    return response.data;
+export const toggleWatchlist = createAsyncThunk(
+  "bookmark/toggleWatchlist",
+  async (
+    { media_type, id, watchlist }: ToggleArgs & { watchlist: boolean },
+    { getState, rejectWithValue },
+  ) => {
+    const { tmdb } = (getState() as RootState).user;
+    if (!tmdb) return rejectWithValue(NO_TMDB);
+    try {
+      await setWatchlist(
+        tmdb.account_id,
+        tmdb.session_id,
+        media_type,
+        id,
+        watchlist,
+      );
+      return { id, watchlist };
+    } catch {
+      return rejectWithValue("Failed to update your watch-later list.");
+    }
   },
 );
 
@@ -108,50 +125,49 @@ const bookmarkSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchBookmark.pending, (state) => {
-        state.loading = true;
+      .addCase(fetchFavoritesList.pending, (state) => {
+        state.favoritesLoading = true;
         state.error = null;
       })
-      .addCase(fetchBookmark.fulfilled, (state, action) => {
-        state.loading = false;
-        state.bookmarks = action.payload;
+      .addCase(fetchFavoritesList.fulfilled, (state, action) => {
+        state.favoritesLoading = false;
+        state.favorites = action.payload;
       })
-      .addCase(fetchBookmark.rejected, (state, action) => {
-        state.loading = false;
-        state.error =
-          action.error.message || "Failed to fetch bookmarked items";
+      .addCase(fetchFavoritesList.rejected, (state, action) => {
+        state.favoritesLoading = false;
+        state.error = (action.payload as string) ?? "Failed to load bookmarks.";
       });
+
     builder
-      .addCase(addBookmark.pending, (state) => {
-        state.loading = true;
-        state.status = false;
+      .addCase(fetchWatchlistList.pending, (state) => {
+        state.watchlistLoading = true;
         state.error = null;
       })
-      .addCase(addBookmark.fulfilled, (state) => {
-        state.loading = false;
-        state.status = true;
+      .addCase(fetchWatchlistList.fulfilled, (state, action) => {
+        state.watchlistLoading = false;
+        state.watchlist = action.payload;
       })
-      .addCase(addBookmark.rejected, (state, action) => {
-        state.loading = false;
-        state.status = false;
-        state.error = action.error.message || "Failed to add bookmarked item";
-      });
-    builder
-      .addCase(removeBookmark.pending, (state) => {
-        state.loading = true;
-        state.status = false;
-        state.error = null;
-      })
-      .addCase(removeBookmark.fulfilled, (state) => {
-        state.loading = false;
-        state.status = true;
-      })
-      .addCase(removeBookmark.rejected, (state, action) => {
-        state.loading = false;
-        state.status = false;
+      .addCase(fetchWatchlistList.rejected, (state, action) => {
+        state.watchlistLoading = false;
         state.error =
-          action.error.message || "Failed to remove bookmarked item";
+          (action.payload as string) ?? "Failed to load watch-later list.";
       });
+
+    // Keep cached lists in sync when an item is removed from a list page.
+    builder.addCase(toggleFavorite.fulfilled, (state, action) => {
+      if (!action.payload.favorite && state.favorites) {
+        state.favorites = state.favorites.filter(
+          (item) => item.id !== action.payload.id,
+        );
+      }
+    });
+    builder.addCase(toggleWatchlist.fulfilled, (state, action) => {
+      if (!action.payload.watchlist && state.watchlist) {
+        state.watchlist = state.watchlist.filter(
+          (item) => item.id !== action.payload.id,
+        );
+      }
+    });
   },
 });
 

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import PercentageCircle from "../../icons/PercentageCircle";
 import BookMark from "../ui/BookMark";
+import WatchLater from "../ui/WatchLater";
 import Heading from "../ui/Heading";
 import LazyImage from "../ui/LazyImage";
 import Text from "../ui/Text";
@@ -124,18 +125,22 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
                     className="w-full h-full"
                   />
                 </div>
+                <div className="h-10 w-10">
+                  <WatchLater
+                    id={id}
+                    media_type={media_type}
+                    className="w-full h-full"
+                  />
+                </div>
               </div>
-             <div className="mt-3 flex gap-2">
-               <PlayButton className="h-10" onClick={openTrailer}>
-                Trailer
-              </PlayButton>
-              <PlayButton
-                className="w-full h-10"
-                onClick={handleWatchOnline}
-              >
-                Watch Online
-              </PlayButton>
-             </div>
+              <div className="mt-3 flex gap-2">
+                <PlayButton className="h-10" onClick={openTrailer}>
+                  Trailer
+                </PlayButton>
+                <PlayButton className="w-full h-10" onClick={handleWatchOnline}>
+                  Watch Online
+                </PlayButton>
+              </div>
             </div>
 
             <div className="hidden md:block mt-2 max-w-[50vw]">

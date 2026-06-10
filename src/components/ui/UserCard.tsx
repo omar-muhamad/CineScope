@@ -1,38 +1,53 @@
 import { FC } from "react";
-import { UserData, logoutUser } from "@/redux/user/userSlice";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
+import { AppDispatch, RootState } from "@/redux/store";
+import { logout } from "@/redux/user/userSlice";
 import Button from "./Button";
 import Heading from "./Heading";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
+import Text from "./Text";
 
-type UserCardProps = { user: UserData | null; isLogged: boolean };
-
-const UserCard: FC<UserCardProps> = ({ user, isLogged }) => {
+const UserCard: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const handleLogout = () => {
-    const session_id = localStorage.getItem("session_id");
-    if (session_id) {
-      dispatch(logoutUser({ session_id }));
-      localStorage.removeItem("session_id");
-      navigate(0);
-    }
+  const { google, tmdb } = useSelector((state: RootState) => state.user);
+  const isLogged = Boolean(google);
+
+  const handleLogout = async () => {
+    await dispatch(logout());
+    navigate("/", { replace: true });
   };
+
+  const firstName = google?.name?.split(" ")[0];
+
   return (
-    <div className="user-card absolute z-50 top-full right-0 mt-2 bg-secondary-dark rounded-lg h-32 w-44 px-4 flex items-center justify-center">
+    <div className="user-card absolute z-50 top-full right-0 mt-2 bg-secondary-dark rounded-lg w-48 px-4 py-5 flex flex-col items-center justify-center gap-3">
       <div className="w-full text-center">
         <Heading as="h3" className="mt-0 text-lg">
-          {isLogged ? `Hi, ${user?.name}!` : "Hi, User!"}
+          {isLogged ? `Hi, ${firstName}!` : "Hi, User!"}
         </Heading>
-        <Button
-          className="w-full py-1 mt-4"
-          onClick={isLogged ? handleLogout : () => navigate("/login")}
-        >
-          {isLogged ? "Logout" : "Login"}
-        </Button>
+        {isLogged && !tmdb && (
+          <button
+            type="button"
+            className="mt-1 text-xs text-orange hover:text-white"
+            onClick={() => navigate("/login")}
+          >
+            Connect TMDB account
+          </button>
+        )}
+        {isLogged && tmdb && (
+          <Text className="mt-1 text-xs text-gray">TMDB: {tmdb.username}</Text>
+        )}
       </div>
+      <Button
+        className="w-full py-1"
+        onClick={isLogged ? handleLogout : () => navigate("/login")}
+      >
+        {isLogged ? "Logout" : "Login"}
+      </Button>
     </div>
   );
 };
+
 export default UserCard;

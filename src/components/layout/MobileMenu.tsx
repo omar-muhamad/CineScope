@@ -5,7 +5,7 @@ import { IconType } from "react-icons";
 import { IoClose } from "react-icons/io5";
 
 import { AppDispatch } from "@/redux/store";
-import { logoutUser } from "@/redux/user/userSlice";
+import { logout } from "@/redux/user/userSlice";
 import Button from "../ui/Button";
 import NavSearch from "../common/NavSearch";
 
@@ -34,15 +34,11 @@ const MobileMenu: FC<MobileMenuProps> = ({
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const handleAuth = () => {
+  const handleAuth = async () => {
     onClose();
     if (isLogged) {
-      const session_id = localStorage.getItem("session_id");
-      if (session_id) {
-        dispatch(logoutUser({ session_id }));
-        localStorage.removeItem("session_id");
-        navigate(0);
-      }
+      await dispatch(logout());
+      navigate("/", { replace: true });
     } else {
       navigate("/login");
     }

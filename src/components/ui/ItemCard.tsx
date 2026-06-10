@@ -7,7 +7,7 @@ import poster from "@/assets/images/default-poster.png";
 
 import Heading from "./Heading";
 import Text from "./Text";
-import BookMark from "./BookMark";
+import SaveToggle, { SaveKind } from "./SaveToggle";
 import LazyImage from "./LazyImage";
 
 type ItemCardProps = {
@@ -17,6 +17,8 @@ type ItemCardProps = {
   media_type: string;
   rating: number;
   title: string;
+  /** Which TMDB list the card's toggle controls. Defaults to favorites. */
+  saveKind?: SaveKind;
 };
 
 const ItemCard: FC<ItemCardProps> = ({
@@ -26,6 +28,7 @@ const ItemCard: FC<ItemCardProps> = ({
   media_type,
   rating,
   title,
+  saveKind = "favorite",
 }) => {
   const imageSrc = `https://image.tmdb.org/t/p/w500/${imgSrc}`;
 
@@ -33,7 +36,12 @@ const ItemCard: FC<ItemCardProps> = ({
     <li>
       <div className="relative w-full">
         <div className="absolute w-8 h-8 right-3 top-3 z-30">
-          <BookMark id={id} media_type={media_type} className="w-full h-full" />
+          <SaveToggle
+            id={id}
+            media_type={media_type}
+            kind={saveKind}
+            className="w-full h-full"
+          />
         </div>
         <NavLink to={media_type === "movie" ? `/movie/${id}` : `/tv/${id}`}>
           <div className="absolute z-10 inset-0 opacity-0 hover:opacity-100 hover:duration-300 bg-[#00000070] backdrop-blur-[2px] flex justify-center items-center">
@@ -74,7 +82,11 @@ const ItemCard: FC<ItemCardProps> = ({
           )}
         </div>
         <NavLink to={media_type === "movie" ? `/movie/${id}` : `/tv/${id}`}>
-          <Heading as="h3" size="sm" className="line-clamp-2 text-ellipsis md:truncate max-md:text-base">
+          <Heading
+            as="h3"
+            size="sm"
+            className="line-clamp-2 text-ellipsis md:truncate max-md:text-base"
+          >
             {title}
           </Heading>
         </NavLink>

@@ -8,16 +8,20 @@ import Search from "./pages/Search";
 import Details from "./pages/Details";
 import WatchOnline from "./pages/WatchOnline";
 import Bookmarked from "./pages/Bookmarked";
+import WatchLater from "./pages/WatchLater";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
+import AuthTmdbCallback from "./pages/AuthTmdbCallback";
 import RequireAuth from "./components/common/RequireAuth";
 import ErrorBoundary from "./components/common/ErrorBoundary";
+
+const AUTH_ROUTES = ["/login", "/auth/tmdb/callback"];
 
 function App() {
   const { pathname } = useLocation();
   return (
     <div className="font-outfitLight min-h-screen w-full  flex bg-main-dark text-white flex-col mx-auto relative">
-      {pathname !== "/login" && (
+      {!AUTH_ROUTES.includes(pathname) && (
         <header className="sticky top-0 z-50">
           <Navbar />
         </header>
@@ -33,12 +37,21 @@ function App() {
           <Route
             path="/bookmarked"
             element={
-              <RequireAuth>
+              <RequireAuth requireTmdb>
                 <Bookmarked />
               </RequireAuth>
             }
           />
+          <Route
+            path="/watch-later"
+            element={
+              <RequireAuth requireTmdb>
+                <WatchLater />
+              </RequireAuth>
+            }
+          />
           <Route path="/login" element={<Login />} />
+          <Route path="/auth/tmdb/callback" element={<AuthTmdbCallback />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </ErrorBoundary>

@@ -9,7 +9,7 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
         class=""
       >
         <div
-          class="relative w-full px-6 mt-6"
+          class="relative w-full px-4 md:px-6 mt-6"
         >
           <ul
             class="flex gap-4 overflow-x-scroll no-scrollbar scroll-smooth"
@@ -167,7 +167,7 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
           </button>
         </div>
         <main
-          class="w-full min-h-screen py-6 px-16"
+          class="w-full min-h-screen py-4 md:py-6 px-4 md:px-16"
         >
           <section
             class="w-full mt-10"
@@ -1106,7 +1106,7 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
       class=""
     >
       <div
-        class="relative w-full px-6 mt-6"
+        class="relative w-full px-4 md:px-6 mt-6"
       >
         <ul
           class="flex gap-4 overflow-x-scroll no-scrollbar scroll-smooth"
@@ -1264,7 +1264,7 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
         </button>
       </div>
       <main
-        class="w-full min-h-screen py-6 px-16"
+        class="w-full min-h-screen py-4 md:py-6 px-4 md:px-16"
       >
         <section
           class="w-full mt-10"

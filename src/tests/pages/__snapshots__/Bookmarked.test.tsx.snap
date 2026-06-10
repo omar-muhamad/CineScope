@@ -6,7 +6,7 @@ exports[`Bookmarked Page > renders Bookmarked Page should match the screenshot 1
   "baseElement": <body>
     <div>
       <main
-        class="w-full min-h-screen py-6 px-16"
+        class="w-full min-h-screen py-4 md:py-6 px-4 md:px-16"
       >
         <section>
           <div
@@ -489,7 +489,7 @@ exports[`Bookmarked Page > renders Bookmarked Page should match the screenshot 1
   </body>,
   "container": <div>
     <main
-      class="w-full min-h-screen py-6 px-16"
+      class="w-full min-h-screen py-4 md:py-6 px-4 md:px-16"
     >
       <section>
         <div
