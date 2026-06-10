@@ -32,10 +32,7 @@ const TrendingCard: FC<TrendingCardProps> = ({
     : poster;
 
   return (
-    <li className="relative shrink-0 w-[42vw] sm:w-[28vw] md:w-[20vw] lg:w-[16vw]">
-      <div className="absolute z-30 peer right-3 top-3">
-        <SaveActions id={id} media_type={media_type} />
-      </div>
+    <li className="group/card relative shrink-0 w-[42vw] sm:w-[28vw] md:w-[20vw] lg:w-[16vw]">
       <NavLink
         className="relative block"
         to={movie ? `/movie/${id}` : `/tv/${id}`}
@@ -77,8 +74,9 @@ const TrendingCard: FC<TrendingCardProps> = ({
           </h2>
         </div>
 
-        <div className="absolute inset-0 rounded-lg opacity-0 hover:opacity-100 hover:duration-300 peer-hover:opacity-100 bg-[#00000070] backdrop-blur-[2px] flex justify-center items-center">
-          <Text className="bg-white/70 text-black py-2 px-4 rounded-full">
+        <div className="absolute inset-0 rounded-lg opacity-0 hover:opacity-100 hover:duration-300 group-hover/card:opacity-100 bg-[#00000070] backdrop-blur-[2px] flex flex-col gap-3 justify-center items-center">
+          <SaveActions id={id} media_type={media_type} />
+          <Text size="sm" className="bg-white/70 text-black py-2 px-3 rounded-full">
             See Details
           </Text>
         </div>

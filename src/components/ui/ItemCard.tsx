@@ -31,12 +31,10 @@ const ItemCard: FC<ItemCardProps> = ({
 
   return (
     <li>
-      <div className="relative w-full">
-        <div className="absolute right-3 top-3 z-30">
-          <SaveActions id={id} media_type={media_type} />
-        </div>
+      <div className="group/card relative w-full">
         <NavLink to={media_type === "movie" ? `/movie/${id}` : `/tv/${id}`}>
-          <div className="absolute z-10 inset-0 opacity-0 hover:opacity-100 hover:duration-300 bg-[#00000070] backdrop-blur-[2px] flex justify-center items-center">
+          <div className="absolute z-10 inset-0 opacity-0 hover:opacity-100 hover:duration-300 bg-[#00000070] backdrop-blur-[2px] flex flex-col gap-3 justify-center items-center">
+            <SaveActions id={id} media_type={media_type} />
             <Text
               size="sm"
               className="bg-white/70 text-black py-2 px-3 rounded-full"

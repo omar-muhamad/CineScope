@@ -1,40 +1,45 @@
 import { FC } from "react";
+import { useSelector } from "react-redux";
 
+import { RootState } from "@/redux/store";
 import SaveToggle from "./SaveToggle";
 
 type SaveActionsProps = {
   id: number;
   media_type: string;
-  /** Size classes applied to each toggle. */
-  size?: string;
-  className?: string;
 };
 
-/** Favorites + watch-later toggles, shown side by side. */
-const SaveActions: FC<SaveActionsProps> = ({
-  id,
-  media_type,
-  size = "w-8 h-8",
-  className,
-}) => (
-  <div className={`flex items-center gap-1.5 ${className ?? ""}`}>
-    <div className={size}>
+// Corner save toggle: always visible on mobile, revealed on hover/focus on
+// desktop. The reveal is driven by a named `group/card` which the parent card
+// must set (alongside `relative`, since these are absolutely positioned). The
+// group is named so it doesn't collide with the unnamed `group` SaveToggle
+// uses internally for its icon hover effect.
+
+/**
+ * Favorites + watch-later toggles for a card, split across the top corners.
+ * Only rendered for signed-in users — logged-out visitors see no toggles on
+ * cards. Expects the parent card to be `relative group/card`.
+ */
+const SaveActions: FC<SaveActionsProps> = ({ id, media_type }) => {
+  const google = useSelector((state: RootState) => state.user.google);
+
+  if (!google) return null;
+
+  return (
+    <div className="flex gap-3">
       <SaveToggle
         id={id}
         media_type={media_type}
         kind="favorite"
-        className="w-full h-full"
       />
-    </div>
-    <div className={size}>
+
       <SaveToggle
         id={id}
         media_type={media_type}
         kind="watchlist"
-        className="w-full h-full"
       />
     </div>
-  </div>
-);
+  );
+};
 
 export default SaveActions;
