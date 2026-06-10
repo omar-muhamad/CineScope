@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { fetchRecommendations } from "../home/homeSlice";
-import { Episode, Season } from "@/types";
+import { Episode, Season, Video } from "@/types";
 
 type DetailsData = {
   id: number;
@@ -15,6 +15,8 @@ type DetailsData = {
   genres: { id: number; name: string }[];
   vote_average: number;
   overview: string;
+  imdb_id?: string;
+  external_ids?: { imdb_id: string | null };
   seasons?: Season[];
   number_of_seasons?: number;
   release_dates?: {
@@ -25,6 +27,9 @@ type DetailsData = {
   };
   content_ratings?: {
     results: { iso_3166_1: string; rating: string }[];
+  };
+  videos?: {
+    results: Video[];
   };
 };
 
@@ -46,6 +51,8 @@ interface DataState {
   details?: DetailsData;
   recommendations?: RecommendationsData[];
   recommendationsLoading?: boolean;
+  imdbRating?: string | null;
+  imdbRatingLoading?: boolean;
   episodes?: Episode[];
   episodesLoading?: boolean;
   error: string | undefined;
@@ -69,7 +76,9 @@ export const fetchDetails = createAsyncThunk(
       const params = {
         api_key: import.meta.env.VITE_APP_API_KEY,
         append_to_response:
-          media_type === "tv" ? "content_ratings" : "release_dates",
+          media_type === "tv"
+            ? "content_ratings,videos,external_ids"
+            : "release_dates,videos,external_ids",
       };
       const response = await axios.get(
         `https://api.themoviedb.org/3/${media_type}/${id}`,
@@ -79,6 +88,25 @@ export const fetchDetails = createAsyncThunk(
     } catch (err) {
       return err;
     }
+  },
+);
+
+// IMDb ratings aren't part of the TMDB payload (vote_average is TMDB's own
+// score), so we resolve the title's IMDb id from TMDB and look the rating up
+// via the OMDb API. Returns the rating as a string (e.g. "8.5") or null when
+// it's unavailable / OMDb has no data.
+export const fetchImdbRating = createAsyncThunk(
+  "data/fetchImdbRating",
+  async ({ imdb_id }: { imdb_id: Param }) => {
+    const apiKey = import.meta.env.VITE_APP_OMDB_API_KEY;
+    if (!imdb_id || !apiKey) return null;
+
+    const response = await axios.get("https://www.omdbapi.com/", {
+      params: { i: imdb_id, apikey: apiKey },
+    });
+
+    const rating = response.data?.imdbRating;
+    return rating && rating !== "N/A" ? rating : null;
   },
 );
 
@@ -104,6 +132,7 @@ export const detailsSlice = createSlice({
     builder
       .addCase(fetchDetails.pending, (state) => {
         state.loading = true;
+        state.imdbRating = undefined;
       })
       .addCase(fetchDetails.fulfilled, (state, action) => {
         state.loading = false;
@@ -124,6 +153,18 @@ export const detailsSlice = createSlice({
       .addCase(fetchRecommendations.rejected, (state, action) => {
         state.recommendationsLoading = false;
         state.error = action.error.message;
+      });
+    builder
+      .addCase(fetchImdbRating.pending, (state) => {
+        state.imdbRatingLoading = true;
+      })
+      .addCase(fetchImdbRating.fulfilled, (state, action) => {
+        state.imdbRatingLoading = false;
+        state.imdbRating = action.payload;
+      })
+      .addCase(fetchImdbRating.rejected, (state) => {
+        state.imdbRatingLoading = false;
+        state.imdbRating = null;
       });
     builder
       .addCase(fetchSeasonEpisodes.pending, (state) => {

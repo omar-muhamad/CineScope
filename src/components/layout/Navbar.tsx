@@ -1,22 +1,22 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { PiTelevisionSimpleFill } from "react-icons/pi";
-import { IoBookmark, IoMenu, IoClose } from "react-icons/io5";
+import { IoBookmark, IoMenu, IoClose, IoTime } from "react-icons/io5";
 import { RiFilmFill } from "react-icons/ri";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { FaUserCircle } from "react-icons/fa";
 
-import { AppDispatch, RootState } from "@/redux/store";
+import { RootState } from "@/redux/store";
 import Logo from "@/assets/icons/logo.svg?react";
-import { getUserDetails } from "@/redux/user/userSlice";
 import UserCard from "../ui/UserCard";
 import NavSearch from "../common/NavSearch";
 import MobileMenu, { NavLinkItem } from "./MobileMenu";
 
 const navLinks: NavLinkItem[] = [
   { id: 1, title: "movies", path: "/movies", icon: RiFilmFill },
-  { id: 2, title: "tv", path: "/tv", icon: PiTelevisionSimpleFill },
-  { id: 3, title: "bookmarked", path: "/bookmarked", icon: IoBookmark },
+  { id: 2, title: "tv shows", path: "/tv", icon: PiTelevisionSimpleFill },
+  { id: 3, title: "favorites", path: "/favorites", icon: IoBookmark },
+  { id: 4, title: "watch later", path: "/watch-later", icon: IoTime },
 ];
 
 const MOBILE_MENU_ID = "mobile-menu";
@@ -24,9 +24,11 @@ const MOBILE_MENU_ID = "mobile-menu";
 const Navbar: FC = () => {
   const [isUserIconClicked, setIsUserIconClicked] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isLogged, setIsLogged] = useState(false);
-  const { loading, user } = useSelector((state: RootState) => state.user);
-  const dispatch = useDispatch<AppDispatch>();
+  const { google, tmdb } = useSelector((state: RootState) => state.user);
+  const isLogged = Boolean(google);
+  const avatarUrl =
+    google?.picture ||
+    (tmdb?.avatarHash ? `https://gravatar.com/avatar/${tmdb.avatarHash}` : "");
 
   const handleClick = () => {
     setIsUserIconClicked(!isUserIconClicked);
@@ -35,14 +37,6 @@ const Navbar: FC = () => {
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen((prev) => !prev);
   };
-
-  useEffect(() => {
-    const session_id = localStorage.getItem("session_id");
-    if (session_id) {
-      setIsLogged(true);
-      dispatch(getUserDetails({ session_id: session_id as string }));
-    }
-  }, [dispatch]);
 
   return (
     <nav className="relative flex justify-between items-center p-4 md:p-6 bg-secondary-dark">
@@ -86,11 +80,12 @@ const Navbar: FC = () => {
           aria-label="User image"
           onClick={handleClick}
         >
-          {isLogged && !loading ? (
+          {isLogged && avatarUrl ? (
             <img
-              className="h-full w-full rounded-full"
-              src={`https://gravatar.com/avatar/${user?.gravatar}`}
-              alt="User logo"
+              className="h-full w-full rounded-full object-cover"
+              src={avatarUrl}
+              alt="User avatar"
+              referrerPolicy="no-referrer"
             />
           ) : (
             <FaUserCircle className="h-full w-full rounded-full text-orange hover:text-white" />
@@ -107,7 +102,7 @@ const Navbar: FC = () => {
           {isMobileMenuOpen ? <IoClose /> : <IoMenu />}
         </button>
       </div>
-      {isUserIconClicked && <UserCard user={user} isLogged={isLogged} />}
+      {isUserIconClicked && <UserCard />}
       <MobileMenu
         id={MOBILE_MENU_ID}
         isOpen={isMobileMenuOpen}

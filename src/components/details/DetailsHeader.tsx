@@ -1,21 +1,22 @@
-import movieTrailer from "movie-trailer";
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { useNavigate } from "react-router-dom";
-import { IoCloseCircleOutline } from "react-icons/io5";
 
-import { PiTelevisionSimpleFill } from "react-icons/pi";
-import { RiFilmFill } from "react-icons/ri";
 import PercentageCircle from "../../icons/PercentageCircle";
 import BookMark from "../ui/BookMark";
+import WatchLater from "../ui/WatchLater";
 import Heading from "../ui/Heading";
 import LazyImage from "../ui/LazyImage";
 import Text from "../ui/Text";
+import MediaMeta from "./MediaMeta";
 import PlayButton from "./PlayButton";
+import TrailerModal from "./TrailerModal";
+import { useTrailerModal } from "./useTrailerModal";
 
 type DetailsHeaderProps = {
   id: number;
   title: string;
   rating: number;
+  imdbRating?: string | null;
   release_date: string;
   media_type: string;
   imageSrc: string;
@@ -25,6 +26,7 @@ type DetailsHeaderProps = {
   }[];
   posterUrl: string;
   certification?: string;
+  trailerKey: string | null;
   overview: string;
 };
 
@@ -33,29 +35,20 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
   posterUrl,
   title,
   rating,
+  imdbRating,
   release_date,
   media_type,
   genres,
   imageSrc,
   certification,
+  trailerKey,
   overview,
 }) => {
-  const [trailerUrl, setTrailerUrl] = useState<null | string>(null);
-  const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { trailerUrl, isOpen, openTrailer, closeTrailer } =
+    useTrailerModal(trailerKey);
 
-  const handlePlayTrailer = async () => {
-    try {
-      const url = await movieTrailer(title || "top 10 movies 2024");
-      if (url !== null && url !== "") {
-        const embedUrl = `https://youtube.com/embed/${url.split("v=")[1]}`;
-        setTrailerUrl(embedUrl);
-      }
-      setIsModalOpened(true);
-    } catch {
-      setTrailerUrl(null);
-    }
-  };
+  const topGenres = genres?.slice(0, 3) ?? [];
 
   const handleWatchOnline = () => {
     const validMediaTypes = ["movie", "tv"];
@@ -71,20 +64,6 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
 
     navigate(`/watch/${media_type}/${id}`);
   };
-
-  const handleCloseBtn = () => {
-    setIsModalOpened(false);
-    setTrailerUrl(null);
-  };
-
-  useEffect(() => {
-    if (isModalOpened) {
-      document.body.style.overflow = "hidden";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isModalOpened]);
 
   return (
     <>
@@ -112,38 +91,33 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
             </Heading>
 
             <div className="flex gap-2">
-              {genres?.slice(0, 3).map((genre, i) => (
+              {topGenres.map((genre, i) => (
                 <Text key={genre.id}>
                   {genre.name}
-                  {i === genres?.slice(0, 3).length - 1 ? "" : ","}
+                  {i === topGenres.length - 1 ? "" : ","}
                 </Text>
               ))}
             </div>
 
-            <div className="flex items-center gap-2">
-              <Text>{release_date}</Text>
-              <span>•</span>
-              <div className="media-type flex items-center gap-1">
-                {media_type === "movie" ? (
-                  <RiFilmFill className="text-md" />
-                ) : (
-                  <PiTelevisionSimpleFill className="text-md" />
-                )}
-                <Text>{media_type}</Text>
-              </div>
-              {certification ? (
-                <>
-                  <span>•</span>
-                  <span className="rounded border border-white/40 px-1.5 text-sm leading-tight">
-                    {certification}
-                  </span>
-                </>
-              ) : null}
-            </div>
+            <MediaMeta
+              release_date={release_date}
+              media_type={media_type}
+              certification={certification}
+            />
 
             <div className="w-fit">
-              <div data-testid="details-rating" className="mt-2 flex gap-2">
+              <div
+                data-testid="details-rating"
+                className="mt-2 flex items-center gap-2"
+              >
                 <PercentageCircle rating={rating * 10} />
+                {imdbRating && (
+                  <PercentageCircle
+                    rating={Number(imdbRating) * 10}
+                    className="text-[#F5C518]"
+                  />
+                )}
+
                 <div className="h-10 w-10">
                   <BookMark
                     id={id}
@@ -151,14 +125,22 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
                     className="w-full h-full"
                   />
                 </div>
-                <PlayButton onClick={handlePlayTrailer}>Trailer</PlayButton>
+                <div className="h-10 w-10">
+                  <WatchLater
+                    id={id}
+                    media_type={media_type}
+                    className="w-full h-full"
+                  />
+                </div>
               </div>
-              <PlayButton
-                className="w-full h-10 mt-2"
-                onClick={handleWatchOnline}
-              >
-                Watch Online
-              </PlayButton>
+              <div className="mt-3 flex gap-2">
+                <PlayButton className="h-10" onClick={openTrailer}>
+                  Trailer
+                </PlayButton>
+                <PlayButton className="w-full h-10" onClick={handleWatchOnline}>
+                  Watch Online
+                </PlayButton>
+              </div>
             </div>
 
             <div className="hidden md:block mt-2 max-w-[50vw]">
@@ -173,40 +155,11 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
         </div>
       </section>
 
-      {trailerUrl === null ? (
-        isModalOpened && (
-          <div className="fixed z-50 inset-0 max-h-screen bg-black/80 backdrop-blur-[2px] flex justify-center overflow-y-hidden items-center">
-            <button
-              className="absolute text-5xl right-10 top-10 hover:text-red-500 z-30"
-              onClick={handleCloseBtn}
-            >
-              <IoCloseCircleOutline />
-            </button>
-            <Heading as="h1" className="text-center">
-              Sorry, no trailer found
-            </Heading>
-          </div>
-        )
-      ) : (
-        <div className="fixed z-50 inset-0 max-h-screen bg-black/80 backdrop-blur-[2px] flex justify-center overflow-y-hidden items-center">
-          <div className="relative w-[320px] h-[200px] md:w-[640px] md:h-[360px] lg:w-[854px] lg:h-[480px]">
-            <button
-              className="absolute text-4xl -right-5 -top-8 md:-right-10 md:-top-10  hover:text-red-500 z-30"
-              onClick={handleCloseBtn}
-            >
-              <IoCloseCircleOutline />
-            </button>
-            <iframe
-              className="w-full h-full"
-              src={trailerUrl}
-              title="YouTube video player"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-          </div>
-        </div>
+      {isOpen && (
+        <TrailerModal trailerUrl={trailerUrl} onClose={closeTrailer} />
       )}
     </>
   );
 };
+
 export default DetailsHeader;

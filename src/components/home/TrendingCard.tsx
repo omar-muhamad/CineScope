@@ -2,7 +2,7 @@ import { FC } from "react";
 import { NavLink } from "react-router-dom";
 
 import Text from "../ui/Text";
-import BookMark from "../ui/BookMark";
+import SaveActions from "../ui/SaveActions";
 import { RiFilmFill } from "react-icons/ri";
 import { PiTelevisionSimpleFill } from "react-icons/pi";
 import { IoStar } from "react-icons/io5";
@@ -32,10 +32,7 @@ const TrendingCard: FC<TrendingCardProps> = ({
     : poster;
 
   return (
-    <li className="relative shrink-0 w-[42vw] sm:w-[28vw] md:w-[20vw] lg:w-[16vw]">
-      <div className="absolute w-8 h-8 z-30 peer right-3 top-3">
-        <BookMark id={id} media_type={media_type} className="w-full h-full" />
-      </div>
+    <li className="group/card relative shrink-0 w-[42vw] sm:w-[28vw] md:w-[20vw] lg:w-[16vw]">
       <NavLink
         className="relative block"
         to={movie ? `/movie/${id}` : `/tv/${id}`}
@@ -58,7 +55,9 @@ const TrendingCard: FC<TrendingCardProps> = ({
               ) : (
                 <PiTelevisionSimpleFill className="text-sm" />
               )}
-              <Text size="sm" className="hidden md:block">{media_type}</Text>
+              <Text size="sm" className="hidden md:block">
+                {media_type}
+              </Text>
             </div>
             {rating > 0 && (
               <>
@@ -75,8 +74,9 @@ const TrendingCard: FC<TrendingCardProps> = ({
           </h2>
         </div>
 
-        <div className="absolute inset-0 rounded-lg opacity-0 hover:opacity-100 hover:duration-300 peer-hover:opacity-100 bg-[#00000070] backdrop-blur-[2px] flex justify-center items-center">
-          <Text className="bg-white/70 text-black py-2 px-4 rounded-full">
+        <div className="absolute inset-0 rounded-lg opacity-0 hover:opacity-100 hover:duration-300 group-hover/card:opacity-100 bg-[#00000070] backdrop-blur-[2px] flex flex-col gap-3 justify-center items-center">
+          <SaveActions id={id} media_type={media_type} />
+          <Text size="sm" className="bg-white/70 text-black py-2 px-3 rounded-full">
             See Details
           </Text>
         </div>

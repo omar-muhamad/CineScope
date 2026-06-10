@@ -7,7 +7,7 @@ import poster from "@/assets/images/default-poster.png";
 
 import Heading from "./Heading";
 import Text from "./Text";
-import BookMark from "./BookMark";
+import SaveActions from "./SaveActions";
 import LazyImage from "./LazyImage";
 
 type ItemCardProps = {
@@ -31,12 +31,10 @@ const ItemCard: FC<ItemCardProps> = ({
 
   return (
     <li>
-      <div className="relative w-full">
-        <div className="absolute w-8 h-8 right-3 top-3 z-30">
-          <BookMark id={id} media_type={media_type} className="w-full h-full" />
-        </div>
+      <div className="group/card relative w-full">
         <NavLink to={media_type === "movie" ? `/movie/${id}` : `/tv/${id}`}>
-          <div className="absolute z-10 inset-0 opacity-0 hover:opacity-100 hover:duration-300 bg-[#00000070] backdrop-blur-[2px] flex justify-center items-center">
+          <div className="absolute z-10 inset-0 opacity-0 hover:opacity-100 hover:duration-300 bg-[#00000070] backdrop-blur-[2px] flex flex-col gap-3 justify-center items-center">
+            <SaveActions id={id} media_type={media_type} />
             <Text
               size="sm"
               className="bg-white/70 text-black py-2 px-3 rounded-full"
@@ -74,7 +72,11 @@ const ItemCard: FC<ItemCardProps> = ({
           )}
         </div>
         <NavLink to={media_type === "movie" ? `/movie/${id}` : `/tv/${id}`}>
-          <Heading as="h3" size="sm" className="line-clamp-2 text-ellipsis md:truncate max-md:text-base">
+          <Heading
+            as="h3"
+            size="sm"
+            className="line-clamp-2 text-ellipsis md:truncate max-md:text-base"
+          >
             {title}
           </Heading>
         </NavLink>

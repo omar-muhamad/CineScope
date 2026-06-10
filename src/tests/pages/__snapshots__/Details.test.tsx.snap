@@ -131,10 +131,10 @@ exports[`Details Page > renders Details Page should match the screenshot 1`] = `
           </section>
         </div>
         <section
-          class="px-16 mt-10"
+          class="px-4 md:px-16 mt-6 md:mt-10"
         >
           <h2
-            class="antialiased text-3xl font-outfitLight text-orange font-bold"
+            class="antialiased text-3xl font-outfitLight text-orange font-bold max-md:text-xl"
           >
             Recommendations
           </h2>
@@ -721,10 +721,10 @@ exports[`Details Page > renders Details Page should match the screenshot 1`] = `
         </section>
       </div>
       <section
-        class="px-16 mt-10"
+        class="px-4 md:px-16 mt-6 md:mt-10"
       >
         <h2
-          class="antialiased text-3xl font-outfitLight text-orange font-bold"
+          class="antialiased text-3xl font-outfitLight text-orange font-bold max-md:text-xl"
         >
           Recommendations
         </h2>
