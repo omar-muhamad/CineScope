@@ -43,7 +43,7 @@ const ItemCard: FC<ItemCardProps> = ({
             </Text>
           </div>
           <LazyImage
-            className="w-full rounded-lg aspect-[2/3] object-cover"
+            className="w-full rounded-lg aspect-2/3 object-cover"
             src={imgSrc ? imageSrc : poster}
             alt={`${title} poster`}
           />

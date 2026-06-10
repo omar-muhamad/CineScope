@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { createPortal } from "react-dom";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { IconType } from "react-icons";
@@ -44,7 +45,11 @@ const MobileMenu: FC<MobileMenuProps> = ({
     }
   };
 
-  return (
+  // Rendered through a portal into <body> so the fixed full-screen overlay
+  // escapes the navbar's containing block. The nav uses `backdrop-blur`
+  // (backdrop-filter), which makes it the containing block for fixed
+  // descendants — without the portal the menu would be clipped to the navbar.
+  return createPortal(
     <div
       className={`md:hidden fixed inset-0 z-50 overflow-hidden ${
         isOpen ? "pointer-events-auto" : "pointer-events-none"
@@ -59,7 +64,7 @@ const MobileMenu: FC<MobileMenuProps> = ({
       />
       <div
         id={id}
-        className={`absolute top-0 right-0 h-full w-3/4 max-w-xs bg-secondary-dark shadow-lg p-6 flex flex-col gap-6 transition-transform duration-300 ease-in-out ${
+        className={`absolute top-0 right-0 h-full w-3/4 max-w-xs bg-secondary-dark/90 backdrop-blur-sm shadow-lg p-6 flex flex-col gap-6 transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -93,7 +98,8 @@ const MobileMenu: FC<MobileMenuProps> = ({
           {isLogged ? "Logout" : "Login"}
         </Button>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 

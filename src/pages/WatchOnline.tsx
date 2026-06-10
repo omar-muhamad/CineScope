@@ -107,12 +107,12 @@ const WatchOnline: FC = () => {
         loading={loading!}
         skeleton={
           <>
-            <Skeleton className="h-9 w-1/2 max-w-md rounded" />
+            <Skeleton className="h-9 w-1/2 max-w-md rounded-sm" />
             <div className="mt-8 rounded-xl bg-secondary-dark p-4">
               <Skeleton className="h-12 w-full rounded-t-lg" />
               <Skeleton className="w-full aspect-video rounded-b-lg" />
             </div>
-            <Skeleton className="h-8 w-56 rounded mt-16" />
+            <Skeleton className="h-8 w-56 rounded-sm mt-16" />
             <SkeletonGrid count={14} />
           </>
         }

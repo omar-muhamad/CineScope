@@ -38,7 +38,7 @@ const Movies: FC = () => {
       loading={loading}
       skeleton={
         <>
-          <Skeleton className="h-9 w-60 rounded" />
+          <Skeleton className="h-9 w-60 rounded-sm" />
           <SkeletonGrid count={20} />
         </>
       }

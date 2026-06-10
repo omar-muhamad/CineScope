@@ -50,7 +50,7 @@ const SeasonSelector: FC<SeasonSelectorProps> = ({
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label="Select season"
-        className="flex w-full h-12 md:h-16 items-center justify-between bg-secondary-dark text-white font-outfitMedium text-lg rounded-lg pl-5 pr-5 py-3 outline-none cursor-pointer border border-white/10 hover:border-orange focus:border-orange transition-colors"
+        className="flex w-full h-12 md:h-16 items-center justify-between bg-secondary-dark text-white font-outfitMedium text-lg rounded-lg pl-5 pr-5 py-3 outline-hidden cursor-pointer border border-white/10 hover:border-orange focus:border-orange transition-colors"
       >
         <span className="truncate">{selected?.name}</span>
         <IoChevronDown

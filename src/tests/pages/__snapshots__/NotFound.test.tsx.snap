@@ -12,7 +12,7 @@ exports[`NotFound Page > renders NotFound Page should match the screenshot 1`] =
           class="flex flex-col items-center justify-center"
         >
           <h1
-            class="antialiased text-3xl font-outfitLight -mt-0 text-orange text-center leading-10"
+            class="antialiased text-3xl font-outfitLight mt-0 text-orange text-center leading-10"
           >
             404
             <br />
@@ -30,7 +30,7 @@ exports[`NotFound Page > renders NotFound Page should match the screenshot 1`] =
         class="flex flex-col items-center justify-center"
       >
         <h1
-          class="antialiased text-3xl font-outfitLight -mt-0 text-orange text-center leading-10"
+          class="antialiased text-3xl font-outfitLight mt-0 text-orange text-center leading-10"
         >
           404
           <br />

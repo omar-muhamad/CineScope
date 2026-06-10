@@ -31,7 +31,7 @@ const MediaMeta: FC<MediaMetaProps> = ({
     {certification ? (
       <>
         <span>•</span>
-        <span className="rounded border border-white/40 px-1.5 text-sm leading-tight">
+        <span className="rounded-sm border border-white/40 px-1.5 text-sm leading-tight">
           {certification}
         </span>
       </>

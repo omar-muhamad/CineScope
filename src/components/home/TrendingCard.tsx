@@ -38,13 +38,13 @@ const TrendingCard: FC<TrendingCardProps> = ({
         to={movie ? `/movie/${id}` : `/tv/${id}`}
       >
         <LazyImage
-          className="w-full rounded-lg aspect-[2/3] object-cover"
+          className="w-full rounded-lg aspect-2/3 object-cover"
           src={imageSrc}
           alt={`${title} poster`}
         />
 
         {/* Gradient + meta overlay for readability over the poster */}
-        <div className="absolute inset-x-0 bottom-0 h-1/2 rounded-b-lg bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-1/2 rounded-b-lg bg-linear-to-t from-black/90 via-black/50 to-transparent" />
         <div className="absolute inset-0 p-3 flex flex-col justify-end">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <Text size="sm">{releaseDate}</Text>

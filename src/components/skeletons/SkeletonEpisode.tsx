@@ -14,9 +14,9 @@ const SkeletonEpisode: FC = () => {
     >
       <Skeleton className="w-28 sm:w-40 shrink-0 aspect-video rounded-lg" />
       <div className="grow min-w-0">
-        <Skeleton className="h-4 w-16 rounded" />
-        <Skeleton className="h-4 w-2/3 rounded mt-2" />
-        <Skeleton className="h-3 w-full rounded mt-2" />
+        <Skeleton className="h-4 w-16 rounded-sm" />
+        <Skeleton className="h-4 w-2/3 rounded-sm mt-2" />
+        <Skeleton className="h-3 w-full rounded-sm mt-2" />
       </div>
     </li>
   );

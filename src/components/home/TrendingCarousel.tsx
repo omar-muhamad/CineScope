@@ -40,7 +40,7 @@ const TrendingWrapper: FC<TrendingWrapperProps> = ({ children }) => {
   }, []);
 
   const arrowBase =
-    "absolute top-1/2 -translate-y-1/2 z-40 hidden sm:flex items-center justify-center w-14 h-14 rounded-full text-white text-3xl bg-orange/80 border border-white/10 backdrop-blur-sm shadow-lg transition-all duration-300 hover:bg-white hover:text-orange hover:scale-105";
+    "absolute top-1/2 -translate-y-1/2 z-40 hidden sm:flex items-center justify-center w-14 h-14 rounded-full text-white text-3xl bg-orange/80 border border-white/10 backdrop-blur-xs shadow-lg transition-all duration-300 hover:bg-white hover:text-orange hover:scale-105";
 
   return (
     <div

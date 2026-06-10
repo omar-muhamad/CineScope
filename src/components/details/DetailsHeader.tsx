@@ -79,7 +79,7 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
         >
           <div className="h-full">
             <LazyImage
-              className="aspect-[2/3] rounded-md md:rounded-xl bg-secondary-dark object-cover"
+              className="aspect-2/3 rounded-md md:rounded-xl bg-secondary-dark object-cover"
               src={`https://image.tmdb.org/t/p/w300/${posterUrl}`}
               alt={`${title} poster`}
             />

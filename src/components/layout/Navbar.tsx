@@ -39,7 +39,7 @@ const Navbar: FC = () => {
   };
 
   return (
-    <nav className="relative flex justify-between items-center p-4 md:p-6 bg-secondary-dark">
+    <nav className="relative flex justify-between items-center p-4 md:p-5 bg-secondary-dark/90 backdrop-blur-sm">
       <div className="flex items-center gap-8">
         <NavLink
           to="/"

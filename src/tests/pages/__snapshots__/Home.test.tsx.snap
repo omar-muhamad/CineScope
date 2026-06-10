@@ -19,11 +19,11 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-trending-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
             </li>
@@ -32,11 +32,11 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-trending-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
             </li>
@@ -45,11 +45,11 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-trending-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
             </li>
@@ -58,11 +58,11 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-trending-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
             </li>
@@ -71,11 +71,11 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-trending-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
             </li>
@@ -84,11 +84,11 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-trending-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
             </li>
@@ -97,11 +97,11 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-trending-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
             </li>
@@ -110,18 +110,18 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-trending-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
             </li>
           </ul>
           <button
             aria-label="Previous"
-            class="absolute top-1/2 -translate-y-1/2 z-40 hidden sm:flex items-center justify-center w-14 h-14 rounded-full text-white text-3xl bg-orange/80 border border-white/10 backdrop-blur-sm shadow-lg transition-all duration-300 hover:bg-white hover:text-orange hover:scale-105 left-2"
+            class="absolute top-1/2 -translate-y-1/2 z-40 hidden sm:flex items-center justify-center w-14 h-14 rounded-full text-white text-3xl bg-orange/80 border border-white/10 backdrop-blur-xs shadow-lg transition-all duration-300 hover:bg-white hover:text-orange hover:scale-105 left-2"
             type="button"
           >
             <svg
@@ -144,7 +144,7 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
           </button>
           <button
             aria-label="Next"
-            class="absolute top-1/2 -translate-y-1/2 z-40 hidden sm:flex items-center justify-center w-14 h-14 rounded-full text-white text-3xl bg-orange/80 border border-white/10 backdrop-blur-sm shadow-lg transition-all duration-300 hover:bg-white hover:text-orange hover:scale-105 right-2"
+            class="absolute top-1/2 -translate-y-1/2 z-40 hidden sm:flex items-center justify-center w-14 h-14 rounded-full text-white text-3xl bg-orange/80 border border-white/10 backdrop-blur-xs shadow-lg transition-all duration-300 hover:bg-white hover:text-orange hover:scale-105 right-2"
             type="button"
           >
             <svg
@@ -173,11 +173,11 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
             class="w-full mt-10"
           >
             <div
-              class="relative overflow-hidden bg-secondary-dark h-8 w-56 rounded"
+              class="relative overflow-hidden bg-secondary-dark h-8 w-56 rounded-sm"
               data-testid="skeleton"
             >
               <div
-                class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
               />
             </div>
             <ul
@@ -187,30 +187,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -219,30 +219,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -251,30 +251,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -283,30 +283,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -315,30 +315,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -347,30 +347,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -379,30 +379,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -411,30 +411,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -443,30 +443,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -475,30 +475,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -507,30 +507,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -539,30 +539,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -571,30 +571,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -603,30 +603,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -637,11 +637,11 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
             class="w-full"
           >
             <div
-              class="relative overflow-hidden bg-secondary-dark h-8 w-56 rounded mt-14"
+              class="relative overflow-hidden bg-secondary-dark h-8 w-56 rounded-sm mt-14"
               data-testid="skeleton"
             >
               <div
-                class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
               />
             </div>
             <ul
@@ -651,30 +651,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -683,30 +683,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -715,30 +715,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -747,30 +747,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -779,30 +779,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -811,30 +811,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -843,30 +843,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -875,30 +875,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -907,30 +907,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -939,30 +939,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -971,30 +971,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -1003,30 +1003,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -1035,30 +1035,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -1067,30 +1067,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
                 data-testid="skeleton-card"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                  class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
                   class="mt-2"
                 >
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                    class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                   <div
-                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                    class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                     data-testid="skeleton"
                   >
                     <div
-                      class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                     />
                   </div>
                 </div>
@@ -1116,11 +1116,11 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
             data-testid="skeleton-trending-card"
           >
             <div
-              class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+              class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
               data-testid="skeleton"
             >
               <div
-                class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
               />
             </div>
           </li>
@@ -1129,11 +1129,11 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
             data-testid="skeleton-trending-card"
           >
             <div
-              class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+              class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
               data-testid="skeleton"
             >
               <div
-                class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
               />
             </div>
           </li>
@@ -1142,11 +1142,11 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
             data-testid="skeleton-trending-card"
           >
             <div
-              class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+              class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
               data-testid="skeleton"
             >
               <div
-                class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
               />
             </div>
           </li>
@@ -1155,11 +1155,11 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
             data-testid="skeleton-trending-card"
           >
             <div
-              class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+              class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
               data-testid="skeleton"
             >
               <div
-                class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
               />
             </div>
           </li>
@@ -1168,11 +1168,11 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
             data-testid="skeleton-trending-card"
           >
             <div
-              class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+              class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
               data-testid="skeleton"
             >
               <div
-                class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
               />
             </div>
           </li>
@@ -1181,11 +1181,11 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
             data-testid="skeleton-trending-card"
           >
             <div
-              class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+              class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
               data-testid="skeleton"
             >
               <div
-                class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
               />
             </div>
           </li>
@@ -1194,11 +1194,11 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
             data-testid="skeleton-trending-card"
           >
             <div
-              class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+              class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
               data-testid="skeleton"
             >
               <div
-                class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
               />
             </div>
           </li>
@@ -1207,18 +1207,18 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
             data-testid="skeleton-trending-card"
           >
             <div
-              class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+              class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
               data-testid="skeleton"
             >
               <div
-                class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
               />
             </div>
           </li>
         </ul>
         <button
           aria-label="Previous"
-          class="absolute top-1/2 -translate-y-1/2 z-40 hidden sm:flex items-center justify-center w-14 h-14 rounded-full text-white text-3xl bg-orange/80 border border-white/10 backdrop-blur-sm shadow-lg transition-all duration-300 hover:bg-white hover:text-orange hover:scale-105 left-2"
+          class="absolute top-1/2 -translate-y-1/2 z-40 hidden sm:flex items-center justify-center w-14 h-14 rounded-full text-white text-3xl bg-orange/80 border border-white/10 backdrop-blur-xs shadow-lg transition-all duration-300 hover:bg-white hover:text-orange hover:scale-105 left-2"
           type="button"
         >
           <svg
@@ -1241,7 +1241,7 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
         </button>
         <button
           aria-label="Next"
-          class="absolute top-1/2 -translate-y-1/2 z-40 hidden sm:flex items-center justify-center w-14 h-14 rounded-full text-white text-3xl bg-orange/80 border border-white/10 backdrop-blur-sm shadow-lg transition-all duration-300 hover:bg-white hover:text-orange hover:scale-105 right-2"
+          class="absolute top-1/2 -translate-y-1/2 z-40 hidden sm:flex items-center justify-center w-14 h-14 rounded-full text-white text-3xl bg-orange/80 border border-white/10 backdrop-blur-xs shadow-lg transition-all duration-300 hover:bg-white hover:text-orange hover:scale-105 right-2"
           type="button"
         >
           <svg
@@ -1270,11 +1270,11 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
           class="w-full mt-10"
         >
           <div
-            class="relative overflow-hidden bg-secondary-dark h-8 w-56 rounded"
+            class="relative overflow-hidden bg-secondary-dark h-8 w-56 rounded-sm"
             data-testid="skeleton"
           >
             <div
-              class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+              class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
             />
           </div>
           <ul
@@ -1284,30 +1284,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1316,30 +1316,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1348,30 +1348,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1380,30 +1380,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1412,30 +1412,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1444,30 +1444,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1476,30 +1476,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1508,30 +1508,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1540,30 +1540,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1572,30 +1572,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1604,30 +1604,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1636,30 +1636,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1668,30 +1668,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1700,30 +1700,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1734,11 +1734,11 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
           class="w-full"
         >
           <div
-            class="relative overflow-hidden bg-secondary-dark h-8 w-56 rounded mt-14"
+            class="relative overflow-hidden bg-secondary-dark h-8 w-56 rounded-sm mt-14"
             data-testid="skeleton"
           >
             <div
-              class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+              class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
             />
           </div>
           <ul
@@ -1748,30 +1748,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1780,30 +1780,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1812,30 +1812,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1844,30 +1844,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1876,30 +1876,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1908,30 +1908,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1940,30 +1940,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -1972,30 +1972,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -2004,30 +2004,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -2036,30 +2036,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -2068,30 +2068,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -2100,30 +2100,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -2132,30 +2132,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>
@@ -2164,30 +2164,30 @@ exports[`Home Page > renders Home Page should match the screenshot 1`] = `
               data-testid="skeleton-card"
             >
               <div
-                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-[2/3]"
+                class="relative overflow-hidden bg-secondary-dark w-full rounded-lg aspect-2/3"
                 data-testid="skeleton"
               >
                 <div
-                  class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                  class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                 />
               </div>
               <div
                 class="mt-2"
               >
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded"
+                  class="relative overflow-hidden bg-secondary-dark h-3 w-2/3 rounded-sm"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
                 <div
-                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded mt-2"
+                  class="relative overflow-hidden bg-secondary-dark h-4 w-5/6 rounded-sm mt-2"
                   data-testid="skeleton"
                 >
                   <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
+                    class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0"
                   />
                 </div>
               </div>

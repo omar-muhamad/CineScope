@@ -68,11 +68,11 @@ const Home: FC = () => {
         skeleton={
           <>
             <section className="w-full mt-10">
-              <Skeleton className="h-8 w-56 rounded" />
+              <Skeleton className="h-8 w-56 rounded-sm" />
               <SkeletonGrid count={14} />
             </section>
             <section className="w-full">
-              <Skeleton className="h-8 w-56 rounded mt-14" />
+              <Skeleton className="h-8 w-56 rounded-sm mt-14" />
               <SkeletonGrid count={14} />
             </section>
           </>
