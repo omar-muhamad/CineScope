@@ -1,12 +1,13 @@
-import { FC, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FC } from "react";
 import { useParams } from "react-router-dom";
 
-import { AppDispatch, RootState } from "@/redux/store";
-import { fetchDetails, fetchImdbRating } from "@/redux/details/detailsSlice";
+import {
+  useDetails,
+  useImdbRating,
+  useRecommendations,
+} from "@/queries/useDetails";
 import DetailsHeader from "@/components/details/DetailsHeader";
 import GridLayout from "@/components/layout/GridLayout";
-import { fetchRecommendations } from "@/redux/home/homeSlice";
 import ItemCard from "@/components/ui/ItemCard";
 import Heading from "@/components/ui/Heading";
 import SkeletonDetailsHeader from "@/components/skeletons/SkeletonDetailsHeader";
@@ -15,31 +16,15 @@ import { getCertification } from "@/lib/ratings";
 import { getTrailerKey } from "@/lib/trailers";
 
 const Details: FC = () => {
-  const data = useSelector((state: RootState) => state.details);
-  const dispatch = useDispatch<AppDispatch>();
-
-  const {
-    loading,
-    details,
-    recommendations,
-    recommendationsLoading,
-    imdbRating,
-  } = data;
   const { media_type, id } = useParams();
 
-  useEffect(() => {
-    dispatch(fetchDetails({ media_type, id })).then((data) => {
-      if (data.meta.requestStatus === "fulfilled") {
-        const detailsData = data.payload;
-        const { id } = detailsData;
-        dispatch(fetchRecommendations({ id, media_type }));
+  const { data: details, isLoading: loading } = useDetails(media_type, id);
 
-        const imdb_id =
-          detailsData.external_ids?.imdb_id ?? detailsData.imdb_id;
-        if (imdb_id) dispatch(fetchImdbRating({ imdb_id }));
-      }
-    });
-  }, [dispatch, id, media_type]);
+  const imdbId = details?.external_ids?.imdb_id ?? details?.imdb_id ?? null;
+  const { data: imdbRating } = useImdbRating(imdbId);
+
+  const { data: recommendations, isLoading: recommendationsLoading } =
+    useRecommendations(media_type, details?.id, Boolean(details));
 
   return (
     <main className="w-full pb-6">

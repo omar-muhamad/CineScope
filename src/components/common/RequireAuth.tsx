@@ -1,9 +1,8 @@
 import { FC } from "react";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 
-import { RootState } from "@/redux/store";
+import { useAuth } from "@/auth/useAuth";
 import Heading from "../ui/Heading";
 import Text from "../ui/Text";
 import Button from "../ui/Button";
@@ -41,7 +40,7 @@ const Gate: FC<GateProps> = ({ title, subtitle, actionLabel }) => {
 };
 
 const RequireAuth: FC<RequireAuthProps> = ({ children, requireTmdb }) => {
-  const { google, tmdb } = useSelector((state: RootState) => state.user);
+  const { google, tmdb } = useAuth();
 
   if (!google) {
     return (

@@ -1,25 +1,14 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
 import SavedMediaPage from "@/components/common/SavedMediaPage";
-import { fetchFavoritesList } from "@/redux/bookmarked/bookmarkSlice";
-import { AppDispatch, RootState } from "@/redux/store";
+import { useFavorites } from "@/queries/useBookmarks";
 
 const Favorites = () => {
-  const { favoritesLoading, favorites } = useSelector(
-    (state: RootState) => state.bookmark,
-  );
-  const dispatch = useDispatch<AppDispatch>();
-
-  useEffect(() => {
-    dispatch(fetchFavoritesList());
-  }, [dispatch]);
+  const { data: favorites, isLoading } = useFavorites();
 
   return (
     <SavedMediaPage
       label="Favorites"
-      items={favorites}
-      loading={favoritesLoading}
+      items={favorites ?? null}
+      loading={isLoading}
     />
   );
 };

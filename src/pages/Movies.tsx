@@ -1,37 +1,26 @@
-import { FC, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FC, useState } from "react";
 
 import PageLayout from "@/components/layout/PageLayout";
 import ItemCard from "@/components/ui/ItemCard";
 import GridLayout from "@/components/layout/GridLayout";
 import Heading from "@/components/ui/Heading";
-import { AppDispatch, RootState } from "@/redux/store";
-import {
-  MovieData,
-  fetchMovies,
-  moviesPagination,
-} from "@/redux/movies/moviesSlice";
+import { usePopular } from "@/queries/usePopular";
 import ReactPagination from "@/components/common/ReactPagination";
 import Skeleton from "@/components/skeletons/Skeleton";
 import SkeletonGrid from "@/components/skeletons/SkeletonGrid";
 
 const Movies: FC = () => {
-  const data = useSelector((state: RootState) => state.movies);
-  const dispatch = useDispatch<AppDispatch>();
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = usePopular("movie", page);
 
-  const { loading, movies } = data;
-  const { page, total_pages, results } = movies;
+  const loading = isLoading;
+  const currentItems = data?.results;
+  const totalPages = data?.total_pages ?? 0;
+  const pageCount = totalPages > 100 ? 100 : totalPages;
 
-  const currentItems = results;
-  const pageCount = total_pages > 100 ? 100 : total_pages;
-
-  const handlePageClick = async (event: { selected: number }) => {
-    await dispatch(moviesPagination({ currentPage: event.selected + 1 }));
+  const handlePageClick = (event: { selected: number }) => {
+    setPage(event.selected + 1);
   };
-
-  useEffect(() => {
-    dispatch(fetchMovies());
-  }, [dispatch]);
 
   return (
     <PageLayout
@@ -48,7 +37,7 @@ const Movies: FC = () => {
       </Heading>
       <GridLayout>
         {!loading && currentItems && currentItems.length !== 0
-          ? currentItems.map((movie: MovieData) => (
+          ? currentItems.map((movie) => (
               <ItemCard
                 key={movie.id}
                 id={movie.id}

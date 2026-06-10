@@ -7,7 +7,7 @@ import ItemCard from "@/components/ui/ItemCard";
 import ReactPagination from "@/components/common/ReactPagination";
 import Skeleton from "@/components/skeletons/Skeleton";
 import SkeletonGrid from "@/components/skeletons/SkeletonGrid";
-import type { MediaItem } from "@/redux/bookmarked/bookmarkSlice";
+import type { MediaItem } from "@/types";
 
 const PAGE_SIZE = 20;
 

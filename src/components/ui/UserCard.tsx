@@ -1,21 +1,18 @@
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 
-import { AppDispatch, RootState } from "@/redux/store";
-import { logout } from "@/redux/user/userSlice";
+import { useAuth } from "@/auth/useAuth";
 import Button from "./Button";
 import Heading from "./Heading";
 import Text from "./Text";
 
 const UserCard: FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { google, tmdb } = useSelector((state: RootState) => state.user);
+  const { google, tmdb, logout } = useAuth();
   const isLogged = Boolean(google);
 
   const handleLogout = async () => {
-    await dispatch(logout());
+    await logout();
     navigate("/", { replace: true });
   };
 

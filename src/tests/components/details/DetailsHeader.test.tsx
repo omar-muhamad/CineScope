@@ -1,9 +1,7 @@
-import { render, screen } from "@testing-library/react";
-import DetailsHeader from "@/components/details/DetailsHeader";
+import { screen } from "@testing-library/react";
 
-import { Provider } from "react-redux";
-import { store } from "@/redux/store";
-import { MemoryRouter } from "react-router-dom";
+import DetailsHeader from "@/components/details/DetailsHeader";
+import { renderWithProviders } from "@/tests/test-utils";
 
 describe("DetailsHeader", () => {
   const defaultProps = {
@@ -23,13 +21,7 @@ describe("DetailsHeader", () => {
   };
 
   it("renders correctly with given props", () => {
-    render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <DetailsHeader {...defaultProps} />
-        </MemoryRouter>
-      </Provider>,
-    );
+    renderWithProviders(<DetailsHeader {...defaultProps} />);
     expect(screen.getByTestId("details-poster-image")).toBeInTheDocument();
     expect(screen.getByTestId("details-rating")).toBeInTheDocument();
   });

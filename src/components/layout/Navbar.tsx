@@ -3,10 +3,9 @@ import { NavLink } from "react-router-dom";
 import { PiTelevisionSimpleFill } from "react-icons/pi";
 import { IoBookmark, IoMenu, IoClose, IoTime } from "react-icons/io5";
 import { RiFilmFill } from "react-icons/ri";
-import { useSelector } from "react-redux";
 import { FaUserCircle } from "react-icons/fa";
 
-import { RootState } from "@/redux/store";
+import { useAuth } from "@/auth/useAuth";
 import Logo from "@/assets/icons/logo.svg?react";
 import UserCard from "../ui/UserCard";
 import NavSearch from "../common/NavSearch";
@@ -24,7 +23,7 @@ const MOBILE_MENU_ID = "mobile-menu";
 const Navbar: FC = () => {
   const [isUserIconClicked, setIsUserIconClicked] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { google, tmdb } = useSelector((state: RootState) => state.user);
+  const { google, tmdb } = useAuth();
   const isLogged = Boolean(google);
   const avatarUrl =
     google?.picture ||

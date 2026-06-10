@@ -1,12 +1,10 @@
 import { FC } from "react";
 import { createPortal } from "react-dom";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { IconType } from "react-icons";
 import { IoClose } from "react-icons/io5";
 
-import { AppDispatch } from "@/redux/store";
-import { logout } from "@/redux/user/userSlice";
+import { useAuth } from "@/auth/useAuth";
 import Button from "../ui/Button";
 import NavSearch from "../common/NavSearch";
 
@@ -32,13 +30,13 @@ const MobileMenu: FC<MobileMenuProps> = ({
   isLogged,
   onClose,
 }) => {
-  const dispatch = useDispatch<AppDispatch>();
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const handleAuth = async () => {
     onClose();
     if (isLogged) {
-      await dispatch(logout());
+      await logout();
       navigate("/", { replace: true });
     } else {
       navigate("/login");

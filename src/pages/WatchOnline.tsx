@@ -1,14 +1,12 @@
 import { FC, useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { IoChevronBackOutline, IoChevronForwardOutline } from "react-icons/io5";
 
-import { AppDispatch, RootState } from "@/redux/store";
 import {
-  fetchDetails,
-  fetchSeasonEpisodes,
-} from "@/redux/details/detailsSlice";
-import { fetchRecommendations } from "@/redux/home/homeSlice";
+  useDetails,
+  useRecommendations,
+  useSeasonEpisodes,
+} from "@/queries/useDetails";
 import GridLayout from "@/components/layout/GridLayout";
 import ItemCard from "@/components/ui/ItemCard";
 import Heading from "@/components/ui/Heading";
@@ -22,17 +20,6 @@ import NotFound from "./NotFound";
 import PageLayout from "@/components/layout/PageLayout";
 
 const WatchOnline: FC = () => {
-  const data = useSelector((state: RootState) => state.details);
-  const dispatch = useDispatch<AppDispatch>();
-
-  const {
-    loading,
-    details,
-    recommendations,
-    recommendationsLoading,
-    episodesLoading,
-  } = data;
-  const episodes = Array.isArray(data.episodes) ? data.episodes : [];
   const { media_type, id } = useParams();
 
   const isValid =
@@ -44,6 +31,22 @@ const WatchOnline: FC = () => {
   const [season, setSeason] = useState(1);
   const [episode, setEpisode] = useState(1);
 
+  const { data: details, isLoading: loading } = useDetails(
+    media_type,
+    id,
+    isValid,
+  );
+
+  const { data: recommendations, isLoading: recommendationsLoading } =
+    useRecommendations(media_type, details?.id, isValid && Boolean(details));
+
+  const { data: episodesData, isLoading: episodesLoading } = useSeasonEpisodes(
+    id,
+    season,
+    isValid && isTv,
+  );
+  const episodes = Array.isArray(episodesData) ? episodesData : [];
+
   // Seasons worth showing: skip Specials (season 0) and empty seasons.
   const availableSeasons = useMemo(
     () =>
@@ -53,16 +56,6 @@ const WatchOnline: FC = () => {
     [details?.seasons],
   );
 
-  useEffect(() => {
-    if (!isValid) return;
-    dispatch(fetchDetails({ media_type, id })).then((res) => {
-      if (res.meta.requestStatus === "fulfilled" && res.payload?.id) {
-        const { id } = res.payload;
-        dispatch(fetchRecommendations({ id, media_type }));
-      }
-    });
-  }, [dispatch, id, media_type, isValid]);
-
   // Reset to the first real season/episode whenever a new show loads.
   useEffect(() => {
     if (isTv && availableSeasons.length > 0) {
@@ -70,13 +63,6 @@ const WatchOnline: FC = () => {
       setEpisode(1);
     }
   }, [availableSeasons, isTv]);
-
-  // Fetch the selected season's episodes (TV only).
-  useEffect(() => {
-    if (isValid && isTv && id) {
-      dispatch(fetchSeasonEpisodes({ id, season_number: season }));
-    }
-  }, [dispatch, id, isTv, season, isValid]);
 
   if (!isValid) return <NotFound />;
 
@@ -104,7 +90,7 @@ const WatchOnline: FC = () => {
   return (
     <main className="w-full pb-6">
       <PageLayout
-        loading={loading!}
+        loading={loading}
         skeleton={
           <>
             <Skeleton className="h-9 w-1/2 max-w-md rounded-sm" />

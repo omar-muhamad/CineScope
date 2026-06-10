@@ -1,15 +1,9 @@
-import { useDispatch, useSelector } from "react-redux";
-import { FC, useEffect } from "react";
+import { FC } from "react";
 
 import PageLayout from "@/components/layout/PageLayout";
 import GridLayout from "@/components/layout/GridLayout";
 import ItemCard from "@/components/ui/ItemCard";
-import { AppDispatch, RootState } from "@/redux/store";
-import {
-  fetchTrending,
-  fetchTrendingMovies,
-  fetchTrendingTv,
-} from "@/redux/home/homeSlice";
+import { useTrending } from "@/queries/useTrending";
 import TrendingCarousel from "@/components/home/TrendingCarousel";
 import TrendingCard from "@/components/home/TrendingCard";
 import Heading from "@/components/ui/Heading";
@@ -21,19 +15,16 @@ import SkeletonTrendingCard from "@/components/skeletons/SkeletonTrendingCard";
 const TWO_ROWS = 14;
 
 const Home: FC = () => {
-  const data = useSelector((state: RootState) => state.home);
-  const dispatch = useDispatch<AppDispatch>();
+  const trendingQuery = useTrending("all");
+  const moviesQuery = useTrending("movie");
+  const tvQuery = useTrending("tv");
 
-  const { loading, trending, trendingMovies, trendingTv } = data;
+  const loading =
+    trendingQuery.isLoading || moviesQuery.isLoading || tvQuery.isLoading;
+  const trending = trendingQuery.data;
   const trendingData = trending?.slice(0, 15);
-  const movies = trendingMovies?.slice(0, TWO_ROWS);
-  const tvShows = trendingTv?.slice(0, TWO_ROWS);
-
-  useEffect(() => {
-    dispatch(fetchTrending());
-    dispatch(fetchTrendingMovies());
-    dispatch(fetchTrendingTv());
-  }, [dispatch]);
+  const movies = moviesQuery.data?.slice(0, TWO_ROWS);
+  const tvShows = tvQuery.data?.slice(0, TWO_ROWS);
 
   return (
     <div className="">
@@ -42,7 +33,7 @@ const Home: FC = () => {
           ? Array.from({ length: 8 }).map((_, i) => (
               <SkeletonTrendingCard key={i} />
             ))
-          : !data.loading && trending && trending.length !== 0
+          : !loading && trending && trending.length !== 0
             ? trendingData?.map((item) => {
                 const movie = item.media_type === "movie";
                 return (

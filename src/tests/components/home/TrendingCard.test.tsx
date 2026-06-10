@@ -1,8 +1,7 @@
-import { render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import { screen } from "@testing-library/react";
+
 import TrendingCard from "@/components/home/TrendingCard";
-import { Provider } from "react-redux";
-import { store } from "@/redux/store";
+import { renderWithProviders } from "@/tests/test-utils";
 
 describe("TrendingCard", () => {
   const baseProps = {
@@ -15,34 +14,18 @@ describe("TrendingCard", () => {
   };
 
   it("renders without crashing", () => {
-    render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <TrendingCard {...baseProps} />
-        </MemoryRouter>
-      </Provider>,
-    );
+    renderWithProviders(<TrendingCard {...baseProps} />);
     expect(screen.getByAltText("Test Movie poster")).toBeInTheDocument();
   });
 
   it("renders correct link for a movie", () => {
-    render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <TrendingCard {...baseProps} />
-        </MemoryRouter>
-      </Provider>,
-    );
+    renderWithProviders(<TrendingCard {...baseProps} />);
     expect(screen.getByRole("link")).toHaveAttribute("href", "/movie/1");
   });
 
   it("renders correct link for a TV show", () => {
-    render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <TrendingCard {...{ ...baseProps, media_type: "tv" }} />
-        </MemoryRouter>
-      </Provider>,
+    renderWithProviders(
+      <TrendingCard {...{ ...baseProps, media_type: "tv" }} />,
     );
     expect(screen.getByRole("link")).toHaveAttribute("href", "/tv/1");
   });

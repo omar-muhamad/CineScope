@@ -1,5 +1,4 @@
-import { FC, MouseEvent, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FC, MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   IoBookmark,
@@ -8,12 +7,13 @@ import {
   IoTimeOutline,
 } from "react-icons/io5";
 
-import { AppDispatch, RootState } from "@/redux/store";
-import { getAccountStates, type MediaType } from "@/lib/tmdb";
+import { type MediaType } from "@/api/tmdb";
+import { useAuth } from "@/auth/useAuth";
 import {
-  toggleFavorite,
-  toggleWatchlist,
-} from "@/redux/bookmarked/bookmarkSlice";
+  useAccountStates,
+  useToggleFavorite,
+  useToggleWatchlist,
+} from "@/queries/useBookmarks";
 
 export type SaveKind = "favorite" | "watchlist";
 
@@ -38,35 +38,23 @@ const SaveToggle: FC<SaveToggleProps> = ({
   kind,
   className,
 }) => {
-  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { google, tmdb } = useSelector((state: RootState) => state.user);
-  const [active, setActive] = useState(false);
+  const { google, tmdb } = useAuth();
 
   const mediaType = media_type as MediaType;
 
-  // Reflect the current favorite/watchlist status from TMDB on mount.
-  useEffect(() => {
-    let cancelled = false;
-    if (!tmdb) {
-      setActive(false);
-      return;
-    }
-    getAccountStates(mediaType, id, tmdb.session_id)
-      .then((states) => {
-        if (!cancelled) {
-          setActive(kind === "favorite" ? states.favorite : states.watchlist);
-        }
-      })
-      .catch(() => {
-        /* leave as inactive if the status can't be read */
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [tmdb, mediaType, id, kind]);
+  // Current favorite/watchlist status, fetched once per title and shared with
+  // the sibling toggle. Optimistic updates flow through this cache entry.
+  const { data: states } = useAccountStates(mediaType, id);
+  const toggleFavorite = useToggleFavorite();
+  const toggleWatchlist = useToggleWatchlist();
 
-  const handleClick = async (event: MouseEvent) => {
+  const active =
+    kind === "favorite"
+      ? Boolean(states?.favorite)
+      : Boolean(states?.watchlist);
+
+  const handleClick = (event: MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -76,20 +64,12 @@ const SaveToggle: FC<SaveToggleProps> = ({
       return;
     }
 
-    const next = !active;
-    setActive(next); // optimistic
-
-    const result =
-      kind === "favorite"
-        ? await dispatch(
-            toggleFavorite({ media_type: mediaType, id, favorite: next }),
-          )
-        : await dispatch(
-            toggleWatchlist({ media_type: mediaType, id, watchlist: next }),
-          );
-
-    if (result.meta.requestStatus === "rejected") {
-      setActive(!next); // revert on failure
+    // Optimistic flip + rollback-on-error are handled inside the mutation.
+    const vars = { mediaType, id, next: !active };
+    if (kind === "favorite") {
+      toggleFavorite.mutate(vars);
+    } else {
+      toggleWatchlist.mutate(vars);
     }
   };
 

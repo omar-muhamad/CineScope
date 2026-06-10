@@ -1,33 +1,26 @@
-import { FC, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FC, useState } from "react";
 
 import PageLayout from "@/components/layout/PageLayout";
 import ItemCard from "@/components/ui/ItemCard";
 import GridLayout from "@/components/layout/GridLayout";
-import { AppDispatch, RootState } from "@/redux/store";
-import { fetchTv, tvPagination } from "@/redux/tv/tvSlice";
+import { usePopular } from "@/queries/usePopular";
 import Heading from "@/components/ui/Heading";
 import ReactPagination from "@/components/common/ReactPagination";
 import Skeleton from "@/components/skeletons/Skeleton";
 import SkeletonGrid from "@/components/skeletons/SkeletonGrid";
 
 const Tv: FC = () => {
-  const data = useSelector((state: RootState) => state.tv);
-  const dispatch = useDispatch<AppDispatch>();
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = usePopular("tv", page);
 
-  const { loading, tv } = data;
-  const { page, total_pages, results } = tv;
+  const loading = isLoading;
+  const currentItems = data?.results;
+  const totalPages = data?.total_pages ?? 0;
+  const pageCount = totalPages > 100 ? 100 : totalPages;
 
-  const currentItems = results;
-  const pageCount = total_pages > 100 ? 100 : total_pages;
-
-  const handlePageClick = async (event: { selected: number }) => {
-    await dispatch(tvPagination({ currentPage: event.selected + 1 }));
+  const handlePageClick = (event: { selected: number }) => {
+    setPage(event.selected + 1);
   };
-
-  useEffect(() => {
-    dispatch(fetchTv());
-  }, [dispatch]);
 
   return (
     <PageLayout

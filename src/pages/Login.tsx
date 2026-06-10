@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { SiThemoviedatabase } from "react-icons/si";
 
-import { AppDispatch, RootState } from "@/redux/store";
-import { clearAuthError, signInWithGoogle } from "@/redux/user/userSlice";
+import { useAuth } from "@/auth/useAuth";
 import { createRequestToken, redirectToTmdbApproval } from "@/lib/tmdbAuth";
 import Button from "@/components/ui/Button";
 import Heading from "@/components/ui/Heading";
@@ -17,8 +15,7 @@ const cardClass =
 
 const Login = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
-  const { google, tmdb, error } = useSelector((state: RootState) => state.user);
+  const { google, tmdb, error, signIn, clearError } = useAuth();
   const [connecting, setConnecting] = useState(false);
 
   const googleConfigured = Boolean(import.meta.env.VITE_GOOGLE_CLIENT_ID);
@@ -32,7 +29,7 @@ const Login = () => {
   }, [google, tmdb, navigate]);
 
   const handleConnectTmdb = async () => {
-    dispatch(clearAuthError());
+    clearError();
     setConnecting(true);
     try {
       const requestToken = await createRequestToken();
@@ -59,7 +56,7 @@ const Login = () => {
               <GoogleLogin
                 onSuccess={(credentialResponse) => {
                   if (credentialResponse.credential) {
-                    dispatch(signInWithGoogle(credentialResponse.credential));
+                    signIn(credentialResponse.credential);
                   }
                 }}
                 onError={() => {

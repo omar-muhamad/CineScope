@@ -1,38 +1,64 @@
-import { render } from "@testing-library/react";
-import { Provider } from "react-redux";
-import { store } from "@/redux/store";
+import { screen } from "@testing-library/react";
+
 import SearchResults from "@/components/common/SearchResults";
-import { DataState, SearchResult } from "@/redux/search/searchSlice";
-import { BrowserRouter } from "react-router-dom";
+import type { MediaSummary } from "@/types";
+import { renderWithProviders } from "@/tests/test-utils";
+
+const results: MediaSummary[] = [
+  {
+    id: 1,
+    media_type: "movie",
+    backdrop_path: "backdrop_path",
+    poster_path: "poster_path",
+    release_date: "2021-01-01",
+    first_air_date: "",
+    adult: false,
+    vote_average: 7,
+    title: "Batman",
+    name: "",
+  },
+];
 
 describe("SearchResults", () => {
-  const data: DataState = {
-    loading: false,
-    searchData: {
-      page: 1,
-      total_pages: 1,
-      results: [
-        {
-          id: 1,
-          media_type: "movie",
-          backdrop_path: "backdrop_path",
-          poster_path: "poster_path",
-          release_date: "2021-01-01",
-          adult: false,
-          title: "title",
-        } as SearchResult,
-      ],
-    },
-    error: "",
-  };
-
-  it("renders without crashing", () => {
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <SearchResults data={data} />
-        </BrowserRouter>
-      </Provider>,
+  it("renders the result titles", () => {
+    renderWithProviders(
+      <SearchResults
+        results={results}
+        totalPages={1}
+        page={1}
+        loading={false}
+        onPageChange={() => {}}
+      />,
     );
+    expect(screen.getByText("Search Results")).toBeInTheDocument();
+    expect(screen.getByAltText(/batman/i)).toBeInTheDocument();
+  });
+
+  it("shows a skeleton while loading", () => {
+    renderWithProviders(
+      <SearchResults
+        results={[]}
+        totalPages={0}
+        page={1}
+        loading={true}
+        onPageChange={() => {}}
+      />,
+    );
+    expect(screen.getByText("Search Results")).toBeInTheDocument();
+  });
+
+  it("shows an empty state when there are no title results", () => {
+    renderWithProviders(
+      <SearchResults
+        results={[]}
+        totalPages={0}
+        page={1}
+        loading={false}
+        onPageChange={() => {}}
+      />,
+    );
+    expect(
+      screen.getByText(/no results match your search/i),
+    ).toBeInTheDocument();
   });
 });

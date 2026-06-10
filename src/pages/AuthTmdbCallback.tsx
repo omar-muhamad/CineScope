@@ -1,11 +1,9 @@
 import { useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 
-import { AppDispatch, RootState } from "@/redux/store";
-import { completeTmdbConnect } from "@/redux/user/userSlice";
+import { useAuth } from "@/auth/useAuth";
 import Heading from "@/components/ui/Heading";
 import Text from "@/components/ui/Text";
 
@@ -18,10 +16,9 @@ const cardClass =
  * session, link it to the signed-in Google user, then send them home.
  */
 const AuthTmdbCallback = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const { google, tmdb, error } = useSelector((state: RootState) => state.user);
+  const { google, tmdb, error, connectTmdb } = useAuth();
 
   const requestToken = params.get("request_token");
   const denied = params.get("denied") === "true";
@@ -32,9 +29,9 @@ const AuthTmdbCallback = () => {
     startedRef.current = true;
     // Need a Google identity to link the session to, an approved token, and no denial.
     if (google && requestToken && !denied) {
-      dispatch(completeTmdbConnect(requestToken));
+      connectTmdb(requestToken);
     }
-  }, [dispatch, google, requestToken, denied]);
+  }, [connectTmdb, google, requestToken, denied]);
 
   useEffect(() => {
     if (tmdb) {
