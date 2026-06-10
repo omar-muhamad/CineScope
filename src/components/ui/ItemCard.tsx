@@ -7,7 +7,7 @@ import poster from "@/assets/images/default-poster.png";
 
 import Heading from "./Heading";
 import Text from "./Text";
-import SaveToggle, { SaveKind } from "./SaveToggle";
+import SaveActions from "./SaveActions";
 import LazyImage from "./LazyImage";
 
 type ItemCardProps = {
@@ -17,8 +17,6 @@ type ItemCardProps = {
   media_type: string;
   rating: number;
   title: string;
-  /** Which TMDB list the card's toggle controls. Defaults to favorites. */
-  saveKind?: SaveKind;
 };
 
 const ItemCard: FC<ItemCardProps> = ({
@@ -28,20 +26,14 @@ const ItemCard: FC<ItemCardProps> = ({
   media_type,
   rating,
   title,
-  saveKind = "favorite",
 }) => {
   const imageSrc = `https://image.tmdb.org/t/p/w500/${imgSrc}`;
 
   return (
     <li>
       <div className="relative w-full">
-        <div className="absolute w-8 h-8 right-3 top-3 z-30">
-          <SaveToggle
-            id={id}
-            media_type={media_type}
-            kind={saveKind}
-            className="w-full h-full"
-          />
+        <div className="absolute right-3 top-3 z-30">
+          <SaveActions id={id} media_type={media_type} />
         </div>
         <NavLink to={media_type === "movie" ? `/movie/${id}` : `/tv/${id}`}>
           <div className="absolute z-10 inset-0 opacity-0 hover:opacity-100 hover:duration-300 bg-[#00000070] backdrop-blur-[2px] flex justify-center items-center">

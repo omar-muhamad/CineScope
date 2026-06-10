@@ -51,7 +51,7 @@ const Login = () => {
             Sign in to CineScope
           </Heading>
           <Text>
-            Sign in with Google to save your bookmarked movies and watch-later
+            Sign in with Google to save your favorite movies and watch-later
             list to your own TMDB account.
           </Text>
           {googleConfigured ? (

@@ -5,7 +5,7 @@ import SavedMediaPage from "@/components/common/SavedMediaPage";
 import { fetchFavoritesList } from "@/redux/bookmarked/bookmarkSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 
-const Bookmarked = () => {
+const Favorites = () => {
   const { favoritesLoading, favorites } = useSelector(
     (state: RootState) => state.bookmark,
   );
@@ -17,12 +17,11 @@ const Bookmarked = () => {
 
   return (
     <SavedMediaPage
-      label="Bookmarked"
+      label="Favorites"
       items={favorites}
       loading={favoritesLoading}
-      saveKind="favorite"
     />
   );
 };
 
-export default Bookmarked;
+export default Favorites;

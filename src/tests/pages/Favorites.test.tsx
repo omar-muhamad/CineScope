@@ -1,21 +1,19 @@
-
-import Bookmarked from "@/pages/Bookmarked";
+import Favorites from "@/pages/Favorites";
 import { store } from "@/redux/store";
 import { render } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
 
-
-describe("Bookmarked Page", () => {
-  test("renders Bookmarked Page should match the screenshot", () => {
-    const bookmarked = render(
+describe("Favorites Page", () => {
+  test("renders Favorites Page should match the screenshot", () => {
+    const favorites = render(
       <Provider store={store}>
         <Router>
-          <Bookmarked />
+          <Favorites />
         </Router>
-      </Provider>
+      </Provider>,
     );
 
-    expect(bookmarked).toMatchSnapshot();
+    expect(favorites).toMatchSnapshot();
   });
 });

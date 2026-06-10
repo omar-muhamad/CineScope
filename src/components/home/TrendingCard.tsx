@@ -2,7 +2,7 @@ import { FC } from "react";
 import { NavLink } from "react-router-dom";
 
 import Text from "../ui/Text";
-import BookMark from "../ui/BookMark";
+import SaveActions from "../ui/SaveActions";
 import { RiFilmFill } from "react-icons/ri";
 import { PiTelevisionSimpleFill } from "react-icons/pi";
 import { IoStar } from "react-icons/io5";
@@ -33,8 +33,8 @@ const TrendingCard: FC<TrendingCardProps> = ({
 
   return (
     <li className="relative shrink-0 w-[42vw] sm:w-[28vw] md:w-[20vw] lg:w-[16vw]">
-      <div className="absolute w-8 h-8 z-30 peer right-3 top-3">
-        <BookMark id={id} media_type={media_type} className="w-full h-full" />
+      <div className="absolute z-30 peer right-3 top-3">
+        <SaveActions id={id} media_type={media_type} />
       </div>
       <NavLink
         className="relative block"
@@ -58,7 +58,9 @@ const TrendingCard: FC<TrendingCardProps> = ({
               ) : (
                 <PiTelevisionSimpleFill className="text-sm" />
               )}
-              <Text size="sm" className="hidden md:block">{media_type}</Text>
+              <Text size="sm" className="hidden md:block">
+                {media_type}
+              </Text>
             </div>
             {rating > 0 && (
               <>

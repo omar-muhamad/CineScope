@@ -7,7 +7,7 @@ import Tv from "./pages/Tv";
 import Search from "./pages/Search";
 import Details from "./pages/Details";
 import WatchOnline from "./pages/WatchOnline";
-import Bookmarked from "./pages/Bookmarked";
+import Favorites from "./pages/Favorites";
 import WatchLater from "./pages/WatchLater";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -35,10 +35,10 @@ function App() {
           <Route path="/watch/:media_type/:id" element={<WatchOnline />} />
           <Route path="/:media_type/:id" element={<Details />} />
           <Route
-            path="/bookmarked"
+            path="/favorites"
             element={
               <RequireAuth requireTmdb>
-                <Bookmarked />
+                <Favorites />
               </RequireAuth>
             }
           />

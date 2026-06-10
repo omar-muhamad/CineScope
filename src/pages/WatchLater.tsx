@@ -20,7 +20,6 @@ const WatchLater = () => {
       label="Watch Later"
       items={watchlist}
       loading={watchlistLoading}
-      saveKind="watchlist"
     />
   );
 };

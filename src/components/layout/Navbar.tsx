@@ -15,7 +15,7 @@ import MobileMenu, { NavLinkItem } from "./MobileMenu";
 const navLinks: NavLinkItem[] = [
   { id: 1, title: "movies", path: "/movies", icon: RiFilmFill },
   { id: 2, title: "tv", path: "/tv", icon: PiTelevisionSimpleFill },
-  { id: 3, title: "bookmarked", path: "/bookmarked", icon: IoBookmark },
+  { id: 3, title: "favorites", path: "/favorites", icon: IoBookmark },
   { id: 4, title: "watch later", path: "/watch-later", icon: IoTime },
 ];
 
