@@ -63,6 +63,17 @@ export const AuthProvider: FC<AuthProviderProps> = ({
     });
   }, []);
 
+  const signInWithEmail = useCallback(async (email: string) => {
+    // signInWithOtp resolves with { error } instead of throwing. Unlike the
+    // OAuth flow the page stays put, so we rethrow to let the caller show the
+    // "check your inbox" state only when the email actually went out.
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: window.location.origin },
+    });
+    if (error) throw error;
+  }, []);
+
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
     setSession(null);
@@ -76,9 +87,10 @@ export const AuthProvider: FC<AuthProviderProps> = ({
       session,
       loading,
       signIn,
+      signInWithEmail,
       signOut,
     }),
-    [session, loading, signIn, signOut],
+    [session, loading, signIn, signInWithEmail, signOut],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

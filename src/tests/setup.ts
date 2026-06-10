@@ -13,6 +13,7 @@ vi.mock("@/lib/supabase", () => ({
         data: { subscription: { unsubscribe: vi.fn() } },
       }),
       signInWithOAuth: vi.fn().mockResolvedValue({ data: {}, error: null }),
+      signInWithOtp: vi.fn().mockResolvedValue({ data: {}, error: null }),
       signOut: vi.fn().mockResolvedValue({ error: null }),
     },
     from: vi.fn(),

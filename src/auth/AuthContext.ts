@@ -10,6 +10,11 @@ export type AuthContextValue = {
   loading: boolean;
   /** Start the Google OAuth redirect flow. */
   signIn: () => Promise<void>;
+  /**
+   * Send a passwordless magic link to the given email. Resolves once the email
+   * is sent; rejects if Supabase refuses (rate limit, blocked address, etc.).
+   */
+  signInWithEmail: (email: string) => Promise<void>;
   /** Sign out and clear cached per-user data. */
   signOut: () => Promise<void>;
 };
