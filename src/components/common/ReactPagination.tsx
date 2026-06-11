@@ -13,7 +13,6 @@ const ReactPaginate = ((
   ReactPaginateDefault as unknown as { default?: typeof ReactPaginateDefault }
 ).default ?? ReactPaginateDefault) as typeof ReactPaginateDefault;
 
-
 type ReactPaginationProps = {
   pageCount: number;
   handlePageClick: (event: { selected: number }) => void;
@@ -25,12 +24,20 @@ export default function ReactPagination({
   handlePageClick,
   page,
 }: ReactPaginationProps) {
+  // The pagination control sits at the bottom of the grid, so after changing
+  // page the user is left scrolled past the freshly loaded results. Scroll
+  // back to the top so the new page starts from the first item.
+  const onPageChange = (event: { selected: number }) => {
+    handlePageClick(event);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <ReactPaginate
       nextAriaLabel="next"
       previousAriaLabel="previous"
       pageCount={pageCount}
-      onPageChange={handlePageClick}
+      onPageChange={onPageChange}
       marginPagesDisplayed={1}
       forcePage={page - 1}
       previousLabel={<IoIosArrowDropleftCircle className="w-full h-full" />}

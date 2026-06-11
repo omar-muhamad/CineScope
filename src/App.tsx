@@ -13,6 +13,7 @@ import WatchLater from "./pages/WatchLater";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import ErrorBoundary from "./components/common/ErrorBoundary";
+import ScrollToTop from "./components/common/ScrollToTop";
 
 const AUTH_ROUTES = ["/login"];
 
@@ -20,6 +21,7 @@ function App() {
   const { pathname } = useLocation();
   return (
     <div className="font-outfitLight min-h-screen w-full  flex bg-main-dark text-white flex-col mx-auto relative">
+      <ScrollToTop />
       {!AUTH_ROUTES.includes(pathname) && (
         <header className="sticky top-0 z-50">
           <Navbar />
