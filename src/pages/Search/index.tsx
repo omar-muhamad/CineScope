@@ -1,34 +1,79 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState, useTransition } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import PageLayout from "@/components/layout/PageLayout";
+import QueryBoundary from "@/components/common/QueryBoundary";
 import SearchResults from "./components/SearchResults";
 import Heading from "@/components/ui/Heading";
 import Text from "@/components/ui/Text";
+import SkeletonGrid from "@/components/skeletons/SkeletonGrid";
 import { useSearch } from "./queries/useSearch";
+
+type SearchResultsSectionProps = {
+  query: string;
+  page: number;
+  onPageChange: (event: { selected: number }) => void;
+};
+
+/** Suspends on the search query, then renders the results. */
+const SearchResultsSection: FC<SearchResultsSectionProps> = ({
+  query,
+  page,
+  onPageChange,
+}) => {
+  const { data } = useSearch(query, page);
+  return (
+    <SearchResults
+      results={data.results ?? []}
+      totalPages={data.total_pages ?? 0}
+      page={page}
+      onPageChange={onPageChange}
+    />
+  );
+};
+
+const SearchResultsFallback: FC = () => (
+  <div>
+    <Heading as="h1" className="text-orange font-bold max-md:text-xl">
+      Search Results
+    </Heading>
+    <SkeletonGrid count={14} />
+  </div>
+);
 
 const Search: FC = () => {
   const [searchParams] = useSearchParams();
   const query = searchParams.get("search") ?? "";
   const [page, setPage] = useState(1);
+  const [isPending, startTransition] = useTransition();
 
   // A new search term starts over at page 1.
   useEffect(() => {
     setPage(1);
   }, [query]);
 
-  const { data, isLoading } = useSearch(query, page);
+  // Page through inside a transition so the current results stay visible while
+  // the next page suspends, instead of flashing the skeleton fallback.
+  const onPageChange = ({ selected }: { selected: number }) =>
+    startTransition(() => setPage(selected + 1));
 
   return (
-    <PageLayout loading={false}>
+    <PageLayout>
       {query ? (
-        <SearchResults
-          results={data?.results ?? []}
-          totalPages={data?.total_pages ?? 0}
-          page={page}
-          loading={isLoading}
-          onPageChange={({ selected }) => setPage(selected + 1)}
-        />
+        <div
+          className={isPending ? "opacity-60 transition-opacity" : undefined}
+        >
+          <QueryBoundary
+            fallback={<SearchResultsFallback />}
+            resetKeys={[query]}
+          >
+            <SearchResultsSection
+              query={query}
+              page={page}
+              onPageChange={onPageChange}
+            />
+          </QueryBoundary>
+        </div>
       ) : (
         <div className="flex flex-col items-center justify-center gap-2 h-[calc(100vh-12rem)]">
           <Heading as="h1">Search</Heading>
