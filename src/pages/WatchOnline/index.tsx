@@ -88,6 +88,12 @@ const WatchOnline: FC = () => {
   const isFirst = currentIndex <= 0;
   const isLast = currentIndex < 0 || currentIndex >= episodes.length - 1;
 
+  const currentEpisode = currentIndex >= 0 ? episodes[currentIndex] : undefined;
+  const releaseYear =
+    pageMediaType === "movie"
+      ? details?.release_date?.slice(0, 4)
+      : details?.first_air_date?.slice(0, 4);
+
   const goPrev = () => {
     if (!isFirst) setEpisode(episodes[currentIndex - 1].episode_number);
   };
@@ -114,7 +120,24 @@ const WatchOnline: FC = () => {
         <section>
           <Heading as="h1" className="text-orange font-bold max-md:text-xl">
             {movie ? details?.title : details?.name}
+            {releaseYear && (
+              <span className="ml-2 text-xl font-normal text-gray max-md:text-base">
+                ({releaseYear})
+              </span>
+            )}
           </Heading>
+
+          {isTv && (
+            <p className="mt-2 text-gray max-md:text-sm">
+              Now watching:{" "}
+              <span className="font-semibold text-white">
+                S{season} - E{episode}
+              </span>
+              {currentEpisode?.name && (
+                <span className="ml-2">{currentEpisode.name}</span>
+              )}
+            </p>
+          )}
 
           {/* Player module: toggle + nav on top, video below */}
           <div className="mt-8 rounded-xl overflow-hidden bg-secondary-dark md:p-4">
@@ -164,6 +187,14 @@ const WatchOnline: FC = () => {
           {isTv && availableSeasons.length > 0 && (
             <div className="mt-6">
               <div>
+                <div className="flex items-center gap-2 mt-6">
+                  <Heading as="h2">Seasons</Heading>
+                  {availableSeasons.length > 0 && (
+                    <span className="px-2 py-0.5 rounded-full bg-secondary-dark text-sm text-gray">
+                      {availableSeasons.length}
+                    </span>
+                  )}
+                </div>
                 <SeasonSelector
                   seasons={availableSeasons}
                   season={season}
