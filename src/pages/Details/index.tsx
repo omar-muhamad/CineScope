@@ -10,7 +10,7 @@ import { useImdbRating } from "./queries/useImdbRating";
 import DetailsHeader from "./components/DetailsHeader";
 import CastList from "./components/CastList";
 import SkeletonCastList from "./components/SkeletonCastList";
-import MediaScrollSection from "./components/MediaScrollSection";
+import MediaScrollSection from "@/components/common/MediaScrollSection";
 import Heading from "@/components/ui/Heading";
 import SkeletonDetailsHeader from "./components/SkeletonDetailsHeader";
 import { getCertification } from "./lib/ratings";

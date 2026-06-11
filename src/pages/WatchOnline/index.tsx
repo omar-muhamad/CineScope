@@ -2,13 +2,16 @@ import { FC, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { IoChevronBackOutline, IoChevronForwardOutline } from "react-icons/io5";
 
-import { useDetails, useRecommendations } from "@/queries/useDetails";
+import {
+  useDetails,
+  useRecommendations,
+  useSimilar,
+} from "@/queries/useDetails";
 import { useSeasonEpisodes } from "./queries/useSeasonEpisodes";
-import GridLayout from "@/components/layout/GridLayout";
-import ItemCard from "@/components/ui/ItemCard";
+import MediaScrollSection from "@/components/common/MediaScrollSection";
 import Heading from "@/components/ui/Heading";
 import Skeleton from "@/components/skeletons/Skeleton";
-import SkeletonGrid from "@/components/skeletons/SkeletonGrid";
+import SkeletonMediaRow from "@/components/skeletons/SkeletonMediaRow";
 import PlayerSelector from "./components/PlayerSelector";
 import SeasonSelector from "./components/SeasonSelector";
 import EpisodeList from "./components/EpisodeList";
@@ -34,8 +37,16 @@ const WatchOnline: FC = () => {
     isValid,
   );
 
+  const pageMediaType = media_type === "movie" ? "movie" : "tv";
+
   const { data: recommendations, isLoading: recommendationsLoading } =
     useRecommendations(media_type, details?.id, isValid && Boolean(details));
+
+  const { data: similar, isLoading: similarLoading } = useSimilar(
+    media_type,
+    details?.id,
+    isValid && Boolean(details),
+  );
 
   const { data: episodesData, isLoading: episodesLoading } = useSeasonEpisodes(
     id,
@@ -96,7 +107,7 @@ const WatchOnline: FC = () => {
               <Skeleton className="w-full aspect-video rounded-b-lg" />
             </div>
             <Skeleton className="h-8 w-56 rounded-sm mt-16" />
-            <SkeletonGrid count={14} />
+            <SkeletonMediaRow />
           </>
         }
       >
@@ -183,37 +194,20 @@ const WatchOnline: FC = () => {
           )}
         </section>
 
-        <section className="pl-6 md:pl-0 mt-16">
-          <Heading as="h2" className="text-orange font-bold max-md:text-xl">
-            Recommendations
-          </Heading>
-          {recommendationsLoading ? (
-            <SkeletonGrid count={14} />
-          ) : (
-            <GridLayout>
-              {recommendations && recommendations.length !== 0
-                ? recommendations.map((item) => {
-                    const isMovie = item.media_type === "movie";
-                    return (
-                      <ItemCard
-                        key={item.id}
-                        id={item.id}
-                        imgSrc={item.poster_path}
-                        releaseDate={
-                          isMovie
-                            ? item.release_date?.substring(0, 4)
-                            : item.first_air_date?.substring(0, 4)
-                        }
-                        media_type={isMovie ? "movie" : "tv"}
-                        rating={item.vote_average}
-                        title={isMovie ? item.title : item.name}
-                      />
-                    );
-                  })
-                : null}
-            </GridLayout>
-          )}
-        </section>
+        <MediaScrollSection
+          title="Recommendations"
+          items={recommendations}
+          mediaType={pageMediaType}
+          isLoading={recommendationsLoading}
+          className="mt-16"
+        />
+        <MediaScrollSection
+          title="More Like This"
+          items={similar}
+          mediaType={pageMediaType}
+          isLoading={similarLoading}
+          className="mt-10"
+        />
       </PageLayout>
     </main>
   );

@@ -144,7 +144,7 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
                   />
                 </div>
               </div>
-              <div className="mt-3 flex gap-2">
+              <div className="mt-3 flex max-md:flex-col gap-2">
                 <PlayButton className="h-10" onClick={openTrailer}>
                   Trailer
                 </PlayButton>
