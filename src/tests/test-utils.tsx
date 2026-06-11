@@ -5,6 +5,7 @@ import { MemoryRouter } from "react-router-dom";
 import type { Session, User } from "@supabase/supabase-js";
 
 import { AuthProvider } from "@/auth/AuthProvider";
+import ErrorBoundary from "@/components/common/ErrorBoundary";
 
 /** Shared auth fixtures so tests don't redefine these everywhere. */
 export const testUser = {
@@ -55,7 +56,11 @@ export const renderWithProviders = (
   return render(
     <QueryClientProvider client={client}>
       <AuthProvider initialSession={session}>
-        <MemoryRouter initialEntries={[route]}>{ui}</MemoryRouter>
+        <MemoryRouter initialEntries={[route]}>
+          {/* Catch thrown suspense-query errors so a rejected mock surfaces as
+              the error UI instead of an uncaught throw out of render. */}
+          <ErrorBoundary>{ui}</ErrorBoundary>
+        </MemoryRouter>
       </AuthProvider>
     </QueryClientProvider>,
   );
