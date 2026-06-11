@@ -58,6 +58,9 @@ const WatchDetailsContent: FC<WatchContentProps> = ({ mediaType, id }) => {
   // Reset to the first real season/episode whenever a new show loads.
   useEffect(() => {
     if (isTv && availableSeasons.length > 0) {
+      // Syncing local selection to async-loaded data; react-hooks 7's
+      // set-state-in-effect rule flags this, but it's the intended behavior.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSeason(availableSeasons[0].season_number);
       setEpisode(1);
     }

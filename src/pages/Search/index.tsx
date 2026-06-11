@@ -49,6 +49,9 @@ const Search: FC = () => {
 
   // A new search term starts over at page 1.
   useEffect(() => {
+    // Intentional reset-on-query-change; react-hooks 7's set-state-in-effect
+    // rule flags this pattern, but resetting here is the desired behavior.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPage(1);
   }, [query]);
 
