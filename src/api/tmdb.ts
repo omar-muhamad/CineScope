@@ -29,6 +29,37 @@ export const fetchPopular = async (
   return { page: resultPage, results, total_pages };
 };
 
+/** Browse categories backed by a paginated TMDB list endpoint. */
+export type MovieCategory =
+  | "trending"
+  | "now_playing"
+  | "upcoming"
+  | "top_rated";
+export type TvCategory = "trending" | "on_the_air" | "top_rated";
+export type MediaCategory = MovieCategory | TvCategory;
+
+/**
+ * A page of a browse category (trending / now playing / upcoming / top rated /
+ * on the air). `trending` hits `/trending/{mediaType}/week`; every other
+ * category maps straight to `/{mediaType}/{category}`. All return the same
+ * paginated shape as the other list endpoints.
+ */
+export const fetchMediaList = async (
+  mediaType: MediaType,
+  category: MediaCategory,
+  page: number,
+): Promise<Paginated<MediaSummary>> => {
+  const path =
+    category === "trending"
+      ? `/trending/${mediaType}/week`
+      : `/${mediaType}/${category}`;
+  const { data } = await tmdb.get(path, {
+    params: { page, language: "en-US" },
+  });
+  const { page: resultPage, results, total_pages } = data;
+  return { page: resultPage, results, total_pages };
+};
+
 /** Multi-type search (movies, TV, people) — caller filters out people. */
 export const searchMulti = async (
   query: string,

@@ -9,11 +9,35 @@ import { useAuth } from "@/auth/useAuth";
 import Logo from "@/assets/icons/logo.svg?react";
 import UserCard from "../ui/UserCard";
 import NavSearch from "../common/NavSearch";
+import NavDropdown from "./NavDropdown";
 import MobileMenu, { NavLinkItem } from "./MobileMenu";
 
 const navLinks: NavLinkItem[] = [
-  { id: 1, title: "movies", path: "/movies", icon: RiFilmFill },
-  { id: 2, title: "tv shows", path: "/tv", icon: PiTelevisionSimpleFill },
+  {
+    id: 1,
+    title: "movies",
+    path: "/movies",
+    icon: RiFilmFill,
+    children: [
+      { id: 11, title: "trending", path: "/movies/trending" },
+      { id: 12, title: "popular", path: "/movies/popular" },
+      { id: 13, title: "now playing", path: "/movies/now-playing" },
+      { id: 14, title: "upcoming", path: "/movies/upcoming" },
+      { id: 15, title: "top rated", path: "/movies/top-rated" },
+    ],
+  },
+  {
+    id: 2,
+    title: "tv shows",
+    path: "/tv",
+    icon: PiTelevisionSimpleFill,
+    children: [
+      { id: 21, title: "trending", path: "/tv/trending" },
+      { id: 22, title: "popular", path: "/tv/popular" },
+      { id: 23, title: "on tv", path: "/tv/on-tv" },
+      { id: 24, title: "top rated", path: "/tv/top-rated" },
+    ],
+  },
   {
     id: 3,
     title: "favorites",
@@ -95,16 +119,24 @@ const Navbar: FC = () => {
           data-testid="nav-links"
           className="hidden md:flex items-center gap-4"
         >
-          {visibleLinks.map((link) => (
-            <NavLink
-              key={link.id}
-              to={link.path}
-              className="flex items-center gap-1 capitalize text-2xl text-gray hover:text-white aria-[current=page]:text-white"
-              aria-label={`Link to ${link.title} page click to show more`}
-            >
-              <span className="text-xl">{link.title}</span>
-            </NavLink>
-          ))}
+          {visibleLinks.map((link) =>
+            link.children ? (
+              <NavDropdown
+                key={link.id}
+                title={link.title}
+                items={link.children}
+              />
+            ) : (
+              <NavLink
+                key={link.id}
+                to={link.path}
+                className="flex items-center gap-1 capitalize text-2xl text-gray hover:text-white aria-[current=page]:text-white"
+                aria-label={`Link to ${link.title} page click to show more`}
+              >
+                <span className="text-xl">{link.title}</span>
+              </NavLink>
+            ),
+          )}
         </div>
       </div>
       <div className="flex items-center gap-4 md:gap-6">

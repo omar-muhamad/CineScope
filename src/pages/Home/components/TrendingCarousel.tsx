@@ -50,7 +50,7 @@ const TrendingWrapper: FC<TrendingWrapperProps> = ({ children }) => {
     >
       <ul
         ref={scrollRef}
-        className="flex gap-4 overflow-x-scroll no-scrollbar scroll-smooth"
+        className="flex gap-4 overflow-x-scroll scroll-smooth scrollbar-none"
       >
         {children}
       </ul>

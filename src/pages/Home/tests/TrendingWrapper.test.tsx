@@ -30,7 +30,7 @@ describe("TrendingWrapper", () => {
     );
     const list = screen.getByText("Styling Test").parentNode;
     expect(list).toHaveClass(
-      "flex gap-4 overflow-x-scroll no-scrollbar scroll-smooth",
+      "flex gap-4 overflow-x-scroll scroll-smooth scrollbar-none",
     );
     expect(list?.parentNode).toHaveClass("relative w-full mt-6");
   });

@@ -77,14 +77,14 @@ const Login = () => {
   return (
     <div className="flex min-h-screen w-full">
       {/* Hero panel — cinematic brand side, shown on large screens. */}
-      <aside className="relative hidden w-4/7 min-w-0 flex-col justify-between overflow-hidden bg-secondary-dark p-12 lg:flex">
+      <aside className="relative hidden w-4/7 min-w-0 flex-col justify-between items-center overflow-hidden bg-secondary-dark p-12 lg:flex">
         <div aria-hidden className="pointer-events-none absolute inset-0">
           <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(252,71,71,0.18),transparent_55%)]" />
           <span className="absolute -left-20 top-1/3 size-72 rounded-full bg-orange/20 blur-3xl" />
           <span className="absolute -bottom-24 right-0 size-96 rounded-full bg-orange/10 blur-3xl" />
         </div>
 
-        <div className="relative flex-1 flex flex-col justify-center gap-6">
+        <div className="relative flex-1 flex flex-col items-center justify-center gap-6">
           <Brand />
           <h2 className="font-outfitLight text-4xl leading-tight text-white">
             Your cinema, organized.
@@ -93,7 +93,7 @@ const Login = () => {
             Track what you love and what&apos;s next — favorites and
             watch-later, all in one place.
           </Text>
-          <ul className="flex flex-col gap-4">
+          <ul className="self-start flex flex-col gap-4">
             {features.map(({ icon: Icon, text }) => (
               <li key={text} className="flex items-center gap-3">
                 <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-orange/15 text-orange">

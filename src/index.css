@@ -46,6 +46,7 @@
   ::backdrop,
   ::file-selector-button {
     border-color: var(--color-gray-200, currentcolor);
+    @apply scrollbar-thin scrollbar-thumb-orange scrollbar-track-transparent;
   }
 
   /*
@@ -57,24 +58,6 @@
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
-  }
-}
-
-/*
-  In Tailwind CSS v4 all framework styles live inside cascade layers, and
-  unlayered CSS always beats layered CSS. This global reset must therefore
-  live in `@layer base`; otherwise its `margin: 0` / `padding: 0` would
-  override every `m-*` / `p-*` utility and spacing would silently disappear.
-*/
-@layer base {
-  *,
-  *:before,
-  *:after {
-    margin: 0;
-    padding: 0;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
   }
 }
 
@@ -100,14 +83,6 @@ body {
     top: 6rem;
     right: 1.5rem;
   }
-}
-
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
 }
 
 .progress-ring__circle {

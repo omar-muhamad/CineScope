@@ -111,7 +111,7 @@ const SaveToggle: FC<SaveToggleProps> = ({
       className={`${BASE_CLASSES} hover:bg-white active:bg-orange hover:opacity-100 cursor-pointer ${className}`}
     >
       {active ? (
-        <OnIcon className="text-xl text-black/70" />
+        <OnIcon className="text-xl text-orange" />
       ) : (
         <OffIcon className="text-xl text-black/70" />
       )}
