@@ -145,7 +145,7 @@ const Navbar: FC = () => {
         </div>
         <div ref={userMenuRef} className="hidden md:block">
           <button
-            className="size-8 shrink-0"
+            className="size-10 flex shrink-0 rounded-full"
             type="button"
             aria-label="User image"
             aria-haspopup="menu"

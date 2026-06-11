@@ -123,7 +123,7 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
                 {imdbRating && (
                   <PercentageCircle
                     rating={Number(imdbRating) * 10}
-                    className="text-[#F5C518]"
+                    className="text-[#F5C518]!"
                   />
                 )}
 
