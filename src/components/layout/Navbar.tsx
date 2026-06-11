@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { PiTelevisionSimpleFill } from "react-icons/pi";
-import { IoBookmark, IoMenu, IoClose, IoTime } from "react-icons/io5";
+import { IoHeart, IoMenu, IoClose, IoTime } from "react-icons/io5";
 import { RiFilmFill } from "react-icons/ri";
 import { FaUserCircle } from "react-icons/fa";
 
@@ -42,7 +42,7 @@ const navLinks: NavLinkItem[] = [
     id: 3,
     title: "favorites",
     path: "/favorites",
-    icon: IoBookmark,
+    icon: IoHeart,
     requiresAuth: true,
   },
   {

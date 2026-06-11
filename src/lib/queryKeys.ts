@@ -18,6 +18,8 @@ export const queryKeys = {
     mediaType: string | undefined,
     id: number | string | undefined,
   ) => ["recommendations", mediaType, id] as const,
+  similar: (mediaType: string | undefined, id: number | string | undefined) =>
+    ["similar", mediaType, id] as const,
   imdbRating: (imdbId: string | null | undefined) =>
     ["imdbRating", imdbId] as const,
   episodes: (id: string | undefined, season: number) =>

@@ -47,6 +47,17 @@ export type MediaSummary = {
   name: string;
 };
 
+/** A billed cast member from a title's `credits` (movie or tv). */
+export type CastMember = {
+  id: number;
+  name: string;
+  character: string;
+  profile_path: string | null;
+  /** Billing order — lower numbers are more prominent. */
+  order: number;
+  known_for_department?: string;
+};
+
 /** A page of results from a paginated TMDB list endpoint. */
 export type Paginated<T> = {
   page: number;
@@ -98,5 +109,8 @@ export type DetailsData = {
   };
   videos?: {
     results: Video[];
+  };
+  credits?: {
+    cast: CastMember[];
   };
 };

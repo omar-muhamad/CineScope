@@ -1,8 +1,8 @@
 import { FC, MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  IoBookmark,
-  IoBookmarkOutline,
+  IoHeart,
+  IoHeartOutline,
   IoTime,
   IoTimeOutline,
 } from "react-icons/io5";
@@ -27,7 +27,7 @@ type SaveToggleProps = {
 };
 
 const ICONS = {
-  favorite: { on: IoBookmark, off: IoBookmarkOutline, label: "bookmarks" },
+  favorite: { on: IoHeart, off: IoHeartOutline, label: "bookmarks" },
   watchlist: { on: IoTime, off: IoTimeOutline, label: "watch later" },
 } as const;
 

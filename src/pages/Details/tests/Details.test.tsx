@@ -23,6 +23,7 @@ vi.mock("@/api/tmdb", async (importOriginal) => {
       }),
     ),
     fetchRecommendations: vi.fn(() => Promise.resolve([])),
+    fetchSimilar: vi.fn(() => Promise.resolve([])),
   };
 });
 

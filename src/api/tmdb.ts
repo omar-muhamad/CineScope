@@ -70,7 +70,7 @@ export const searchMulti = async (
   return { page: resultPage, results, total_pages };
 };
 
-/** Full details for a title, with videos / certifications / external ids. */
+/** Full details for a title, with videos / certifications / external ids / cast. */
 export const fetchDetails = async (
   mediaType: string | undefined,
   id: string | undefined,
@@ -79,8 +79,8 @@ export const fetchDetails = async (
     params: {
       append_to_response:
         mediaType === "tv"
-          ? "content_ratings,videos,external_ids"
-          : "release_dates,videos,external_ids",
+          ? "content_ratings,videos,external_ids,credits"
+          : "release_dates,videos,external_ids,credits",
     },
   });
   return data;
@@ -92,6 +92,19 @@ export const fetchRecommendations = async (
   id: number | string | undefined,
 ): Promise<MediaSummary[]> => {
   const { data } = await tmdb.get(`/${mediaType}/${id}/recommendations`);
+  return data.results;
+};
+
+/**
+ * Similar titles for a given title (TMDB matches on genres and keywords).
+ * Results are always the same media type as the source, so they omit the
+ * `media_type` field — callers should treat them as `mediaType`.
+ */
+export const fetchSimilar = async (
+  mediaType: string | undefined,
+  id: number | string | undefined,
+): Promise<MediaSummary[]> => {
+  const { data } = await tmdb.get(`/${mediaType}/${id}/similar`);
   return data.results;
 };
 

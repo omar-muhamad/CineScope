@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import {
   IoMailOutline,
-  IoBookmarkOutline,
+  IoHeartOutline,
   IoTimeOutline,
   IoFilmOutline,
 } from "react-icons/io5";
@@ -15,7 +15,7 @@ import Heading from "@/components/ui/Heading";
 import Text from "@/components/ui/Text";
 
 const features = [
-  { icon: IoBookmarkOutline, text: "Save the movies and shows you love" },
+  { icon: IoHeartOutline, text: "Save the movies and shows you love" },
   { icon: IoTimeOutline, text: "Build a watch-later list you can return to" },
   { icon: IoFilmOutline, text: "Search the full TMDB catalog" },
 ];
