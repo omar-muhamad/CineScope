@@ -15,7 +15,7 @@ const Skeleton: FC<SkeletonProps> = ({ className = "" }) => {
       data-testid="skeleton"
       className={`relative overflow-hidden bg-secondary-dark ${className}`}
     >
-      <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0" />
+      <div className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent animate-shimmer motion-reduce:animate-none motion-reduce:translate-x-0" />
     </div>
   );
 };

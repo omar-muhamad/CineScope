@@ -17,6 +17,8 @@ type ItemCardProps = {
   media_type: string;
   rating: number;
   title: string;
+  /** Extra classes for the root `<li>` (e.g. a fixed width in a scroll row). */
+  className?: string;
 };
 
 const ItemCard: FC<ItemCardProps> = ({
@@ -26,15 +28,25 @@ const ItemCard: FC<ItemCardProps> = ({
   media_type,
   rating,
   title,
+  className,
 }) => {
   const imageSrc = `https://image.tmdb.org/t/p/w500/${imgSrc}`;
 
   return (
-    <li>
+    <li className={className}>
       <div className="group/card relative w-full">
         <NavLink to={media_type === "movie" ? `/movie/${id}` : `/tv/${id}`}>
           <div className="absolute z-10 inset-0 opacity-0 hover:opacity-100 hover:duration-300 bg-[#00000070] backdrop-blur-[2px] flex flex-col gap-3 justify-center items-center">
-            <SaveActions id={id} media_type={media_type} />
+            <SaveActions
+              id={id}
+              media_type={media_type}
+              meta={{
+                title,
+                poster_path: imgSrc,
+                release_date: releaseDate,
+                vote_average: rating,
+              }}
+            />
             <Text
               size="sm"
               className="bg-white/70 text-black py-2 px-3 rounded-full"
@@ -43,7 +55,7 @@ const ItemCard: FC<ItemCardProps> = ({
             </Text>
           </div>
           <LazyImage
-            className="w-full rounded-lg aspect-[2/3] object-cover"
+            className="w-full rounded-lg aspect-2/3 object-cover"
             src={imgSrc ? imageSrc : poster}
             alt={`${title} poster`}
           />

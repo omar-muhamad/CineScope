@@ -7,7 +7,7 @@ import ItemCard from "@/components/ui/ItemCard";
 import ReactPagination from "@/components/common/ReactPagination";
 import Skeleton from "@/components/skeletons/Skeleton";
 import SkeletonGrid from "@/components/skeletons/SkeletonGrid";
-import type { MediaItem } from "@/redux/bookmarked/bookmarkSlice";
+import type { MediaItem } from "@/types";
 
 const PAGE_SIZE = 20;
 
@@ -60,7 +60,7 @@ const SavedMediaPage: FC<SavedMediaPageProps> = ({ label, items, loading }) => {
       loading={loading}
       skeleton={
         <>
-          <Skeleton className="h-9 w-48 rounded" />
+          <Skeleton className="h-9 w-48 rounded-sm" />
           <Skeleton className="mt-4 h-9 w-64 rounded-full" />
           <SkeletonGrid count={14} />
         </>

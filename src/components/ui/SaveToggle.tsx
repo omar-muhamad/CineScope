@@ -1,19 +1,19 @@
-import { FC, MouseEvent, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FC, MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  IoBookmark,
-  IoBookmarkOutline,
+  IoHeart,
+  IoHeartOutline,
   IoTime,
   IoTimeOutline,
 } from "react-icons/io5";
 
-import { AppDispatch, RootState } from "@/redux/store";
-import { getAccountStates, type MediaType } from "@/lib/tmdb";
+import { type MediaType, type SavedMeta } from "@/api/saved";
+import { useAuth } from "@/auth/useAuth";
 import {
-  toggleFavorite,
-  toggleWatchlist,
-} from "@/redux/bookmarked/bookmarkSlice";
+  useSavedState,
+  useToggleFavorite,
+  useToggleWatchlist,
+} from "@/queries/useBookmarks";
 
 export type SaveKind = "favorite" | "watchlist";
 
@@ -21,11 +21,13 @@ type SaveToggleProps = {
   id: number;
   media_type: string;
   kind: SaveKind;
+  /** Card metadata stored on add so saved pages render without re-hitting TMDB. */
+  meta?: SavedMeta;
   className?: string;
 };
 
 const ICONS = {
-  favorite: { on: IoBookmark, off: IoBookmarkOutline, label: "bookmarks" },
+  favorite: { on: IoHeart, off: IoHeartOutline, label: "bookmarks" },
   watchlist: { on: IoTime, off: IoTimeOutline, label: "watch later" },
 } as const;
 
@@ -36,65 +38,41 @@ const SaveToggle: FC<SaveToggleProps> = ({
   id,
   media_type,
   kind,
+  meta,
   className,
 }) => {
-  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { google, tmdb } = useSelector((state: RootState) => state.user);
-  const [active, setActive] = useState(false);
+  const { user } = useAuth();
 
   const mediaType = media_type as MediaType;
 
-  // Reflect the current favorite/watchlist status from TMDB on mount.
-  useEffect(() => {
-    let cancelled = false;
-    if (!tmdb) {
-      setActive(false);
-      return;
-    }
-    getAccountStates(mediaType, id, tmdb.session_id)
-      .then((states) => {
-        if (!cancelled) {
-          setActive(kind === "favorite" ? states.favorite : states.watchlist);
-        }
-      })
-      .catch(() => {
-        /* leave as inactive if the status can't be read */
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [tmdb, mediaType, id, kind]);
+  // Current favorite/watchlist status, derived from the cached list (no
+  // per-title request). Optimistic updates flow through that list cache.
+  const { active } = useSavedState(kind, mediaType, id);
+  const toggleFavorite = useToggleFavorite();
+  const toggleWatchlist = useToggleWatchlist();
 
-  const handleClick = async (event: MouseEvent) => {
+  const handleClick = (event: MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
 
-    // Not authenticated (or no TMDB linked) → route to the login/connect flow.
-    if (!google || !tmdb) {
+    // Not signed in → route to the login flow.
+    if (!user) {
       navigate("/login");
       return;
     }
 
-    const next = !active;
-    setActive(next); // optimistic
-
-    const result =
-      kind === "favorite"
-        ? await dispatch(
-            toggleFavorite({ media_type: mediaType, id, favorite: next }),
-          )
-        : await dispatch(
-            toggleWatchlist({ media_type: mediaType, id, watchlist: next }),
-          );
-
-    if (result.meta.requestStatus === "rejected") {
-      setActive(!next); // revert on failure
+    // Optimistic flip + rollback-on-error are handled inside the mutation.
+    const vars = { mediaType, id, next: !active, meta: meta ?? {} };
+    if (kind === "favorite") {
+      toggleFavorite.mutate(vars);
+    } else {
+      toggleWatchlist.mutate(vars);
     }
   };
 
   const { on: OnIcon, off: OffIcon, label } = ICONS[kind];
-  const loggedIn = Boolean(google);
+  const loggedIn = Boolean(user);
 
   // Logged out: render a non-interactive, disabled-looking toggle with a
   // hover tooltip explaining why. This branch only ever shows on the details
@@ -133,9 +111,9 @@ const SaveToggle: FC<SaveToggleProps> = ({
       className={`${BASE_CLASSES} hover:bg-white active:bg-orange hover:opacity-100 cursor-pointer ${className}`}
     >
       {active ? (
-        <OnIcon className="text-xl text-black/70 group-hover:text-white/70" />
+        <OnIcon className="text-xl text-orange" />
       ) : (
-        <OffIcon className="text-xl text-black/70 group-hover:text-white/70" />
+        <OffIcon className="text-xl text-black/70" />
       )}
     </button>
   );

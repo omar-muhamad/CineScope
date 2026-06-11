@@ -43,7 +43,7 @@ const NavSearch: FC<NavSearchProps> = ({ variant = "nav", onSearch }) => {
         onChange={(event) => setQuery(event.target.value)}
         placeholder="Search..."
         aria-label="Search for movies and TV series"
-        className="w-full min-w-0 bg-transparent text-sm outline-none caret-orange placeholder:text-gray"
+        className="w-full min-w-0 bg-transparent text-sm outline-hidden caret-orange placeholder:text-gray"
       />
     </form>
   );

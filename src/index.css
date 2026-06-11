@@ -1,15 +1,64 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-*,
-*:before,
-*:after {
-  margin: 0;
-  padding: 0;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
+@theme {
+  --color-main-dark: #10141e;
+  --color-secondary-dark: #161d2f;
+  --color-gray: #5a698f;
+  --color-orange: #fc4747;
+
+  --font-outfit: Outfit, sans-serif;
+  --font-outfitLight: outfit-light, sans-serif;
+  --font-outfitMedium: outfit-medium, sans-serif;
+
+  --animate-shimmer: shimmer 1.5s infinite;
+  --animate-dropdown: dropdown 0.12s ease-out;
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes dropdown {
+    from {
+      opacity: 0;
+      transform: scale(0.97) translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+    @apply scrollbar-thin scrollbar-thumb-orange scrollbar-track-transparent;
+  }
+
+  /*
+    Tailwind CSS v4 changed the default button cursor to `default`.
+    Restore the v3 `pointer` cursor so interactive controls keep their
+    original behavior (the app relies on this rather than explicit
+    `cursor-pointer` utilities).
+  */
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
 }
 
 @font-face {
@@ -34,14 +83,6 @@ body {
     top: 6rem;
     right: 1.5rem;
   }
-}
-
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
 }
 
 .progress-ring__circle {
