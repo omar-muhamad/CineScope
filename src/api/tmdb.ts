@@ -86,6 +86,45 @@ const discoverSortBy = (sort: MediaSort, mediaType: MediaType): string => {
     : `first_air_date.${direction}`;
 };
 
+const isoDate = (date: Date): string => date.toISOString().slice(0, 10);
+
+const daysFromNow = (days: number): Date => {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  return date;
+};
+
+/**
+ * Discover has no notion of now-playing / upcoming / on-the-air, so filtered
+ * browsing re-creates each category's date window (approximating TMDB's own
+ * definitions) — otherwise "Upcoming Movies" filtered by genre would happily
+ * show the all-time catalog.
+ */
+const categoryDateWindow = (
+  mediaType: MediaType,
+  category: MediaCategory,
+): Record<string, string> => {
+  if (mediaType === "movie" && category === "now_playing") {
+    return {
+      "primary_release_date.gte": isoDate(daysFromNow(-35)),
+      "primary_release_date.lte": isoDate(daysFromNow(0)),
+    };
+  }
+  if (mediaType === "movie" && category === "upcoming") {
+    return {
+      "primary_release_date.gte": isoDate(daysFromNow(1)),
+      "primary_release_date.lte": isoDate(daysFromNow(35)),
+    };
+  }
+  if (mediaType === "tv" && category === "on_the_air") {
+    return {
+      "air_date.gte": isoDate(daysFromNow(0)),
+      "air_date.lte": isoDate(daysFromNow(7)),
+    };
+  }
+  return {};
+};
+
 /**
  * A filtered/sorted page of titles. The category list endpoints don't accept
  * filters, so filtered browsing goes through `/discover/{mediaType}` instead —
@@ -112,6 +151,7 @@ export const fetchDiscover = async (
           ? "vote_average.desc"
           : "popularity.desc",
       ...(ratingSorted && { "vote_count.gte": 200 }),
+      ...categoryDateWindow(mediaType, category),
       ...(filters.year !== undefined &&
         (mediaType === "movie"
           ? { primary_release_year: filters.year }
