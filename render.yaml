@@ -1,0 +1,77 @@
+# Render Blueprint — deploys both layers from this repo.
+# Dashboard: New → Blueprint → connect this repo. Render reads this file,
+# creates both services, and prompts for every `sync: false` env var.
+#
+# AFTER FIRST CREATION: Render may suffix the subdomains if the names are
+# taken (e.g. cinescope-api-xyz1.onrender.com). Check the real URLs in the
+# dashboard, then fix the /api rewrite destination below and the web
+# service's APP_ORIGIN, and push the correction.
+services:
+  # ── Frontend: static site (free, CDN-served, never sleeps) ──────────────
+  - type: web
+    name: cinescope-web
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    # Order matters — first match wins. The /api proxy must precede the SPA
+    # fallback so API calls reach Fastify while the browser sees one origin
+    # (keeps the httpOnly refresh cookie first-party; no CORS needed).
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://cinescope-api.onrender.com/api/*
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    # Vite inlines VITE_* vars at build time — set real values in the dashboard.
+    envVars:
+      - key: VITE_GOOGLE_CLIENT_ID
+        sync: false
+      - key: VITE_TMDB_READ_TOKEN
+        sync: false
+      - key: VITE_APP_OMDB_API_KEY
+        sync: false
+    # Don't rebuild the frontend for server-only changes.
+    buildFilter:
+      ignoredPaths:
+        - server/**
+        - drizzle/**
+
+  # ── Backend: Fastify API (free instance — sleeps after 15 min idle; the
+  # GitHub Actions keep-alive workflow pings /api/health to prevent that) ──
+  - type: web
+    name: cinescope-api
+    runtime: node
+    plan: free
+    # --include=dev: NODE_ENV=production makes npm ci skip devDependencies,
+    # but drizzle-kit (db:migrate) is a devDependency. Migrations run on
+    # every deploy so the schema always matches the code.
+    buildCommand: npm ci --include=dev && npm run db:migrate
+    startCommand: npx tsx server/index.ts
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      # `aud` accepted on Google ID tokens — same value as VITE_GOOGLE_CLIENT_ID.
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      # The frontend's public URL — email verification/reset links point here.
+      - key: APP_ORIGIN
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+    buildFilter:
+      paths:
+        - server/**
+        - drizzle/**
+        - package.json
+        - package-lock.json
+        - render.yaml
