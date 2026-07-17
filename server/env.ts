@@ -13,6 +13,14 @@ const required = (name: string): string => {
   return value;
 };
 
+/**
+ * Optional var where an empty string means unset — dashboards (e.g. Render's
+ * Blueprint prompts) store vars left blank as "", which must fall back to
+ * the default rather than yield port 0 / an empty From address.
+ */
+const optional = (name: string): string | undefined =>
+  process.env[name] || undefined;
+
 export const env = {
   /** Postgres connection string. Server-side only — never VITE_-prefixed. */
   databaseUrl: required("DATABASE_URL"),
@@ -24,11 +32,11 @@ export const env = {
    * so it falls back to that var to avoid configuring the same value twice.
    */
   googleClientId:
-    process.env.GOOGLE_CLIENT_ID ?? process.env.VITE_GOOGLE_CLIENT_ID ?? "",
+    optional("GOOGLE_CLIENT_ID") ?? optional("VITE_GOOGLE_CLIENT_ID") ?? "",
 
-  port: Number(process.env.PORT ?? 3001),
+  port: Number(optional("PORT") ?? 3001),
   /** Frontend origin — used to build email links (and CORS if ever split-origin). */
-  appOrigin: process.env.APP_ORIGIN ?? "http://localhost:5173",
+  appOrigin: optional("APP_ORIGIN") ?? "http://localhost:5173",
 
   accessTokenTtlSeconds: Number(process.env.ACCESS_TOKEN_TTL_SECONDS ?? 900), // 15 min
   refreshTokenTtlDays: Number(process.env.REFRESH_TOKEN_TTL_DAYS ?? 30),
@@ -44,13 +52,13 @@ export const env = {
   /** SMTP transport for verification emails. Unset host = log links instead. */
   smtp: {
     host: process.env.SMTP_HOST ?? "",
-    port: Number(process.env.SMTP_PORT ?? 587),
+    port: Number(optional("SMTP_PORT") ?? 587),
     user: process.env.SMTP_USER ?? "",
     pass: process.env.SMTP_PASS ?? "",
     // The From address must align with the sending domain or receivers flag
     // the mail as spoofed, so default to the authenticated SMTP account.
     from:
-      process.env.MAIL_FROM ??
+      optional("MAIL_FROM") ??
       (process.env.SMTP_USER
         ? `CineScope <${process.env.SMTP_USER}>`
         : "CineScope <no-reply@cinescope.local>"),
