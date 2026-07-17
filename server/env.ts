@@ -42,7 +42,13 @@ export const env = {
     port: Number(process.env.SMTP_PORT ?? 587),
     user: process.env.SMTP_USER ?? "",
     pass: process.env.SMTP_PASS ?? "",
-    from: process.env.MAIL_FROM ?? "CineScope <no-reply@cinescope.local>",
+    // The From address must align with the sending domain or receivers flag
+    // the mail as spoofed, so default to the authenticated SMTP account.
+    from:
+      process.env.MAIL_FROM ??
+      (process.env.SMTP_USER
+        ? `CineScope <${process.env.SMTP_USER}>`
+        : "CineScope <no-reply@cinescope.local>"),
   },
 
   isProduction: process.env.NODE_ENV === "production",
