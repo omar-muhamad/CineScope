@@ -52,9 +52,8 @@ describe("Movies Page", () => {
     renderWithProviders(<Movies />);
     expect(await screen.findByText("Popular Movie")).toBeInTheDocument();
 
-    fireEvent.change(screen.getByLabelText("Filter by rating"), {
-      target: { value: "7" },
-    });
+    fireEvent.click(screen.getByRole("button", { name: "Filter by rating" }));
+    fireEvent.click(screen.getByRole("option", { name: "★ 7+" }));
 
     expect(await screen.findByText("Filtered Movie")).toBeInTheDocument();
     // Clearing the filters goes back to the unfiltered category list.

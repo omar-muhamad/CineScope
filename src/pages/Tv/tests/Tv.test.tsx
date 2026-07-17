@@ -52,11 +52,10 @@ describe("Tv Page", () => {
     renderWithProviders(<Tv />);
     expect(await screen.findByText("Popular Show")).toBeInTheDocument();
 
-    // Genre options arrive from their own (non-suspending) query.
-    await screen.findByRole("option", { name: "Drama" });
-    fireEvent.change(screen.getByLabelText("Filter by genre"), {
-      target: { value: "18" },
-    });
+    // Genre options arrive from their own (non-suspending) query, so wait
+    // for the Drama row after opening the menu.
+    fireEvent.click(screen.getByRole("button", { name: "Filter by genre" }));
+    fireEvent.click(await screen.findByRole("option", { name: "Drama" }));
 
     expect(await screen.findByText("Filtered Show")).toBeInTheDocument();
   });

@@ -1,4 +1,4 @@
-import { FC, ReactNode } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import {
   IoArrowDown,
   IoArrowUp,
@@ -51,10 +51,7 @@ const SORT_TITLES: Record<SortField, Record<SortState, string>> = {
   },
 };
 
-const sortStateOf = (
-  filters: DiscoverFilters,
-  field: SortField,
-): SortState => {
+const sortStateOf = (filters: DiscoverFilters, field: SortField): SortState => {
   if (filters.sort === `${field}.desc`) return "desc";
   if (filters.sort === `${field}.asc`) return "asc";
   return "off";
@@ -66,39 +63,111 @@ type SortToggle = {
   onCycle: () => void;
 };
 
+type FilterOption = { value: string; label: string };
+
 type FilterSelectProps = {
   label: string;
+  /** Trigger text when nothing is selected; also the menu's "clear" row. */
+  placeholder: string;
   /** Empty string means "no filter". */
   value: string;
   onChange: (value: string) => void;
-  children: ReactNode;
+  options: FilterOption[];
   /** Optional trailing asc/desc toggle rendered inside the pill. */
   sort?: SortToggle;
 };
 
+/**
+ * Custom listbox instead of a native `<select>` so the menu always opens
+ * below the pill (browsers position native select popups themselves, e.g.
+ * overlaying the control or flipping upward near the viewport bottom).
+ * Outside-click + Escape close behavior matches SeasonSelector/NavDropdown.
+ */
 const FilterSelect: FC<FilterSelectProps> = ({
   label,
+  placeholder,
   value,
   onChange,
-  children,
+  options,
   sort,
 }) => {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const SortIcon = sort && SORT_ICONS[sort.state];
+  const selected = options.find((option) => option.value === value);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handlePointerDown = (e: MouseEvent) => {
+      if (!containerRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
+
+  const handleSelect = (next: string) => {
+    onChange(next);
+    setOpen(false);
+  };
+
   return (
-    <div className="flex items-stretch rounded-full border border-white/10 bg-secondary-dark focus-within:ring-1 focus-within:ring-orange">
-      <div className="relative">
-        <select
-          aria-label={label}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          className={`h-full cursor-pointer appearance-none bg-transparent py-2 pl-4 pr-8 text-sm outline-hidden ${
-            value ? "text-white" : "text-gray"
+    <div
+      ref={containerRef}
+      className="relative flex items-stretch rounded-full border border-white/10 bg-secondary-dark focus-within:ring-1 focus-within:ring-orange"
+    >
+      <button
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label={label}
+        onClick={() => setOpen((prev) => !prev)}
+        className={`relative cursor-pointer py-2 pl-4 pr-8 text-sm outline-hidden ${
+          selected ? "text-white" : "text-gray"
+        }`}
+      >
+        {selected?.label ?? placeholder}
+        <IoChevronDown
+          className={`pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-gray transition-transform ${
+            open ? "rotate-180" : ""
           }`}
+        />
+      </button>
+      {open && (
+        <div
+          role="listbox"
+          aria-label={label}
+          className="absolute left-0 top-full z-20 mt-2 max-h-72 w-max min-w-full overflow-y-auto rounded-lg border border-white/10 bg-secondary-dark py-1 shadow-2xl shadow-black/50 animate-dropdown"
         >
-          {children}
-        </select>
-        <IoChevronDown className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-gray" />
-      </div>
+          {[{ value: "", label: placeholder }, ...options].map((option) => {
+            const isActive = option.value === value;
+            return (
+              <button
+                key={option.value || "all"}
+                type="button"
+                role="option"
+                aria-selected={isActive}
+                onClick={() => handleSelect(option.value)}
+                className={`block w-full whitespace-nowrap px-4 py-2 text-left text-sm ${
+                  isActive
+                    ? "bg-white/5 text-orange"
+                    : "text-gray hover:bg-white/5 hover:text-white"
+                }`}
+              >
+                {option.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
       {sort && SortIcon && (
         <button
           type="button"
@@ -146,56 +215,50 @@ const MediaFilters: FC<MediaFiltersProps> = ({
     <div className="mt-4 flex flex-wrap items-center gap-3">
       <FilterSelect
         label="Filter by release year"
+        placeholder="All Years"
         value={filters.year?.toString() ?? ""}
         onChange={(value) =>
           onChange({ ...filters, year: value ? Number(value) : undefined })
         }
+        options={YEARS.map((year) => ({
+          value: String(year),
+          label: String(year),
+        }))}
         sort={{
           field: "year",
           state: sortStateOf(filters, "year"),
           onCycle: () => cycleSort("year"),
         }}
-      >
-        <option value="">All Years</option>
-        {YEARS.map((year) => (
-          <option key={year} value={year}>
-            {year}
-          </option>
-        ))}
-      </FilterSelect>
+      />
       <FilterSelect
         label="Filter by rating"
+        placeholder="Any Rating"
         value={filters.minRating?.toString() ?? ""}
         onChange={(value) =>
           onChange({ ...filters, minRating: value ? Number(value) : undefined })
         }
+        options={MIN_RATINGS.map((rating) => ({
+          value: String(rating),
+          label: `★ ${rating}+`,
+        }))}
         sort={{
           field: "rating",
           state: sortStateOf(filters, "rating"),
           onCycle: () => cycleSort("rating"),
         }}
-      >
-        <option value="">Any Rating</option>
-        {MIN_RATINGS.map((rating) => (
-          <option key={rating} value={rating}>
-            ★ {rating}+
-          </option>
-        ))}
-      </FilterSelect>
+      />
       <FilterSelect
         label="Filter by genre"
+        placeholder="All Genres"
         value={filters.genreId?.toString() ?? ""}
         onChange={(value) =>
           onChange({ ...filters, genreId: value ? Number(value) : undefined })
         }
-      >
-        <option value="">All Genres</option>
-        {genres?.map((genre) => (
-          <option key={genre.id} value={genre.id}>
-            {genre.name}
-          </option>
-        ))}
-      </FilterSelect>
+        options={(genres ?? []).map((genre) => ({
+          value: String(genre.id),
+          label: genre.name,
+        }))}
+      />
       {hasDiscoverFilters(filters) && (
         <button
           type="button"
