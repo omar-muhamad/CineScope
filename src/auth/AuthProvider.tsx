@@ -6,91 +6,86 @@ import {
   useMemo,
   useState,
 } from "react";
-import type { Session } from "@supabase/supabase-js";
 
-import { supabase } from "@/lib/supabase";
+import * as authApi from "@/api/auth";
+import type { AuthUser } from "@/api/auth";
+import { setOnSessionExpired } from "@/lib/api";
 import { queryClient } from "@/lib/queryClient";
 import { AuthContext, type AuthContextValue } from "./AuthContext";
 
 type AuthProviderProps = {
   children: ReactNode;
   /**
-   * Test/SSR seam: seed the session directly instead of reading Supabase.
-   * Pass `null` for a resolved signed-out state. When omitted (production),
-   * the provider loads the session from Supabase and subscribes to changes.
+   * Test/SSR seam: seed the user directly instead of hitting the API. Pass
+   * `null` for a resolved signed-out state. When omitted (production), the
+   * provider restores the session from the refresh cookie on mount.
    */
-  initialSession?: Session | null;
+  initialUser?: AuthUser | null;
 };
 
 export const AuthProvider: FC<AuthProviderProps> = ({
   children,
-  initialSession,
+  initialUser,
 }) => {
-  const seeded = initialSession !== undefined;
-  const [session, setSession] = useState<Session | null>(
-    initialSession ?? null,
-  );
+  const seeded = initialUser !== undefined;
+  const [user, setUser] = useState<AuthUser | null>(initialUser ?? null);
   const [loading, setLoading] = useState(!seeded);
 
   useEffect(() => {
-    // Tests inject a session and never touch the Supabase client.
+    // Tests inject a user and never touch the network.
     if (seeded) return;
 
     let active = true;
-    supabase.auth.getSession().then(({ data }) => {
+    authApi.restoreSession().then((restored) => {
       if (!active) return;
-      setSession(data.session);
-      setLoading(false);
-    });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      setSession(nextSession);
+      setUser(restored);
       setLoading(false);
     });
 
     return () => {
       active = false;
-      subscription.unsubscribe();
     };
   }, [seeded]);
 
-  const signIn = useCallback(async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: window.location.origin },
+  useEffect(() => {
+    // A mid-session refresh failure (revoked/expired session) signs us out.
+    setOnSessionExpired(() => {
+      setUser(null);
+      queryClient.clear();
     });
+    return () => setOnSessionExpired(null);
   }, []);
 
-  const signInWithEmail = useCallback(async (email: string) => {
-    // signInWithOtp resolves with { error } instead of throwing. Unlike the
-    // OAuth flow the page stays put, so we rethrow to let the caller show the
-    // "check your inbox" state only when the email actually went out.
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: window.location.origin },
-    });
-    if (error) throw error;
+  const signIn = useCallback(async (identifier: string, password: string) => {
+    setUser(await authApi.login(identifier, password));
+  }, []);
+
+  const signUp = useCallback(async (input: authApi.RegisterInput) => {
+    // No session yet — the account must be verified via email first.
+    await authApi.register(input);
+  }, []);
+
+  const signInWithGoogle = useCallback(async (credential: string) => {
+    setUser(await authApi.loginWithGoogle(credential));
   }, []);
 
   const signOut = useCallback(async () => {
-    await supabase.auth.signOut();
-    setSession(null);
+    await authApi.logout();
+    setUser(null);
     // Drop the previous user's cached lists so they don't leak to the next one.
     queryClient.clear();
   }, []);
 
   const value = useMemo<AuthContextValue>(
     () => ({
-      user: session?.user ?? null,
-      session,
+      user,
       loading,
       signIn,
-      signInWithEmail,
+      signUp,
+      signInWithGoogle,
       signOut,
     }),
-    [session, loading, signIn, signInWithEmail, signOut],
+    [user, loading, signIn, signUp, signInWithGoogle, signOut],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

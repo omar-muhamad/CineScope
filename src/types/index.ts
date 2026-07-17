@@ -45,6 +45,8 @@ export type MediaSummary = {
   vote_average: number;
   title: string;
   name: string;
+  /** Genre ids — present on list/search results, absent on some appended payloads. */
+  genre_ids?: number[];
 };
 
 /** A billed cast member from a title's `credits` (movie or tv). */

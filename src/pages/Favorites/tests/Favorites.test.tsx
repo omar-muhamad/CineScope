@@ -2,7 +2,7 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 
 import Favorites from "@/pages/Favorites";
 import type { MediaItem } from "@/types";
-import { renderWithProviders, testSession } from "@/tests/test-utils";
+import { renderWithProviders, testUser } from "@/tests/test-utils";
 
 const { fetchFavoritesMock, fetchWatchlistMock, removeSavedMock } = vi.hoisted(
   () => ({
@@ -42,7 +42,7 @@ describe("Favorites Page", () => {
   it("renders the signed-in user's favorites", async () => {
     fetchFavoritesMock.mockResolvedValue([favMovie]);
 
-    renderWithProviders(<Favorites />, { session: testSession });
+    renderWithProviders(<Favorites />, { user: testUser });
     expect(await screen.findByText("Fav Movie")).toBeInTheDocument();
   });
 
@@ -59,7 +59,7 @@ describe("Favorites Page", () => {
       },
     );
 
-    renderWithProviders(<Favorites />, { session: testSession });
+    renderWithProviders(<Favorites />, { user: testUser });
 
     expect(await screen.findByText("Fav Movie")).toBeInTheDocument();
     // The card's favorite toggle reflects the favorited state ("Remove …").

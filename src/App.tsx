@@ -4,7 +4,6 @@ import Navbar from "./components/layout/Navbar";
 import Home from "./pages/Home";
 import Movies from "./pages/Movies";
 import Tv from "./pages/Tv";
-import MediaList from "./pages/MediaList";
 import Search from "./pages/Search";
 import Details from "./pages/Details";
 import WatchOnline from "./pages/WatchOnline";
@@ -12,10 +11,12 @@ import Favorites from "./pages/Favorites";
 import WatchLater from "./pages/WatchLater";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
+import VerifyEmail from "./pages/VerifyEmail";
+import ResetPassword from "./pages/ResetPassword";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import ScrollToTop from "./components/common/ScrollToTop";
 
-const AUTH_ROUTES = ["/login"];
+const AUTH_ROUTES = ["/login", "/verify-email", "/reset-password"];
 
 function App() {
   const { pathname } = useLocation();
@@ -41,77 +42,32 @@ function App() {
               like /tv/456 fall through to the /:media_type/:id route below. */}
           <Route
             path="/movies/trending"
-            element={
-              <MediaList
-                mediaType="movie"
-                category="trending"
-                title="Trending Movies"
-              />
-            }
+            element={<Movies category="trending" />}
           />
           <Route
             path="/movies/now-playing"
-            element={
-              <MediaList
-                mediaType="movie"
-                category="now_playing"
-                title="Now Playing"
-              />
-            }
+            element={<Movies category="now_playing" />}
           />
           <Route
             path="/movies/upcoming"
-            element={
-              <MediaList
-                mediaType="movie"
-                category="upcoming"
-                title="Upcoming Movies"
-              />
-            }
+            element={<Movies category="upcoming" />}
           />
           <Route
             path="/movies/top-rated"
-            element={
-              <MediaList
-                mediaType="movie"
-                category="top_rated"
-                title="Top Rated Movies"
-              />
-            }
+            element={<Movies category="top_rated" />}
           />
           <Route path="/tv/popular" element={<Tv />} />
-          <Route
-            path="/tv/trending"
-            element={
-              <MediaList
-                mediaType="tv"
-                category="trending"
-                title="Trending TV Shows"
-              />
-            }
-          />
-          <Route
-            path="/tv/on-tv"
-            element={
-              <MediaList mediaType="tv" category="on_the_air" title="On TV" />
-            }
-          />
-          <Route
-            path="/tv/top-rated"
-            element={
-              <MediaList
-                mediaType="tv"
-                category="top_rated"
-                title="Top Rated TV Shows"
-              />
-            }
-          />
+          <Route path="/tv/trending" element={<Tv category="trending" />} />
+          <Route path="/tv/on-tv" element={<Tv category="on_the_air" />} />
+          <Route path="/tv/top-rated" element={<Tv category="top_rated" />} />
           <Route path="/search" element={<Search />} />
           <Route path="/watch/:media_type/:id" element={<WatchOnline />} />
           <Route path="/:media_type/:id" element={<Details />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/watch-later" element={<WatchLater />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </ErrorBoundary>

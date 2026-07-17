@@ -1,11 +1,23 @@
 import { screen, fireEvent } from "@testing-library/react";
 
 import UserCard from "@/components/ui/UserCard";
-import { renderWithProviders, testSession } from "@/tests/test-utils";
+import { renderWithProviders, testUser } from "@/tests/test-utils";
+
+const { logoutMock } = vi.hoisted(() => ({ logoutMock: vi.fn() }));
+
+vi.mock("@/api/auth", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/api/auth")>();
+  return { ...actual, logout: logoutMock };
+});
+
+beforeEach(() => {
+  logoutMock.mockReset();
+  logoutMock.mockResolvedValue(undefined);
+});
 
 describe("UserCard", () => {
   it("greets the signed-in user by first name", () => {
-    renderWithProviders(<UserCard />, { session: testSession });
+    renderWithProviders(<UserCard />, { user: testUser });
     expect(screen.getByText("Hi, Omar!")).toBeInTheDocument();
   });
 
@@ -15,7 +27,7 @@ describe("UserCard", () => {
   });
 
   it('shows the "Logout" button when signed in', () => {
-    renderWithProviders(<UserCard />, { session: testSession });
+    renderWithProviders(<UserCard />, { user: testUser });
     expect(screen.getByText("Logout")).toBeInTheDocument();
   });
 
@@ -25,8 +37,9 @@ describe("UserCard", () => {
   });
 
   it("returns to a signed-out state after logout", async () => {
-    renderWithProviders(<UserCard />, { session: testSession });
+    renderWithProviders(<UserCard />, { user: testUser });
     fireEvent.click(screen.getByText("Logout"));
     expect(await screen.findByText("Login")).toBeInTheDocument();
+    expect(logoutMock).toHaveBeenCalled();
   });
 });

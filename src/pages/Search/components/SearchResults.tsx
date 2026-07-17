@@ -3,7 +3,6 @@ import { FC } from "react";
 import type { MediaSummary } from "@/types";
 import ItemCard from "@/components/ui/ItemCard";
 import GridLayout from "@/components/layout/GridLayout";
-import Heading from "@/components/ui/Heading";
 import Text from "@/components/ui/Text";
 import ReactPagination from "@/components/common/ReactPagination";
 
@@ -30,9 +29,6 @@ const SearchResults: FC<SearchResultsProps> = ({
 
   return (
     <div>
-      <Heading as="h1" className="text-orange font-bold max-md:text-xl">
-        Search Results
-      </Heading>
       {items && items.length !== 0 ? (
         <GridLayout>
           {items.map((item) => {

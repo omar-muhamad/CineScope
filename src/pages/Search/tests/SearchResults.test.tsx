@@ -29,7 +29,6 @@ describe("SearchResults", () => {
         onPageChange={() => {}}
       />,
     );
-    expect(screen.getByText("Search Results")).toBeInTheDocument();
     expect(screen.getByAltText(/batman/i)).toBeInTheDocument();
   });
 

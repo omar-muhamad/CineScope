@@ -1,16 +1,19 @@
 import type { MediaType } from "@/lib/tmdb";
-import type { MediaCategory } from "@/api/tmdb";
+import type { DiscoverFilters, MediaCategory } from "@/api/tmdb";
 
 /**
- * Central factory for every query key. User-scoped keys include the Supabase
- * user id so a login or logout naturally swaps the cached data.
+ * Central factory for every query key. User-scoped keys include the user id
+ * so a login or logout naturally swaps the cached data.
  */
 export const queryKeys = {
   trending: (scope: "all" | "movie" | "tv") => ["trending", scope] as const,
-  popular: (mediaType: MediaType, page: number) =>
-    ["popular", mediaType, page] as const,
-  mediaList: (mediaType: MediaType, category: MediaCategory, page: number) =>
-    ["mediaList", mediaType, category, page] as const,
+  mediaList: (
+    mediaType: MediaType,
+    category: MediaCategory,
+    page: number,
+    filters: DiscoverFilters,
+  ) => ["mediaList", mediaType, category, page, filters] as const,
+  genres: (mediaType: MediaType | "all") => ["genres", mediaType] as const,
   search: (query: string, page: number) => ["search", query, page] as const,
   details: (mediaType: string | undefined, id: string | undefined) =>
     ["details", mediaType, id] as const,

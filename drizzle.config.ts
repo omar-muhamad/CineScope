@@ -8,18 +8,17 @@ config({ path: [".env.local", ".env"] });
 /**
  * Drizzle migration tooling config. Build-time / CI only.
  *
- * `DATABASE_URL` is the Supabase **direct / session pooler** connection string
- * (port 5432, NOT the 6543 transaction pooler — migrations need a session-level
- * connection). It carries the DB password, so it must NEVER be `VITE_`-prefixed
- * (Vite inlines every `VITE_*` var into the client bundle). Provide it via the
- * shell or a CI secret, e.g. `DATABASE_URL=... npm run db:migrate`.
+ * `DATABASE_URL` is the app's Postgres connection string. It carries the DB
+ * password, so it must NEVER be `VITE_`-prefixed (Vite inlines every `VITE_*`
+ * var into the client bundle). Set it in .env.local or via the shell/CI:
+ * `DATABASE_URL=... npm run db:migrate`.
  *
- * Use `db:generate` + `db:migrate` (never `push`): `push` diffs the live DB and
- * would drop the hand-written RLS policies / FK / CHECKs it doesn't know about.
+ * Use `db:generate` + `db:migrate` (never `push`) so schema history stays in
+ * checked-in migration files.
  */
 export default defineConfig({
-  schema: "./src/db/schema.ts",
-  out: "./supabase/migrations",
+  schema: "./server/db/schema.ts",
+  out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {
     url: process.env.DATABASE_URL!,

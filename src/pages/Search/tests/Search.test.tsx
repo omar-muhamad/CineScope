@@ -23,10 +23,25 @@ vi.mock("@/api/tmdb", async (importOriginal) => {
             vote_average: 7,
             title: "Batman",
             name: "",
+            genre_ids: [28],
+          },
+          {
+            id: 2,
+            media_type: "movie",
+            backdrop_path: "b",
+            poster_path: "p",
+            release_date: "2019-01-01",
+            first_air_date: "",
+            adult: false,
+            vote_average: 6,
+            title: "Superman",
+            name: "",
+            genre_ids: [12],
           },
         ],
       }),
     ),
+    fetchGenres: vi.fn(() => Promise.resolve([{ id: 28, name: "Action" }])),
   };
 });
 
@@ -43,5 +58,36 @@ describe("Search Page", () => {
     ).not.toBeInTheDocument();
     expect(await screen.findByText("Search Results")).toBeInTheDocument();
     expect(await screen.findByText("Batman")).toBeInTheDocument();
+  });
+
+  it("narrows results with filters from the query params", async () => {
+    // Both mock results rate below 8, so a ★8+ filter hides everything.
+    renderWithProviders(<Search />, {
+      route: "/search?search=batman&rating=8",
+    });
+    expect(
+      await screen.findByText(/no results match your search/i),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("Batman")).not.toBeInTheDocument();
+  });
+
+  it("keeps results whose genre matches the genre filter", async () => {
+    renderWithProviders(<Search />, {
+      route: "/search?search=batman&genre=28",
+    });
+    expect(await screen.findByText("Batman")).toBeInTheDocument();
+    expect(screen.queryByText("Superman")).not.toBeInTheDocument();
+  });
+
+  it("orders the page by the sort from the query params", async () => {
+    // Batman rates 7, Superman 6 — ascending puts Superman first.
+    renderWithProviders(<Search />, {
+      route: "/search?search=batman&sort=rating.asc",
+    });
+    const posters = await screen.findAllByAltText(/poster/i);
+    expect(posters.map((img) => img.getAttribute("alt"))).toEqual([
+      "Superman poster",
+      "Batman poster",
+    ]);
   });
 });

@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { IoChevronBackOutline, IoChevronForwardOutline } from "react-icons/io5";
 
 import { useDetails } from "@/queries/useDetails";
@@ -33,9 +33,27 @@ const WatchDetailsContent: FC<WatchContentProps> = ({ mediaType, id }) => {
   const isTv = mediaType === "tv";
   const movie = mediaType === "movie";
 
-  const [providerIndex, setProviderIndex] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [season, setSeason] = useState(1);
   const [episode, setEpisode] = useState(1);
+
+  // Player selection lives in the URL (?player=2 → "Player 2", 1-based) so a
+  // shared/refreshed link keeps the chosen player; anything missing or out of
+  // range falls back to the first provider.
+  const playerParam = Number(searchParams.get("player"));
+  const providerIndex =
+    Number.isInteger(playerParam) &&
+    playerParam >= 1 &&
+    playerParam <= providers.length
+      ? playerParam - 1
+      : 0;
+
+  // Replace instead of push so toggling players doesn't pile up in history.
+  const onPlayerSelect = (index: number) => {
+    const next = new URLSearchParams(searchParams);
+    next.set("player", String(index + 1));
+    setSearchParams(next, { replace: true });
+  };
 
   const { data: details } = useDetails(mediaType, id);
 
@@ -120,7 +138,7 @@ const WatchDetailsContent: FC<WatchContentProps> = ({ mediaType, id }) => {
           <PlayerSelector
             providers={providers}
             active={providerIndex}
-            onSelect={setProviderIndex}
+            onSelect={onPlayerSelect}
           />
 
           {isTv && episodes.length > 0 && (

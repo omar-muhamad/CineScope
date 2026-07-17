@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { api } from "@/lib/api";
 import type { MediaType } from "@/lib/tmdb";
 import type { MediaItem } from "@/types";
 
@@ -19,43 +19,36 @@ export type SavedMeta = {
 };
 
 type SavedRow = {
-  media_id: number;
-  media_type: string;
+  mediaId: number;
+  mediaType: string;
   title: string | null;
-  poster_path: string | null;
-  release_date: string | null;
-  vote_average: number | null;
+  posterPath: string | null;
+  releaseDate: string | null;
+  voteAverage: number | null;
 };
-
-const TABLE = "saved_items";
-const COLUMNS =
-  "media_id, media_type, title, poster_path, release_date, vote_average";
 
 /** Denormalize a row into the card-shaped MediaItem the UI already consumes. */
 const rowToMediaItem = (row: SavedRow): MediaItem => ({
-  id: row.media_id,
-  media_type: row.media_type,
-  poster_path: row.poster_path ?? undefined,
-  vote_average: row.vote_average ?? undefined,
-  ...(row.media_type === "movie"
+  id: row.mediaId,
+  media_type: row.mediaType,
+  poster_path: row.posterPath ?? undefined,
+  vote_average: row.voteAverage ?? undefined,
+  ...(row.mediaType === "movie"
     ? {
         title: row.title ?? undefined,
-        release_date: row.release_date ?? undefined,
+        release_date: row.releaseDate ?? undefined,
       }
     : {
         name: row.title ?? undefined,
-        first_air_date: row.release_date ?? undefined,
+        first_air_date: row.releaseDate ?? undefined,
       }),
 });
 
 const fetchList = async (listType: ListType): Promise<MediaItem[]> => {
-  const { data, error } = await supabase
-    .from(TABLE)
-    .select(COLUMNS)
-    .eq("list_type", listType)
-    .order("created_at", { ascending: false });
-  if (error) throw error;
-  return ((data as SavedRow[]) ?? []).map(rowToMediaItem);
+  const { data } = await api.get<{ items: SavedRow[] }>("/saved", {
+    params: { list: listType },
+  });
+  return data.items.map(rowToMediaItem);
 };
 
 /** The signed-in user's full favorites list (newest first). */
@@ -64,39 +57,29 @@ export const fetchFavorites = () => fetchList("favorite");
 /** The signed-in user's full watch-later list (newest first). */
 export const fetchWatchlist = () => fetchList("watchlist");
 
-/**
- * Add a title to a list. `user_id` is intentionally omitted — the column
- * defaults to `auth.uid()`, which is exactly what the RLS insert check expects.
- */
+/** Add a title to a list. The server scopes the row to the current user. */
 export const addSaved = async (
   listType: ListType,
   mediaType: MediaType,
   mediaId: number,
   meta: SavedMeta,
 ): Promise<void> => {
-  const { error } = await supabase.from(TABLE).insert({
-    list_type: listType,
-    media_type: mediaType,
-    media_id: mediaId,
-    title: meta.title ?? null,
-    poster_path: meta.poster_path ?? null,
-    release_date: meta.release_date ?? null,
-    vote_average: meta.vote_average ?? null,
+  await api.post("/saved", {
+    listType,
+    mediaType,
+    mediaId,
+    title: meta.title,
+    posterPath: meta.poster_path,
+    releaseDate: meta.release_date,
+    voteAverage: meta.vote_average,
   });
-  if (error) throw error;
 };
 
-/** Remove a title from a list. RLS scopes the delete to the current user. */
+/** Remove a title from a list. The server scopes the delete to the user. */
 export const removeSaved = async (
   listType: ListType,
   mediaType: MediaType,
   mediaId: number,
 ): Promise<void> => {
-  const { error } = await supabase
-    .from(TABLE)
-    .delete()
-    .eq("list_type", listType)
-    .eq("media_type", mediaType)
-    .eq("media_id", mediaId);
-  if (error) throw error;
+  await api.delete(`/saved/${listType}/${mediaType}/${mediaId}`);
 };

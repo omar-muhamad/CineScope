@@ -1,20 +1,20 @@
 import { createContext } from "react";
-import type { Session, User } from "@supabase/supabase-js";
+
+import type { AuthUser, RegisterInput } from "@/api/auth";
 
 export type AuthContextValue = {
-  /** The signed-in Supabase user (Google identity), or null when logged out. */
-  user: User | null;
-  /** The full Supabase session (token used by RLS), or null when logged out. */
-  session: Session | null;
-  /** True until the initial session lookup resolves. */
+  /** The signed-in user, or null when logged out. */
+  user: AuthUser | null;
+  /** True until the initial silent session restore resolves. */
   loading: boolean;
-  /** Start the Google OAuth redirect flow. */
-  signIn: () => Promise<void>;
-  /**
-   * Send a passwordless magic link to the given email. Resolves once the email
-   * is sent; rejects if Supabase refuses (rate limit, blocked address, etc.).
-   */
-  signInWithEmail: (email: string) => Promise<void>;
+  /** Email-or-username + password login. Throws an API error on bad
+   *  credentials or an unverified email (code EMAIL_NOT_VERIFIED). */
+  signIn: (identifier: string, password: string) => Promise<void>;
+  /** Create an account. Resolves once the verification email is sent — the
+   *  user is NOT signed in until they verify and log in. */
+  signUp: (input: RegisterInput) => Promise<void>;
+  /** Complete a Google sign-in with the ID token from @react-oauth/google. */
+  signInWithGoogle: (credential: string) => Promise<void>;
   /** Sign out and clear cached per-user data. */
   signOut: () => Promise<void>;
 };
