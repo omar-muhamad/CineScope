@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from "node:crypto";
-import { eq } from "drizzle-orm";
+import { and, eq, gt, isNull } from "drizzle-orm";
 
 import { db } from "../db";
 import { emailVerificationTokens, users } from "../db/schema";
@@ -38,20 +38,22 @@ export const issueVerificationToken = async (
 export const consumeVerificationToken = async (
   token: string,
 ): Promise<boolean> => {
+  // Single conditional update: of two concurrent consumers of the same
+  // token, exactly one matches the used_at IS NULL row and wins.
   const [row] = await db
-    .select()
-    .from(emailVerificationTokens)
-    .where(eq(emailVerificationTokens.tokenHash, hashToken(token)))
-    .limit(1);
-
-  if (!row || row.usedAt || row.expiresAt.getTime() <= Date.now()) {
-    return false;
-  }
-
-  await db
     .update(emailVerificationTokens)
     .set({ usedAt: new Date() })
-    .where(eq(emailVerificationTokens.id, row.id));
+    .where(
+      and(
+        eq(emailVerificationTokens.tokenHash, hashToken(token)),
+        isNull(emailVerificationTokens.usedAt),
+        gt(emailVerificationTokens.expiresAt, new Date()),
+      ),
+    )
+    .returning();
+
+  if (!row) return false;
+
   await db
     .update(users)
     .set({ emailVerified: true, updatedAt: new Date() })

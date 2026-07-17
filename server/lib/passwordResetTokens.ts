@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from "node:crypto";
-import { eq } from "drizzle-orm";
+import { and, eq, gt, isNull } from "drizzle-orm";
 
 import { db } from "../db";
 import { passwordResetTokens } from "../db/schema";
@@ -39,19 +39,19 @@ export const issuePasswordResetToken = async (
 export const consumePasswordResetToken = async (
   token: string,
 ): Promise<string | null> => {
+  // Single conditional update: of two concurrent consumers of the same
+  // token, exactly one matches the used_at IS NULL row and wins.
   const [row] = await db
-    .select()
-    .from(passwordResetTokens)
-    .where(eq(passwordResetTokens.tokenHash, hashToken(token)))
-    .limit(1);
-
-  if (!row || row.usedAt || row.expiresAt.getTime() <= Date.now()) {
-    return null;
-  }
-
-  await db
     .update(passwordResetTokens)
     .set({ usedAt: new Date() })
-    .where(eq(passwordResetTokens.id, row.id));
-  return row.userId;
+    .where(
+      and(
+        eq(passwordResetTokens.tokenHash, hashToken(token)),
+        isNull(passwordResetTokens.usedAt),
+        gt(passwordResetTokens.expiresAt, new Date()),
+      ),
+    )
+    .returning();
+
+  return row?.userId ?? null;
 };
