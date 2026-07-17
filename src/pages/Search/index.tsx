@@ -1,30 +1,55 @@
-import { FC, useEffect, useState, useTransition } from "react";
+import { FC, useState, useTransition } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import PageLayout from "@/components/layout/PageLayout";
 import QueryBoundary from "@/components/common/QueryBoundary";
+import MediaFilters from "@/components/common/MediaFilters";
 import SearchResults from "./components/SearchResults";
 import Heading from "@/components/ui/Heading";
 import Text from "@/components/ui/Text";
 import SkeletonGrid from "@/components/skeletons/SkeletonGrid";
 import { useSearch } from "./queries/useSearch";
+import {
+  filtersFromParams,
+  filtersKey,
+  paramsWithFilters,
+} from "@/lib/filterParams";
+import {
+  matchesDiscoverFilters,
+  sortMediaSummaries,
+  type DiscoverFilters,
+} from "@/api/tmdb";
 
 type SearchResultsSectionProps = {
   query: string;
+  filters: DiscoverFilters;
   page: number;
   onPageChange: (event: { selected: number }) => void;
 };
 
-/** Suspends on the search query, then renders the results. */
+/**
+ * Suspends on the search query, then renders the results. The search API
+ * accepts no filter or sort params, so the year / rating / genre filters and
+ * the asc/desc sort apply to each fetched page locally — other pages may
+ * still hold matches, which is why the pagination keeps the server's page
+ * count.
+ */
 const SearchResultsSection: FC<SearchResultsSectionProps> = ({
   query,
+  filters,
   page,
   onPageChange,
 }) => {
   const { data } = useSearch(query, page);
+  const results = sortMediaSummaries(
+    (data.results ?? []).filter((item) =>
+      matchesDiscoverFilters(item, filters),
+    ),
+    filters.sort,
+  );
   return (
     <SearchResults
-      results={data.results ?? []}
+      results={results}
       totalPages={data.total_pages ?? 0}
       page={page}
       onPageChange={onPageChange}
@@ -32,51 +57,68 @@ const SearchResultsSection: FC<SearchResultsSectionProps> = ({
   );
 };
 
-const SearchResultsFallback: FC = () => (
-  <div>
-    <Heading as="h1" className="text-orange font-bold max-md:text-xl">
-      Search Results
-    </Heading>
-    <SkeletonGrid count={14} />
-  </div>
-);
-
 const Search: FC = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("search") ?? "";
+  const filters = filtersFromParams(searchParams);
   const [page, setPage] = useState(1);
   const [isPending, startTransition] = useTransition();
 
-  // A new search term starts over at page 1.
-  useEffect(() => {
-    // Intentional reset-on-query-change; react-hooks 7's set-state-in-effect
-    // rule flags this pattern, but resetting here is the desired behavior.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+  // A new query or filter set starts over at page 1 (covers the search bar,
+  // the filter bar, back/forward, and pasted links alike).
+  const resetKey = `${query}|${filtersKey(filters)}`;
+  const [prevResetKey, setPrevResetKey] = useState(resetKey);
+  if (prevResetKey !== resetKey) {
+    setPrevResetKey(resetKey);
     setPage(1);
-  }, [query]);
+  }
 
-  // Page through inside a transition so the current results stay visible while
-  // the next page suspends, instead of flashing the skeleton fallback.
+  // Page and filter changes happen inside a transition so the current results
+  // stay visible while the next page suspends, instead of flashing the
+  // skeleton fallback.
   const onPageChange = ({ selected }: { selected: number }) =>
     startTransition(() => setPage(selected + 1));
+
+  // Replace instead of push so every tweak doesn't pile up in history; the
+  // `search` param itself is preserved by paramsWithFilters.
+  const onFiltersChange = (next: DiscoverFilters) =>
+    startTransition(() =>
+      setSearchParams(paramsWithFilters(searchParams, next), {
+        replace: true,
+      }),
+    );
 
   return (
     <PageLayout>
       {query ? (
-        <div
-          className={isPending ? "opacity-60 transition-opacity" : undefined}
-        >
-          <QueryBoundary
-            fallback={<SearchResultsFallback />}
-            resetKeys={[query]}
+        <>
+          <Heading as="h1" className="text-orange font-bold max-md:text-xl">
+            Search Results
+          </Heading>
+          <MediaFilters
+            mediaType="all"
+            filters={filters}
+            onChange={onFiltersChange}
+          />
+          <div
+            className={isPending ? "opacity-60 transition-opacity" : undefined}
           >
-            <SearchResultsSection
-              query={query}
-              page={page}
-              onPageChange={onPageChange}
-            />
-          </QueryBoundary>
-        </div>
+            {/* resetKeys must be stable primitives — `filters` is a fresh
+                object every render, which would reset an errored section in
+                a loop. */}
+            <QueryBoundary
+              fallback={<SkeletonGrid count={14} />}
+              resetKeys={[resetKey]}
+            >
+              <SearchResultsSection
+                query={query}
+                filters={filters}
+                page={page}
+                onPageChange={onPageChange}
+              />
+            </QueryBoundary>
+          </div>
+        </>
       ) : (
         <div className="flex flex-col items-center justify-center gap-2 h-[calc(100vh-12rem)]">
           <Heading as="h1">Search</Heading>

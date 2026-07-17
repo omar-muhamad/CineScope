@@ -49,6 +49,159 @@ export const fetchMediaList = async (
   return { page: resultPage, results, total_pages };
 };
 
+/** User-selected sort key — field plus direction. */
+export type MediaSort = "year.asc" | "year.desc" | "rating.asc" | "rating.desc";
+
+export const MEDIA_SORTS: readonly MediaSort[] = [
+  "year.asc",
+  "year.desc",
+  "rating.asc",
+  "rating.desc",
+];
+
+/** Browse filters applied on top of a category via the discover endpoint. */
+export type DiscoverFilters = {
+  /** Release year (movies) / first-air year (TV). */
+  year?: number;
+  /** Minimum vote average, inclusive. */
+  minRating?: number;
+  /** TMDB genre id. */
+  genreId?: number;
+  /** Sort override; unset keeps the category's own order. */
+  sort?: MediaSort;
+};
+
+export const hasDiscoverFilters = (filters: DiscoverFilters): boolean =>
+  filters.year !== undefined ||
+  filters.minRating !== undefined ||
+  filters.genreId !== undefined ||
+  filters.sort !== undefined;
+
+/** A user sort mapped onto discover's `sort_by` — the year field differs per type. */
+const discoverSortBy = (sort: MediaSort, mediaType: MediaType): string => {
+  const [field, direction] = sort.split(".");
+  if (field === "rating") return `vote_average.${direction}`;
+  return mediaType === "movie"
+    ? `primary_release_date.${direction}`
+    : `first_air_date.${direction}`;
+};
+
+/**
+ * A filtered/sorted page of titles. The category list endpoints don't accept
+ * filters, so filtered browsing goes through `/discover/{mediaType}` instead —
+ * the category only picks the default sort order (discover has no notion of
+ * trending or now-playing), and a user sort overrides it. Anything ordered by
+ * vote average gets a vote floor so obscure titles don't dominate either end;
+ * everything else defaults to popularity.
+ */
+export const fetchDiscover = async (
+  mediaType: MediaType,
+  category: MediaCategory,
+  filters: DiscoverFilters,
+  page: number,
+): Promise<Paginated<MediaSummary>> => {
+  const topRated = category === "top_rated";
+  const ratingSorted = topRated || filters.sort?.startsWith("rating");
+  const { data } = await tmdb.get(`/discover/${mediaType}`, {
+    params: {
+      page,
+      language: "en-US",
+      sort_by: filters.sort
+        ? discoverSortBy(filters.sort, mediaType)
+        : topRated
+          ? "vote_average.desc"
+          : "popularity.desc",
+      ...(ratingSorted && { "vote_count.gte": 200 }),
+      ...(filters.year !== undefined &&
+        (mediaType === "movie"
+          ? { primary_release_year: filters.year }
+          : { first_air_date_year: filters.year })),
+      ...(filters.minRating !== undefined && {
+        "vote_average.gte": filters.minRating,
+      }),
+      ...(filters.genreId !== undefined && { with_genres: filters.genreId }),
+    },
+  });
+  const { page: resultPage, results, total_pages } = data;
+  return { page: resultPage, results, total_pages };
+};
+
+export type Genre = { id: number; name: string };
+
+/**
+ * The full genre list for a media type — feeds the browse filter dropdown.
+ * `all` merges the movie and TV lists (deduped by id, sorted by name) for the
+ * mixed-type search page.
+ */
+export const fetchGenres = async (
+  mediaType: MediaType | "all",
+): Promise<Genre[]> => {
+  if (mediaType !== "all") {
+    const { data } = await tmdb.get(`/genre/${mediaType}/list`, {
+      params: { language: "en-US" },
+    });
+    return data.genres;
+  }
+  const [movie, tv] = await Promise.all([
+    fetchGenres("movie"),
+    fetchGenres("tv"),
+  ]);
+  const byId = new Map<number, Genre>();
+  for (const genre of [...movie, ...tv]) byId.set(genre.id, genre);
+  return [...byId.values()].sort((a, b) => a.name.localeCompare(b.name));
+};
+
+/**
+ * Client-side filter check. The search endpoints accept no filter params, so
+ * the search page narrows each page of results locally with the same filters
+ * the browse pages send to discover.
+ */
+export const matchesDiscoverFilters = (
+  item: MediaSummary,
+  filters: DiscoverFilters,
+): boolean => {
+  if (
+    filters.year !== undefined &&
+    Number((item.release_date || item.first_air_date)?.substring(0, 4)) !==
+      filters.year
+  ) {
+    return false;
+  }
+  if (
+    filters.minRating !== undefined &&
+    (item.vote_average ?? 0) < filters.minRating
+  ) {
+    return false;
+  }
+  if (
+    filters.genreId !== undefined &&
+    !item.genre_ids?.includes(filters.genreId)
+  ) {
+    return false;
+  }
+  return true;
+};
+
+/**
+ * Client-side counterpart of the discover sort for the search page — search
+ * accepts no sort params, so each fetched page is reordered locally. Items
+ * missing the sorted field (no date, no votes) sink to the low end.
+ */
+export const sortMediaSummaries = (
+  items: MediaSummary[],
+  sort: MediaSort | undefined,
+): MediaSummary[] => {
+  if (!sort) return items;
+  const [field, direction] = sort.split(".");
+  const valueOf = (item: MediaSummary): number =>
+    field === "rating"
+      ? (item.vote_average ?? 0)
+      : Number((item.release_date || item.first_air_date)?.substring(0, 4)) ||
+        0;
+  const factor = direction === "asc" ? 1 : -1;
+  return [...items].sort((a, b) => (valueOf(a) - valueOf(b)) * factor);
+};
+
 /** Multi-type search (movies, TV, people) — caller filters out people. */
 export const searchMulti = async (
   query: string,
