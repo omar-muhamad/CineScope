@@ -4,7 +4,8 @@ import type { DetailsData, Episode, MediaSummary, Paginated } from "@/types";
 export type { MediaType };
 
 /* -------------------------------------------------------------------------- */
-/* Catalog reads (public — favorites / watch-later live in Supabase now)      */
+/* Catalog reads (public — favorites / watch-later live in the app API,       */
+/* see @/api/saved)                                                           */
 /* -------------------------------------------------------------------------- */
 
 /** Trending titles this week — `all` (mixed), `movie`, or `tv`. */

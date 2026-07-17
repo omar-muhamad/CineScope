@@ -82,7 +82,7 @@ const buildItem = (
 });
 
 /**
- * Shared toggle factory for favorite / watch-later. Writes to Supabase and
+ * Shared toggle factory for favorite / watch-later. Writes to the app API and
  * optimistically updates the cached list: on add it prepends the item (so the
  * derived state flips instantly and it shows up on the list page); on remove it
  * drops the matching item. Rolls back on error, and on settle invalidates the
