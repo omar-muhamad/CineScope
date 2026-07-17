@@ -97,6 +97,20 @@ const findUserById = async (id: string) => {
   return user;
 };
 
+/**
+ * The violated constraint's name if this is a Postgres unique violation
+ * (drizzle may wrap the PostgresError, so the cause chain is walked too).
+ */
+const uniqueViolation = (error: unknown): string | null => {
+  for (let e: unknown = error; e instanceof Error; e = e.cause) {
+    const pg = e as { code?: unknown; constraint_name?: unknown };
+    if (pg.code === "23505") {
+      return typeof pg.constraint_name === "string" ? pg.constraint_name : "";
+    }
+  }
+  return null;
+};
+
 /** Sign the pair of tokens, set the refresh cookie, and shape the response. */
 const issueSession = async (reply: FastifyReply, user: User) => {
   const accessToken = await signAccessToken(user.id);
@@ -191,17 +205,35 @@ export const authRoutes = (app: FastifyInstance) => {
         });
       }
 
-      const [user] = await db
-        .insert(users)
-        .values({
-          email,
-          username,
-          firstName: request.body.firstName.trim(),
-          lastName: request.body.lastName.trim(),
-          avatarUrl: request.body.avatar ?? null,
-          passwordHash: await hashPassword(request.body.password),
-        })
-        .returning();
+      let user: User;
+      try {
+        [user] = await db
+          .insert(users)
+          .values({
+            email,
+            username,
+            firstName: request.body.firstName.trim(),
+            lastName: request.body.lastName.trim(),
+            avatarUrl: request.body.avatar ?? null,
+            passwordHash: await hashPassword(request.body.password),
+          })
+          .returning();
+      } catch (error) {
+        // A concurrent signup can slip past the pre-checks above; the unique
+        // constraint is the source of truth, so answer 409 rather than 500.
+        const constraint = uniqueViolation(error);
+        if (constraint === null) throw error;
+        return constraint.includes("username")
+          ? reply.code(409).send({
+              code: "USERNAME_TAKEN",
+              message: "This username is already taken. Pick another one.",
+            })
+          : reply.code(409).send({
+              code: "EMAIL_TAKEN",
+              message:
+                "An account with this email already exists. Try logging in.",
+            });
+      }
 
       try {
         await sendVerificationEmail(
