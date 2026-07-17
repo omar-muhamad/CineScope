@@ -20,6 +20,15 @@ export const hashPassword = async (password: string): Promise<string> => {
   return `scrypt:${salt.toString("hex")}:${derived.toString("hex")}`;
 };
 
+/**
+ * Hash of a random throwaway password nobody knows. Login verifies against
+ * this when the identifier doesn't resolve to a password account, burning
+ * the same scrypt cost either way — otherwise the fast "no such user" path
+ * would let response timing reveal which accounts exist.
+ */
+export const DUMMY_PASSWORD_HASH =
+  "scrypt:96cc13e806b0ccbd06f59bfc8809c9fd:77aba062f80a196311cd192df89987b1dad63e9a5e852af901f8ecd05182ffbb8fd1902851156ee274ab49a0ef9195a3a88771dd2f1f3e2385bccaeb3c0b8534";
+
 export const verifyPassword = async (
   password: string,
   stored: string,

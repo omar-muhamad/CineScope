@@ -6,7 +6,11 @@ import { db } from "../db";
 import { users, type User } from "../db/schema";
 import { env } from "../env";
 import { signAccessToken } from "../lib/jwt";
-import { hashPassword, verifyPassword } from "../lib/passwords";
+import {
+  DUMMY_PASSWORD_HASH,
+  hashPassword,
+  verifyPassword,
+} from "../lib/passwords";
 import {
   issueRefreshToken,
   revokeAllForUser,
@@ -222,10 +226,14 @@ export const authRoutes = (app: FastifyInstance) => {
     async (request, reply) => {
       const user = await findUserByIdentifier(request.body.identifier);
 
-      // Same response for unknown account and wrong password — no enumeration.
+      // Same response for unknown account and wrong password — no
+      // enumeration. The dummy hash keeps the scrypt cost (and thus the
+      // response time) identical when the account doesn't exist.
       const passwordOk =
-        user?.passwordHash != null &&
-        (await verifyPassword(request.body.password, user.passwordHash));
+        (await verifyPassword(
+          request.body.password,
+          user?.passwordHash ?? DUMMY_PASSWORD_HASH,
+        )) && user?.passwordHash != null;
       if (!user || !passwordOk) {
         return reply.code(401).send({
           code: "INVALID_CREDENTIALS",
