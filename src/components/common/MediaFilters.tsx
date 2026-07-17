@@ -8,6 +8,7 @@ import {
 } from "react-icons/io5";
 
 import { useGenres } from "@/queries/useGenres";
+import { FILTER_YEAR_MIN } from "@/lib/filterParams";
 import {
   hasDiscoverFilters,
   type DiscoverFilters,
@@ -24,9 +25,11 @@ type MediaFiltersProps = {
 
 const CURRENT_YEAR = new Date().getFullYear();
 const YEARS = Array.from(
-  { length: CURRENT_YEAR - 1949 },
+  { length: CURRENT_YEAR - (FILTER_YEAR_MIN - 1) },
   (_, i) => CURRENT_YEAR - i,
 );
+// Must stay within FILTER_RATING_MIN..MAX (filterParams.ts) so every option
+// survives the URL round-trip.
 const MIN_RATINGS = [9, 8, 7, 6, 5];
 
 type SortField = "year" | "rating";

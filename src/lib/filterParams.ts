@@ -7,14 +7,27 @@ const PARAM_KEYS = {
   sort: "sort",
 } as const;
 
-const readNumber = (
+/**
+ * Bounds of the option lists MediaFilters renders. URL values outside them
+ * are dropped — otherwise a pasted `?year=1940` would filter the grid while
+ * the pill still shows the unselected placeholder.
+ */
+export const FILTER_YEAR_MIN = 1950;
+export const FILTER_RATING_MIN = 5;
+export const FILTER_RATING_MAX = 9;
+
+const readInt = (
   params: URLSearchParams,
   key: string,
+  min: number,
+  max: number,
 ): number | undefined => {
   const raw = params.get(key);
   if (raw === null) return undefined;
   const value = Number(raw);
-  return Number.isFinite(value) && value > 0 ? value : undefined;
+  return Number.isInteger(value) && value >= min && value <= max
+    ? value
+    : undefined;
 };
 
 const readSort = (params: URLSearchParams): MediaSort | undefined => {
@@ -31,9 +44,21 @@ const readSort = (params: URLSearchParams): MediaSort | undefined => {
 export const filtersFromParams = (
   params: URLSearchParams,
 ): DiscoverFilters => ({
-  year: readNumber(params, PARAM_KEYS.year),
-  minRating: readNumber(params, PARAM_KEYS.minRating),
-  genreId: readNumber(params, PARAM_KEYS.genreId),
+  year: readInt(
+    params,
+    PARAM_KEYS.year,
+    FILTER_YEAR_MIN,
+    new Date().getFullYear(),
+  ),
+  minRating: readInt(
+    params,
+    PARAM_KEYS.minRating,
+    FILTER_RATING_MIN,
+    FILTER_RATING_MAX,
+  ),
+  // TMDB genre ids are positive integers; membership in the fetched genre
+  // list is the API's concern, not parseable here.
+  genreId: readInt(params, PARAM_KEYS.genreId, 1, Number.MAX_SAFE_INTEGER),
   sort: readSort(params),
 });
 
