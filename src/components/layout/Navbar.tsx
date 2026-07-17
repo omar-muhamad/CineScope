@@ -66,10 +66,7 @@ const Navbar: FC = () => {
   const visibleLinks = navLinks.filter(
     (link) => !link.requiresAuth || isLogged,
   );
-  const avatarUrl =
-    (user?.user_metadata?.avatar_url as string | undefined) ||
-    (user?.user_metadata?.picture as string | undefined) ||
-    "";
+  const avatarUrl = user?.avatarUrl ?? "";
 
   const handleClick = () => {
     setIsUserIconClicked(!isUserIconClicked);

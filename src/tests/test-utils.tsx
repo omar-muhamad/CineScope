@@ -2,28 +2,20 @@ import { ReactElement } from "react";
 import { render } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
-import type { Session, User } from "@supabase/supabase-js";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
+import type { AuthUser } from "@/api/auth";
 import { AuthProvider } from "@/auth/AuthProvider";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
 
-/** Shared auth fixtures so tests don't redefine these everywhere. */
-export const testUser = {
+/** Shared auth fixture so tests don't redefine this everywhere. */
+export const testUser: AuthUser = {
   id: "u-1",
   email: "omar@example.com",
-  user_metadata: { full_name: "Omar Muhammad" },
-  app_metadata: {},
-  aud: "authenticated",
-  created_at: "2024-01-01T00:00:00.000Z",
-} as unknown as User;
-
-export const testSession = {
-  access_token: "test-access-token",
-  refresh_token: "test-refresh-token",
-  expires_in: 3600,
-  token_type: "bearer",
-  user: testUser,
-} as unknown as Session;
+  emailVerified: true,
+  name: "Omar Muhammad",
+  avatarUrl: null,
+};
 
 /** A query client with retries off so failures surface immediately in tests. */
 export const makeTestQueryClient = () =>
@@ -35,8 +27,8 @@ export const makeTestQueryClient = () =>
   });
 
 type RenderOptions = {
-  /** Seed the AuthProvider with a signed-in session (null = signed out). */
-  session?: Session | null;
+  /** Seed the AuthProvider with a signed-in user (null = signed out). */
+  user?: AuthUser | null;
   /** Initial router entry. */
   route?: string;
   queryClient?: QueryClient;
@@ -44,24 +36,27 @@ type RenderOptions = {
 
 /**
  * Render a component inside the app's real provider stack
- * (QueryClient → Auth → Router). The Supabase client is mocked globally in
- * `setup.ts`; the session is seeded directly via the AuthProvider seam.
+ * (QueryClient → GoogleOAuth → Auth → Router). The user is seeded directly via
+ * the AuthProvider seam, so no network is touched; data-layer calls
+ * (`@/api/saved`, `@/api/auth`) are mocked per test where needed.
  */
 export const renderWithProviders = (
   ui: ReactElement,
-  { session = null, route = "/", queryClient }: RenderOptions = {},
+  { user = null, route = "/", queryClient }: RenderOptions = {},
 ) => {
   const client = queryClient ?? makeTestQueryClient();
 
   return render(
     <QueryClientProvider client={client}>
-      <AuthProvider initialSession={session}>
-        <MemoryRouter initialEntries={[route]}>
-          {/* Catch thrown suspense-query errors so a rejected mock surfaces as
-              the error UI instead of an uncaught throw out of render. */}
-          <ErrorBoundary>{ui}</ErrorBoundary>
-        </MemoryRouter>
-      </AuthProvider>
+      <GoogleOAuthProvider clientId="test-google-client">
+        <AuthProvider initialUser={user}>
+          <MemoryRouter initialEntries={[route]}>
+            {/* Catch thrown suspense-query errors so a rejected mock surfaces as
+                the error UI instead of an uncaught throw out of render. */}
+            <ErrorBoundary>{ui}</ErrorBoundary>
+          </MemoryRouter>
+        </AuthProvider>
+      </GoogleOAuthProvider>
     </QueryClientProvider>,
   );
 };

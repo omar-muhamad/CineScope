@@ -18,13 +18,9 @@ const UserCard: FC = () => {
     navigate("/", { replace: true });
   };
 
-  const displayName =
-    (user?.user_metadata?.full_name as string | undefined) ?? user?.email;
+  const displayName = user?.name ?? user?.email;
   const firstName = displayName?.split(" ")[0];
-  const avatarUrl =
-    (user?.user_metadata?.avatar_url as string | undefined) ||
-    (user?.user_metadata?.picture as string | undefined) ||
-    "";
+  const avatarUrl = user?.avatarUrl ?? "";
 
   return (
     <div className="user-card absolute z-50 top-full right-2 mt-2 w-60 origin-top-right rounded-lg border border-white/10 bg-secondary-dark p-2 shadow-2xl shadow-black/50 animate-dropdown">

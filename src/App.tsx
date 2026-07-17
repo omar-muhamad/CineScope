@@ -11,10 +11,11 @@ import Favorites from "./pages/Favorites";
 import WatchLater from "./pages/WatchLater";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
+import VerifyEmail from "./pages/VerifyEmail";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import ScrollToTop from "./components/common/ScrollToTop";
 
-const AUTH_ROUTES = ["/login"];
+const AUTH_ROUTES = ["/login", "/verify-email"];
 
 function App() {
   const { pathname } = useLocation();
@@ -64,6 +65,7 @@ function App() {
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/watch-later" element={<WatchLater />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </ErrorBoundary>

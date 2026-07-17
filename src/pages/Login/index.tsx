@@ -1,14 +1,17 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FcGoogle } from "react-icons/fc";
+import { GoogleLogin } from "@react-oauth/google";
 import {
   IoMailOutline,
+  IoLockClosedOutline,
   IoHeartOutline,
   IoTimeOutline,
   IoFilmOutline,
 } from "react-icons/io5";
 
 import { useAuth } from "@/auth/useAuth";
+import { resendVerification } from "@/api/auth";
+import { getApiError } from "@/lib/api";
 import Logo from "@/assets/icons/logo.svg?react";
 import Button from "@/components/ui/Button";
 import Heading from "@/components/ui/Heading";
@@ -19,6 +22,23 @@ const features = [
   { icon: IoTimeOutline, text: "Build a watch-later list you can return to" },
   { icon: IoFilmOutline, text: "Search the full TMDB catalog" },
 ];
+
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? "";
+
+type Mode = "login" | "register";
+
+const copy: Record<Mode, { heading: string; submit: string; busy: string }> = {
+  login: {
+    heading: "Sign in to CineScope",
+    submit: "Sign in",
+    busy: "Signing in...",
+  },
+  register: {
+    heading: "Create your account",
+    submit: "Create account",
+    busy: "Creating account...",
+  },
+};
 
 /** CINESCOPE wordmark + logo, matching the navbar lockup. */
 const Brand = () => (
@@ -33,44 +53,85 @@ const Brand = () => (
   </div>
 );
 
+const inputClass =
+  "w-full rounded-md bg-main-dark py-3 pl-11 pr-4 text-sm text-white outline-hidden ring-1 ring-white/10 transition focus:ring-2 focus:ring-orange placeholder:text-gray caret-orange";
+
 const Login = () => {
   const navigate = useNavigate();
-  const { user, signIn, signInWithEmail } = useAuth();
-  const [signingIn, setSigningIn] = useState(false);
-  const [email, setEmail] = useState("");
-  const [sending, setSending] = useState(false);
-  const [sentTo, setSentTo] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const { user, signIn, signUp, signInWithGoogle } = useAuth();
 
-  // Signed in (after the OAuth/magic-link redirect resolves) → into the app.
+  const [mode, setMode] = useState<Mode>("login");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  // Set when an account still needs its email confirmed (fresh signup, or a
+  // login attempt that came back EMAIL_NOT_VERIFIED) — swaps in the "check
+  // your inbox" panel.
+  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+  const [resendState, setResendState] = useState<"idle" | "sending" | "sent">(
+    "idle",
+  );
+
+  // Signed in → into the app.
   useEffect(() => {
     if (user) {
       navigate("/", { replace: true });
     }
   }, [user, navigate]);
 
-  const handleSignIn = async () => {
-    setSigningIn(true);
+  const switchMode = (next: Mode) => {
+    setMode(next);
+    setError(null);
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSubmitting(true);
+    setError(null);
     try {
-      // Redirects to Google; the app reloads on return and `user` populates.
-      await signIn();
-    } catch {
-      setSigningIn(false);
+      if (mode === "register") {
+        await signUp(email, password);
+        setPendingEmail(email);
+        setResendState("idle");
+      } else {
+        // Success populates `user`; the effect above redirects.
+        await signIn(email, password);
+      }
+    } catch (err) {
+      const { code, message } = getApiError(err);
+      if (code === "EMAIL_NOT_VERIFIED") {
+        setPendingEmail(email);
+        setResendState("idle");
+      } else {
+        setError(message ?? "Something went wrong. Try again.");
+      }
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const handleEmailSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setSending(true);
+  const handleResend = async () => {
+    if (!pendingEmail || resendState === "sending") return;
+    setResendState("sending");
+    try {
+      await resendVerification(pendingEmail);
+      setResendState("sent");
+    } catch {
+      setResendState("idle");
+    }
+  };
+
+  const handleGoogleCredential = async (credential: string | undefined) => {
+    if (!credential) {
+      setError("Google sign-in failed. Try again.");
+      return;
+    }
     setError(null);
     try {
-      await signInWithEmail(email);
-      // Only reached on a confirmed send — the provider rethrows Supabase errors.
-      setSentTo(email);
-    } catch {
-      setError("We couldn't send the link. Check the address and try again.");
-    } finally {
-      setSending(false);
+      await signInWithGoogle(credential);
+    } catch (err) {
+      setError(getApiError(err).message ?? "Google sign-in failed. Try again.");
     }
   };
 
@@ -117,8 +178,8 @@ const Login = () => {
             <Brand />
           </div>
 
-          {sentTo ? (
-            <div className="flex flex-col gap-4">
+          {pendingEmail ? (
+            <div className="flex flex-col gap-4" data-test-id="verify-notice">
               <span className="flex size-14 items-center justify-center rounded-full bg-orange/10 text-orange">
                 <IoMailOutline className="text-2xl" />
               </span>
@@ -126,58 +187,81 @@ const Login = () => {
                 Check your inbox
               </Heading>
               <Text className="text-gray">
-                We sent a sign-in link to{" "}
-                <span className="text-white">{sentTo}</span>. Open it on this
-                device to finish signing in.
+                We sent a verification link to{" "}
+                <span className="text-white">{pendingEmail}</span>. Open it to
+                activate your account, then sign in.
               </Text>
-              <button
-                type="button"
-                data-test-id="use-different-email"
-                className="self-start text-sm text-orange underline-offset-4 hover:underline"
-                onClick={() => {
-                  setSentTo(null);
-                  setEmail("");
-                }}
-              >
-                Use a different email
-              </button>
+              <div className="flex items-center gap-4">
+                <button
+                  type="button"
+                  data-test-id="resend-verification"
+                  className="text-sm text-orange underline-offset-4 hover:underline disabled:opacity-60"
+                  onClick={handleResend}
+                  disabled={resendState !== "idle"}
+                >
+                  {resendState === "sent"
+                    ? "Email sent!"
+                    : resendState === "sending"
+                      ? "Sending..."
+                      : "Resend email"}
+                </button>
+                <button
+                  type="button"
+                  data-test-id="back-to-login"
+                  className="text-sm text-gray underline-offset-4 hover:underline"
+                  onClick={() => {
+                    setPendingEmail(null);
+                    switchMode("login");
+                  }}
+                >
+                  Back to sign in
+                </button>
+              </div>
             </div>
           ) : (
             <>
               <div className="flex flex-col max-lg:hidden gap-2">
                 <Heading as="h1" size="md" data-test-id="login-heading">
-                  Sign in to CineScope
+                  {copy[mode].heading}
                 </Heading>
                 <Text className="text-gray">
                   Save your favorites and build a watch-later list.
                 </Text>
               </div>
 
-              <button
-                type="button"
-                data-test-id="google-signin-button"
-                onClick={handleSignIn}
-                disabled={signingIn}
-                className="flex w-full items-center justify-center gap-3 rounded-md border border-white/10 bg-main-dark py-3 text-white transition-colors hover:border-white/25 hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                <FcGoogle className="rounded-full bg-white text-xl" />
-                <span>
-                  {signingIn
-                    ? "Redirecting to Google..."
-                    : "Continue with Google"}
-                </span>
-              </button>
+              {googleClientId && (
+                <>
+                  <div
+                    className="flex justify-center"
+                    data-test-id="google-signin"
+                  >
+                    <GoogleLogin
+                      theme="filled_black"
+                      size="large"
+                      text={
+                        mode === "register" ? "signup_with" : "continue_with"
+                      }
+                      onSuccess={(response) =>
+                        handleGoogleCredential(response.credential)
+                      }
+                      onError={() =>
+                        setError("Google sign-in failed. Try again.")
+                      }
+                    />
+                  </div>
 
-              <div className="flex items-center gap-3 text-xs uppercase tracking-wider text-gray">
-                <span className="h-px flex-1 bg-white/10" />
-                or
-                <span className="h-px flex-1 bg-white/10" />
-              </div>
+                  <div className="flex items-center gap-3 text-xs uppercase tracking-wider text-gray">
+                    <span className="h-px flex-1 bg-white/10" />
+                    or
+                    <span className="h-px flex-1 bg-white/10" />
+                  </div>
+                </>
+              )}
 
               <form
                 className="flex flex-col gap-3"
-                onSubmit={handleEmailSubmit}
-                data-test-id="magic-link-form"
+                onSubmit={handleSubmit}
+                data-test-id="auth-form"
               >
                 <div className="relative">
                   <IoMailOutline className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-gray" />
@@ -185,27 +269,50 @@ const Login = () => {
                     id="login-email"
                     type="email"
                     required
+                    autoComplete="email"
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
                     placeholder="you@example.com"
                     aria-label="Email address"
-                    data-test-id="magic-link-email"
-                    className="w-full rounded-md bg-main-dark py-3 pl-11 pr-4 text-sm text-white outline-hidden ring-1 ring-white/10 transition focus:ring-2 focus:ring-orange placeholder:text-gray caret-orange"
+                    data-test-id="auth-email"
+                    className={inputClass}
+                  />
+                </div>
+                <div className="relative">
+                  <IoLockClosedOutline className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-gray" />
+                  <input
+                    id="login-password"
+                    type="password"
+                    required
+                    minLength={8}
+                    autoComplete={
+                      mode === "register" ? "new-password" : "current-password"
+                    }
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    placeholder={
+                      mode === "register"
+                        ? "Password (min. 8 characters)"
+                        : "Password"
+                    }
+                    aria-label="Password"
+                    data-test-id="auth-password"
+                    className={inputClass}
                   />
                 </div>
                 <Button
                   type="submit"
-                  data-test-id="magic-link-button"
+                  data-test-id="auth-submit"
                   className="w-full py-3"
-                  disabled={sending}
+                  disabled={submitting}
                 >
-                  {sending ? "Sending link..." : "Send magic link"}
+                  {submitting ? copy[mode].busy : copy[mode].submit}
                 </Button>
                 {error && (
                   <Text
                     size="sm"
                     className="text-red-400"
-                    data-test-id="magic-link-error"
+                    data-test-id="auth-error"
                   >
                     {error}
                   </Text>
@@ -213,7 +320,31 @@ const Login = () => {
               </form>
 
               <Text size="sm" className="text-gray">
-                No password needed — we&apos;ll email you a secure sign-in link.
+                {mode === "login" ? (
+                  <>
+                    New to CineScope?{" "}
+                    <button
+                      type="button"
+                      data-test-id="switch-to-register"
+                      className="text-orange underline-offset-4 hover:underline"
+                      onClick={() => switchMode("register")}
+                    >
+                      Create an account
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    Already have an account?{" "}
+                    <button
+                      type="button"
+                      data-test-id="switch-to-login"
+                      className="text-orange underline-offset-4 hover:underline"
+                      onClick={() => switchMode("login")}
+                    >
+                      Sign in
+                    </button>
+                  </>
+                )}
               </Text>
             </>
           )}

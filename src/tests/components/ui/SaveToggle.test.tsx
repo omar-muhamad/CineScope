@@ -2,7 +2,7 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 
 import SaveToggle from "@/components/ui/SaveToggle";
 import type { MediaItem } from "@/types";
-import { renderWithProviders, testSession } from "@/tests/test-utils";
+import { renderWithProviders, testUser } from "@/tests/test-utils";
 
 const { fetchFavoritesMock, fetchWatchlistMock, addSavedMock } = vi.hoisted(
   () => ({
@@ -32,7 +32,7 @@ const meta = {
 const renderToggle = () =>
   renderWithProviders(
     <SaveToggle id={1} media_type="movie" kind="favorite" meta={meta} />,
-    { session: testSession },
+    { user: testUser },
   );
 
 beforeEach(() => {
