@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import {
   IoCheckmarkCircleOutline,
@@ -18,8 +18,18 @@ type Status = "form" | "success" | "invalid";
 
 /** Landing page for the emailed reset link (/reset-password?token=...). */
 const ResetPassword = () => {
-  const [params] = useSearchParams();
-  const token = params.get("token");
+  const [params, setParams] = useSearchParams();
+  // Captured once — the URL is scrubbed right after so the still-valid token
+  // (up to an hour of life) isn't recoverable from history on a shared
+  // machine.
+  const [token] = useState(() => params.get("token"));
+
+  useEffect(() => {
+    if (!params.has("token")) return;
+    const scrubbed = new URLSearchParams(params);
+    scrubbed.delete("token");
+    setParams(scrubbed, { replace: true });
+  }, [params, setParams]);
 
   const [status, setStatus] = useState<Status>(token ? "form" : "invalid");
   const [password, setPassword] = useState("");
