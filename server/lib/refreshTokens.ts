@@ -35,12 +35,21 @@ export type RotationResult =
   | { ok: false };
 
 /**
+ * Two tabs (or two devices) restoring a session at the same moment both
+ * present the same cookie; the loser arrives just after the winner's rotation
+ * commits. A token revoked this recently is that benign race, not theft, so
+ * it still rotates into a fresh session. Replays older than the window get
+ * the full theft response.
+ */
+const ROTATION_GRACE_MS = 30_000;
+
+/**
  * Rotate a presented refresh token: revoke it and mint a replacement.
  *
- * Reuse detection: a token that exists but is already revoked means someone
- * replayed an old token (theft, or a very stale client). We can't tell which
- * party is legitimate, so every session for that user is revoked and both
- * sides must log in again.
+ * Reuse detection: a token revoked longer than ROTATION_GRACE_MS ago means
+ * someone replayed an old token (theft, or a very stale client). We can't
+ * tell which party is legitimate, so every session for that user is revoked
+ * and both sides must log in again.
  */
 export const rotateRefreshToken = async (
   token: string,
@@ -53,20 +62,37 @@ export const rotateRefreshToken = async (
 
   if (!row) return { ok: false };
 
-  if (row.revokedAt) {
-    await revokeAllForUser(row.userId);
-    return { ok: false };
-  }
-
   if (row.expiresAt.getTime() <= Date.now()) return { ok: false };
 
-  await db
-    .update(refreshTokens)
-    .set({ revokedAt: new Date() })
-    .where(eq(refreshTokens.id, row.id));
+  if (!row.revokedAt) {
+    // Conditional update so exactly one of two concurrent rotations claims
+    // the token; the loser falls through to the grace-window path below.
+    const [claimed] = await db
+      .update(refreshTokens)
+      .set({ revokedAt: new Date() })
+      .where(and(eq(refreshTokens.id, row.id), isNull(refreshTokens.revokedAt)))
+      .returning();
 
-  const next = await issueRefreshToken(row.userId);
-  return { ok: true, userId: row.userId, next };
+    if (claimed) {
+      return {
+        ok: true,
+        userId: row.userId,
+        next: await issueRefreshToken(row.userId),
+      };
+    }
+    row.revokedAt = new Date();
+  }
+
+  if (Date.now() - row.revokedAt.getTime() <= ROTATION_GRACE_MS) {
+    return {
+      ok: true,
+      userId: row.userId,
+      next: await issueRefreshToken(row.userId),
+    };
+  }
+
+  await revokeAllForUser(row.userId);
+  return { ok: false };
 };
 
 /** Revoke one token (logout). No-op if it doesn't exist. */

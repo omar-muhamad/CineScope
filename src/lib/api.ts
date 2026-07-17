@@ -40,18 +40,32 @@ export const setOnSessionExpired = (handler: (() => void) | null) => {
 };
 
 /**
+ * The refresh cookie is shared browser-wide but rotates on every use, so two
+ * tabs refreshing at once would race (the loser presents an already-rotated
+ * token). Web Locks serialize the calls across tabs — the waiter then sends
+ * the successor cookie the winner installed. Same-tab callers already share
+ * one flight via refreshInFlight; older browsers just fall back to that.
+ */
+const withCrossTabLock = <T>(task: () => Promise<T>): Promise<T> =>
+  typeof navigator !== "undefined" && navigator.locks
+    ? navigator.locks.request("cine-scope-refresh", task)
+    : task();
+
+/**
  * Exchange the refresh cookie for a new access token (single-flight: parallel
  * 401s share one refresh call). Resolves null when there's no valid session.
  */
 let refreshInFlight: Promise<SessionPayload | null> | null = null;
 export const refreshSession = (): Promise<SessionPayload | null> => {
-  refreshInFlight ??= axios
-    // Bare axios, not `api` — a 401 here must not re-enter the interceptor.
-    .post<SessionPayload>("/api/auth/refresh")
-    .then(({ data }) => {
-      setAccessToken(data.accessToken);
-      return data;
-    })
+  refreshInFlight ??= withCrossTabLock(() =>
+    axios
+      // Bare axios, not `api` — a 401 here must not re-enter the interceptor.
+      .post<SessionPayload>("/api/auth/refresh")
+      .then(({ data }) => {
+        setAccessToken(data.accessToken);
+        return data;
+      }),
+  )
     .catch(() => {
       setAccessToken(null);
       return null;
