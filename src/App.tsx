@@ -12,10 +12,11 @@ import WatchLater from "./pages/WatchLater";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import VerifyEmail from "./pages/VerifyEmail";
+import ResetPassword from "./pages/ResetPassword";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import ScrollToTop from "./components/common/ScrollToTop";
 
-const AUTH_ROUTES = ["/login", "/verify-email"];
+const AUTH_ROUTES = ["/login", "/verify-email", "/reset-password"];
 
 function App() {
   const { pathname } = useLocation();
@@ -66,6 +67,7 @@ function App() {
           <Route path="/watch-later" element={<WatchLater />} />
           <Route path="/login" element={<Login />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </ErrorBoundary>

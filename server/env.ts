@@ -35,6 +35,11 @@ export const env = {
   verificationTokenTtlHours: Number(
     process.env.VERIFICATION_TOKEN_TTL_HOURS ?? 24,
   ),
+  // Reset links are deliberately shorter-lived than verification links — they
+  // grant control of the account, not just activation.
+  passwordResetTokenTtlMinutes: Number(
+    process.env.PASSWORD_RESET_TOKEN_TTL_MINUTES ?? 60,
+  ),
 
   /** SMTP transport for verification emails. Unset host = log links instead. */
   smtp: {

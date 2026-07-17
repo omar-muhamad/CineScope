@@ -3,24 +3,24 @@ import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import {
   IoMailOutline,
-  IoLockClosedOutline,
-  IoEyeOutline,
-  IoEyeOffOutline,
   IoPersonOutline,
   IoAtOutline,
   IoCameraOutline,
   IoHeartOutline,
   IoTimeOutline,
   IoFilmOutline,
+  IoKeyOutline,
 } from "react-icons/io5";
 
 import { useAuth } from "@/auth/useAuth";
-import { resendVerification } from "@/api/auth";
+import { requestPasswordReset, resendVerification } from "@/api/auth";
 import { getApiError } from "@/lib/api";
 import { fileToAvatarDataUrl } from "@/lib/image";
 import Logo from "@/assets/icons/logo.svg?react";
 import Button from "@/components/ui/Button";
 import Heading from "@/components/ui/Heading";
+import IconInput from "@/components/ui/IconInput";
+import PasswordInput from "@/components/ui/PasswordInput";
 import Text from "@/components/ui/Text";
 
 const features = [
@@ -59,47 +59,6 @@ const Brand = () => (
   </div>
 );
 
-// Right padding is per-variant: room for text only, or for the eye toggle.
-const inputClass =
-  "w-full rounded-md bg-main-dark py-3 pl-11 text-sm text-white outline-hidden ring-1 ring-white/10 transition focus:ring-2 focus:ring-orange placeholder:text-gray caret-orange";
-
-type IconInputProps = {
-  icon: typeof IoMailOutline;
-  children?: never;
-} & React.InputHTMLAttributes<HTMLInputElement>;
-
-/** Input with the form's standard leading icon treatment. */
-const IconInput = ({ icon: Icon, ...props }: IconInputProps) => (
-  <div className="relative min-w-0 flex-1">
-    <Icon className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-gray" />
-    <input {...props} className={`${inputClass} pr-4`} />
-  </div>
-);
-
-/** Password input with the lock icon and a show/hide visibility toggle. */
-const PasswordInput = (props: Omit<IconInputProps, "icon" | "type">) => {
-  const [visible, setVisible] = useState(false);
-  return (
-    <div className="relative min-w-0 flex-1">
-      <IoLockClosedOutline className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-gray" />
-      <input
-        {...props}
-        type={visible ? "text" : "password"}
-        className={`${inputClass} pr-11`}
-      />
-      <button
-        type="button"
-        aria-label={visible ? "Hide password" : "Show password"}
-        aria-pressed={visible}
-        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-lg text-gray transition hover:text-white"
-        onClick={() => setVisible((v) => !v)}
-      >
-        {visible ? <IoEyeOffOutline /> : <IoEyeOutline />}
-      </button>
-    </div>
-  );
-};
-
 const Login = () => {
   const navigate = useNavigate();
   const { user, signIn, signUp, signInWithGoogle } = useAuth();
@@ -125,6 +84,14 @@ const Login = () => {
   const [resendState, setResendState] = useState<"idle" | "sending" | "sent">(
     "idle",
   );
+  // Offered after a login attempt fails with INVALID_CREDENTIALS — the moment
+  // a reset is actually useful.
+  const [showForgotLink, setShowForgotLink] = useState(false);
+  // Swaps in the "email me a reset link" panel.
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [forgotState, setForgotState] = useState<"idle" | "sending" | "sent">(
+    "idle",
+  );
 
   // Signed in → into the app.
   useEffect(() => {
@@ -136,6 +103,19 @@ const Login = () => {
   const switchMode = (next: Mode) => {
     setMode(next);
     setError(null);
+    setShowForgotLink(false);
+  };
+
+  const openForgot = () => {
+    setForgotOpen(true);
+    setForgotState("idle");
+    setError(null);
+  };
+
+  const closeForgot = () => {
+    setForgotOpen(false);
+    setError(null);
+    setShowForgotLink(false);
   };
 
   const handleAvatarChange = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -159,6 +139,7 @@ const Login = () => {
     }
     setSubmitting(true);
     setError(null);
+    setShowForgotLink(false);
     try {
       if (mode === "register") {
         await signUp({
@@ -182,9 +163,25 @@ const Login = () => {
         setResendState("idle");
       } else {
         setError(message ?? "Something went wrong. Try again.");
+        // A failed password is the moment a reset link is actually useful.
+        setShowForgotLink(code === "INVALID_CREDENTIALS");
       }
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleForgotSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (forgotState !== "idle") return;
+    setForgotState("sending");
+    setError(null);
+    try {
+      await requestPasswordReset(identifier);
+      setForgotState("sent");
+    } catch {
+      setForgotState("idle");
+      setError("The reset email couldn't be sent. Try again.");
     }
   };
 
@@ -298,6 +295,74 @@ const Login = () => {
                   Back to sign in
                 </button>
               </div>
+            </div>
+          ) : forgotOpen ? (
+            <div className="flex flex-col gap-4" data-test-id="forgot-panel">
+              <span className="flex size-14 items-center justify-center rounded-full bg-orange/10 text-orange">
+                <IoKeyOutline className="text-2xl" />
+              </span>
+              <Heading as="h1" size="md">
+                Reset your password
+              </Heading>
+              {forgotState === "sent" ? (
+                <Text className="text-gray" data-test-id="forgot-sent">
+                  If an account exists for{" "}
+                  <span className="text-white">{identifier}</span>, a reset link
+                  is on its way. Open it to choose a new password.
+                </Text>
+              ) : (
+                <>
+                  <Text className="text-gray">
+                    Enter your email or username and we&apos;ll send you a link
+                    to choose a new password.
+                  </Text>
+                  <form
+                    className="flex flex-col gap-3"
+                    onSubmit={handleForgotSubmit}
+                    data-test-id="forgot-form"
+                  >
+                    <IconInput
+                      icon={IoMailOutline}
+                      id="forgot-identifier"
+                      type="text"
+                      required
+                      autoComplete="username"
+                      value={identifier}
+                      onChange={(e) => setIdentifier(e.target.value)}
+                      placeholder="Email or username"
+                      aria-label="Email or username"
+                      data-test-id="forgot-identifier"
+                    />
+                    <Button
+                      type="submit"
+                      data-test-id="forgot-submit"
+                      className="w-full py-3"
+                      disabled={forgotState !== "idle"}
+                    >
+                      {forgotState === "sending"
+                        ? "Sending..."
+                        : "Email me a reset link"}
+                    </Button>
+                    {error && (
+                      <Text
+                        size="sm"
+                        className="text-red-400"
+                        data-test-id="auth-error"
+                      >
+                        {error}
+                      </Text>
+                    )}
+                  </form>
+                </>
+              )}
+              <button
+                type="button"
+                data-test-id="forgot-back"
+                className="self-start text-sm text-gray underline-offset-4 hover:underline"
+                onClick={closeForgot}
+              >
+                Back to sign in
+              </button>
             </div>
           ) : (
             <>
@@ -504,13 +569,25 @@ const Login = () => {
                   {submitting ? copy[mode].busy : copy[mode].submit}
                 </Button>
                 {error && (
-                  <Text
-                    size="sm"
-                    className="text-red-400"
-                    data-test-id="auth-error"
-                  >
-                    {error}
-                  </Text>
+                  <div className="flex flex-col gap-1">
+                    <Text
+                      size="sm"
+                      className="text-red-400"
+                      data-test-id="auth-error"
+                    >
+                      {error}
+                    </Text>
+                    {showForgotLink && (
+                      <button
+                        type="button"
+                        data-test-id="forgot-password"
+                        className="self-start text-sm text-orange underline-offset-4 hover:underline"
+                        onClick={openForgot}
+                      >
+                        Forgot your password?
+                      </button>
+                    )}
+                  </div>
                 )}
               </form>
 

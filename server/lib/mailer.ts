@@ -3,9 +3,9 @@ import nodemailer from "nodemailer";
 import { env } from "../env";
 
 /**
- * Verification email transport. With SMTP_HOST configured, mail goes out via
- * Nodemailer; without it (typical local dev), the verification link is logged
- * to the server console instead so the flow stays testable end-to-end.
+ * Auth email transport. With SMTP_HOST configured, mail goes out via
+ * Nodemailer; without it (typical local dev), the emailed link is logged
+ * to the server console instead so the flows stay testable end-to-end.
  */
 const transport = env.smtp.host
   ? nodemailer.createTransport({
@@ -49,6 +49,42 @@ export const sendVerificationEmail = async (
         <p style="color:#666;font-size:13px;">
           The link expires in ${env.verificationTokenTtlHours} hours.
           If you didn't create a CineScope account, you can ignore this email.
+        </p>
+      </div>
+    `,
+  });
+};
+
+export const sendPasswordResetEmail = async (
+  to: string,
+  token: string,
+): Promise<void> => {
+  const link = `${env.appOrigin}/reset-password?token=${token}`;
+
+  if (!transport) {
+    console.info(
+      `[mailer] SMTP not configured — password reset link for ${to}:\n${link}`,
+    );
+    return;
+  }
+
+  await transport.sendMail({
+    from: env.smtp.from,
+    to,
+    subject: "Reset your CineScope password",
+    text: `We received a request to reset your CineScope password.\n\nChoose a new password by opening this link:\n${link}\n\nThe link expires in ${env.passwordResetTokenTtlMinutes} minutes. If you didn't request a reset, you can ignore this email — your password is unchanged.`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">
+        <h2>Reset your password</h2>
+        <p>We received a request to reset your CineScope password. Click below to choose a new one.</p>
+        <p style="margin: 24px 0;">
+          <a href="${link}" style="background:#fc4747;color:#fff;padding:12px 20px;border-radius:6px;text-decoration:none;">
+            Reset password
+          </a>
+        </p>
+        <p style="color:#666;font-size:13px;">
+          The link expires in ${env.passwordResetTokenTtlMinutes} minutes.
+          If you didn't request a reset, you can ignore this email — your password is unchanged.
         </p>
       </div>
     `,

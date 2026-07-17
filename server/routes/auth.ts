@@ -9,6 +9,7 @@ import { signAccessToken } from "../lib/jwt";
 import { hashPassword, verifyPassword } from "../lib/passwords";
 import {
   issueRefreshToken,
+  revokeAllForUser,
   revokeRefreshToken,
   rotateRefreshToken,
   type IssuedRefreshToken,
@@ -17,7 +18,11 @@ import {
   consumeVerificationToken,
   issueVerificationToken,
 } from "../lib/verificationTokens";
-import { sendVerificationEmail } from "../lib/mailer";
+import {
+  consumePasswordResetToken,
+  issuePasswordResetToken,
+} from "../lib/passwordResetTokens";
+import { sendPasswordResetEmail, sendVerificationEmail } from "../lib/mailer";
 import { requireAuth } from "../plugins/requireAuth";
 
 const REFRESH_COOKIE = "cine_refresh";
@@ -429,6 +434,84 @@ export const authRoutes = (app: FastifyInstance) => {
       return {
         message: "If that address needs verification, an email is on its way.",
       };
+    },
+  );
+
+  /** Email a password-reset link. Always 200 — no account enumeration. */
+  app.post<{ Body: { identifier: string } }>(
+    "/forgot-password",
+    {
+      schema: {
+        body: {
+          type: "object",
+          required: ["identifier"],
+          properties: {
+            // Email or username — the mail always goes to the account's
+            // stored address, so accepting a username leaks nothing.
+            identifier: { type: "string", minLength: 3, maxLength: 254 },
+          },
+        },
+      },
+    },
+    async (request) => {
+      const user = await findUserByIdentifier(request.body.identifier);
+      // Google-only accounts have no password to reset; attaching one stays
+      // an authenticated-only operation, same as in /register.
+      if (user?.passwordHash) {
+        try {
+          await sendPasswordResetEmail(
+            user.email,
+            await issuePasswordResetToken(user.id),
+          );
+        } catch (error) {
+          app.log.error(error, "password reset email failed to send");
+        }
+      }
+      return {
+        message: "If that account exists, a reset link is on its way.",
+      };
+    },
+  );
+
+  /** Consume an emailed reset token and set the new password. */
+  app.post<{ Body: { token: string; password: string } }>(
+    "/reset-password",
+    {
+      schema: {
+        body: {
+          type: "object",
+          required: ["token", "password"],
+          properties: {
+            token: { type: "string", minLength: 1 },
+            password: passwordSchema,
+          },
+        },
+      },
+    },
+    async (request, reply) => {
+      const userId = await consumePasswordResetToken(request.body.token);
+      if (!userId) {
+        return reply.code(400).send({
+          code: "INVALID_TOKEN",
+          message: "This reset link is invalid or has expired.",
+        });
+      }
+
+      await db
+        .update(users)
+        .set({
+          passwordHash: await hashPassword(request.body.password),
+          // Opening the emailed link proves address ownership — the same
+          // proof verification asks for — so a pending signup unlocks here.
+          emailVerified: true,
+          updatedAt: new Date(),
+        })
+        .where(eq(users.id, userId));
+
+      // The old password may be compromised — sign out every session.
+      await revokeAllForUser(userId);
+
+      return { message: "Password updated. You can log in now." };
     },
   );
 };

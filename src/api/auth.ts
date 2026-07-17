@@ -89,3 +89,24 @@ export const verifyEmail = async (token: string): Promise<void> => {
 export const resendVerification = async (identifier: string): Promise<void> => {
   await api.post("/auth/resend-verification", { identifier });
 };
+
+/**
+ * Ask for a password-reset link, by email or username. Always resolves (no
+ * enumeration); the mail goes to the account's stored address.
+ */
+export const requestPasswordReset = async (
+  identifier: string,
+): Promise<void> => {
+  await api.post("/auth/forgot-password", { identifier });
+};
+
+/**
+ * Set a new password with an emailed reset token. Throws with code
+ * INVALID_TOKEN on invalid/expired links.
+ */
+export const resetPassword = async (
+  token: string,
+  password: string,
+): Promise<void> => {
+  await api.post("/auth/reset-password", { token, password });
+};
