@@ -59,8 +59,14 @@ export const loginWithGoogle = async (
  * user simply isn't signed in — never throws.
  */
 export const restoreSession = async (): Promise<AuthUser | null> => {
-  const session = await refreshSession();
-  return session?.user ?? null;
+  try {
+    const session = await refreshSession();
+    return session?.user ?? null;
+  } catch {
+    // API unreachable during boot — render signed-out rather than hang. The
+    // cookie is untouched, so the session comes back on the next load.
+    return null;
+  }
 };
 
 /**

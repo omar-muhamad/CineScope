@@ -53,7 +53,10 @@ const withCrossTabLock = <T>(task: () => Promise<T>): Promise<T> =>
 
 /**
  * Exchange the refresh cookie for a new access token (single-flight: parallel
- * 401s share one refresh call). Resolves null when there's no valid session.
+ * 401s share one refresh call). Resolves null when the server definitively
+ * says there's no session (401); REJECTS on transient failures (network
+ * blip, 5xx) so callers don't mistake an offline moment for a signed-out
+ * user — the refresh cookie is still valid in that case.
  */
 let refreshInFlight: Promise<SessionPayload | null> | null = null;
 export const refreshSession = (): Promise<SessionPayload | null> => {
@@ -64,15 +67,17 @@ export const refreshSession = (): Promise<SessionPayload | null> => {
       .then(({ data }) => {
         setAccessToken(data.accessToken);
         return data;
+      })
+      .catch((error: unknown) => {
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+          setAccessToken(null);
+          return null;
+        }
+        throw error;
       }),
-  )
-    .catch(() => {
-      setAccessToken(null);
-      return null;
-    })
-    .finally(() => {
-      refreshInFlight = null;
-    });
+  ).finally(() => {
+    refreshInFlight = null;
+  });
   return refreshInFlight;
 };
 
@@ -98,7 +103,14 @@ api.interceptors.response.use(undefined, async (error: AxiosError) => {
   }
 
   config._retried = true;
-  const session = await refreshSession();
+  let session: SessionPayload | null;
+  try {
+    session = await refreshSession();
+  } catch {
+    // Transient refresh failure — fail this request without declaring the
+    // session expired; the next 401 will try again.
+    throw error;
+  }
   if (!session) {
     onSessionExpired?.();
     throw error;
