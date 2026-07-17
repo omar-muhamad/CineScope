@@ -1,9 +1,14 @@
-import { FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import {
   IoMailOutline,
   IoLockClosedOutline,
+  IoEyeOutline,
+  IoEyeOffOutline,
+  IoPersonOutline,
+  IoAtOutline,
+  IoCameraOutline,
   IoHeartOutline,
   IoTimeOutline,
   IoFilmOutline,
@@ -12,6 +17,7 @@ import {
 import { useAuth } from "@/auth/useAuth";
 import { resendVerification } from "@/api/auth";
 import { getApiError } from "@/lib/api";
+import { fileToAvatarDataUrl } from "@/lib/image";
 import Logo from "@/assets/icons/logo.svg?react";
 import Button from "@/components/ui/Button";
 import Heading from "@/components/ui/Heading";
@@ -53,22 +59,69 @@ const Brand = () => (
   </div>
 );
 
+// Right padding is per-variant: room for text only, or for the eye toggle.
 const inputClass =
-  "w-full rounded-md bg-main-dark py-3 pl-11 pr-4 text-sm text-white outline-hidden ring-1 ring-white/10 transition focus:ring-2 focus:ring-orange placeholder:text-gray caret-orange";
+  "w-full rounded-md bg-main-dark py-3 pl-11 text-sm text-white outline-hidden ring-1 ring-white/10 transition focus:ring-2 focus:ring-orange placeholder:text-gray caret-orange";
+
+type IconInputProps = {
+  icon: typeof IoMailOutline;
+  children?: never;
+} & React.InputHTMLAttributes<HTMLInputElement>;
+
+/** Input with the form's standard leading icon treatment. */
+const IconInput = ({ icon: Icon, ...props }: IconInputProps) => (
+  <div className="relative min-w-0 flex-1">
+    <Icon className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-gray" />
+    <input {...props} className={`${inputClass} pr-4`} />
+  </div>
+);
+
+/** Password input with the lock icon and a show/hide visibility toggle. */
+const PasswordInput = (props: Omit<IconInputProps, "icon" | "type">) => {
+  const [visible, setVisible] = useState(false);
+  return (
+    <div className="relative min-w-0 flex-1">
+      <IoLockClosedOutline className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-gray" />
+      <input
+        {...props}
+        type={visible ? "text" : "password"}
+        className={`${inputClass} pr-11`}
+      />
+      <button
+        type="button"
+        aria-label={visible ? "Hide password" : "Show password"}
+        aria-pressed={visible}
+        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-lg text-gray transition hover:text-white"
+        onClick={() => setVisible((v) => !v)}
+      >
+        {visible ? <IoEyeOffOutline /> : <IoEyeOutline />}
+      </button>
+    </div>
+  );
+};
 
 const Login = () => {
   const navigate = useNavigate();
   const { user, signIn, signUp, signInWithGoogle } = useAuth();
 
   const [mode, setMode] = useState<Mode>("login");
+  // Login identifier (email or username) — separate from the signup email.
+  const [identifier, setIdentifier] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [username, setUsername] = useState("");
+  const [avatar, setAvatar] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   // Set when an account still needs its email confirmed (fresh signup, or a
   // login attempt that came back EMAIL_NOT_VERIFIED) — swaps in the "check
-  // your inbox" panel.
-  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+  // your inbox" panel. Holds whatever the user identified themselves with.
+  const [pendingIdentifier, setPendingIdentifier] = useState<string | null>(
+    null,
+  );
   const [resendState, setResendState] = useState<"idle" | "sending" | "sent">(
     "idle",
   );
@@ -85,23 +138,47 @@ const Login = () => {
     setError(null);
   };
 
+  const handleAvatarChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    // Allow re-picking the same file after removing it.
+    event.target.value = "";
+    if (!file) return;
+    try {
+      setAvatar(await fileToAvatarDataUrl(file));
+      setError(null);
+    } catch {
+      setError("That file couldn't be read as an image. Try another one.");
+    }
+  };
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (mode === "register" && password !== confirmPassword) {
+      setError("Passwords don't match.");
+      return;
+    }
     setSubmitting(true);
     setError(null);
     try {
       if (mode === "register") {
-        await signUp(email, password);
-        setPendingEmail(email);
+        await signUp({
+          email,
+          password,
+          firstName,
+          lastName,
+          username,
+          avatar: avatar ?? undefined,
+        });
+        setPendingIdentifier(email);
         setResendState("idle");
       } else {
         // Success populates `user`; the effect above redirects.
-        await signIn(email, password);
+        await signIn(identifier, password);
       }
     } catch (err) {
       const { code, message } = getApiError(err);
       if (code === "EMAIL_NOT_VERIFIED") {
-        setPendingEmail(email);
+        setPendingIdentifier(identifier);
         setResendState("idle");
       } else {
         setError(message ?? "Something went wrong. Try again.");
@@ -112,10 +189,10 @@ const Login = () => {
   };
 
   const handleResend = async () => {
-    if (!pendingEmail || resendState === "sending") return;
+    if (!pendingIdentifier || resendState === "sending") return;
     setResendState("sending");
     try {
-      await resendVerification(pendingEmail);
+      await resendVerification(pendingIdentifier);
       setResendState("sent");
     } catch {
       setResendState("idle");
@@ -178,7 +255,7 @@ const Login = () => {
             <Brand />
           </div>
 
-          {pendingEmail ? (
+          {pendingIdentifier ? (
             <div className="flex flex-col gap-4" data-test-id="verify-notice">
               <span className="flex size-14 items-center justify-center rounded-full bg-orange/10 text-orange">
                 <IoMailOutline className="text-2xl" />
@@ -188,8 +265,12 @@ const Login = () => {
               </Heading>
               <Text className="text-gray">
                 We sent a verification link to{" "}
-                <span className="text-white">{pendingEmail}</span>. Open it to
-                activate your account, then sign in.
+                <span className="text-white">
+                  {pendingIdentifier.includes("@")
+                    ? pendingIdentifier
+                    : `the email on the account "${pendingIdentifier}"`}
+                </span>
+                . Open it to activate your account, then sign in.
               </Text>
               <div className="flex items-center gap-4">
                 <button
@@ -210,7 +291,7 @@ const Login = () => {
                   data-test-id="back-to-login"
                   className="text-sm text-gray underline-offset-4 hover:underline"
                   onClick={() => {
-                    setPendingEmail(null);
+                    setPendingIdentifier(null);
                     switchMode("login");
                   }}
                 >
@@ -263,43 +344,157 @@ const Login = () => {
                 onSubmit={handleSubmit}
                 data-test-id="auth-form"
               >
-                <div className="relative">
-                  <IoMailOutline className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-gray" />
-                  <input
-                    id="login-email"
+                {mode === "register" && (
+                  <>
+                    {/* Optional avatar — resized client-side to a small square. */}
+                    <div className="flex items-center gap-4">
+                      <label
+                        htmlFor="register-avatar"
+                        className="group relative flex size-16 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-main-dark ring-1 ring-white/10 transition hover:ring-orange"
+                      >
+                        {avatar ? (
+                          <img
+                            src={avatar}
+                            alt="Avatar preview"
+                            className="size-full object-cover"
+                          />
+                        ) : (
+                          <IoCameraOutline className="text-2xl text-gray transition group-hover:text-orange" />
+                        )}
+                        <input
+                          id="register-avatar"
+                          type="file"
+                          accept="image/*"
+                          className="sr-only"
+                          data-test-id="auth-avatar"
+                          onChange={handleAvatarChange}
+                        />
+                      </label>
+                      <div className="flex flex-col">
+                        <Text size="sm">Profile photo (optional)</Text>
+                        {avatar ? (
+                          <button
+                            type="button"
+                            data-test-id="auth-avatar-remove"
+                            className="self-start text-sm text-orange underline-offset-4 hover:underline"
+                            onClick={() => setAvatar(null)}
+                          >
+                            Remove photo
+                          </button>
+                        ) : (
+                          <Text size="sm" className="text-gray">
+                            JPG, PNG or WebP.
+                          </Text>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3 max-sm:flex-col">
+                      <IconInput
+                        icon={IoPersonOutline}
+                        id="register-first-name"
+                        type="text"
+                        required
+                        maxLength={50}
+                        autoComplete="given-name"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        placeholder="First name"
+                        aria-label="First name"
+                        data-test-id="auth-first-name"
+                      />
+                      <IconInput
+                        icon={IoPersonOutline}
+                        id="register-last-name"
+                        type="text"
+                        required
+                        maxLength={50}
+                        autoComplete="family-name"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        placeholder="Last name"
+                        aria-label="Last name"
+                        data-test-id="auth-last-name"
+                      />
+                    </div>
+
+                    <IconInput
+                      icon={IoAtOutline}
+                      id="register-username"
+                      type="text"
+                      required
+                      pattern="[A-Za-z0-9._]{3,30}"
+                      title="3-30 characters: letters, numbers, dots and underscores"
+                      autoComplete="username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder="Username"
+                      aria-label="Username"
+                      data-test-id="auth-username"
+                    />
+                  </>
+                )}
+
+                {mode === "register" ? (
+                  <IconInput
+                    icon={IoMailOutline}
+                    id="register-email"
                     type="email"
                     required
                     autoComplete="email"
                     value={email}
-                    onChange={(event) => setEmail(event.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
                     aria-label="Email address"
                     data-test-id="auth-email"
-                    className={inputClass}
                   />
-                </div>
-                <div className="relative">
-                  <IoLockClosedOutline className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-gray" />
-                  <input
-                    id="login-password"
-                    type="password"
+                ) : (
+                  <IconInput
+                    icon={IoMailOutline}
+                    id="login-identifier"
+                    type="text"
+                    required
+                    autoComplete="username"
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
+                    placeholder="Email or username"
+                    aria-label="Email or username"
+                    data-test-id="auth-identifier"
+                  />
+                )}
+
+                <PasswordInput
+                  id="login-password"
+                  required
+                  minLength={8}
+                  autoComplete={
+                    mode === "register" ? "new-password" : "current-password"
+                  }
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder={
+                    mode === "register"
+                      ? "Password (min. 8 characters)"
+                      : "Password"
+                  }
+                  aria-label="Password"
+                  data-test-id="auth-password"
+                />
+
+                {mode === "register" && (
+                  <PasswordInput
+                    id="register-confirm-password"
                     required
                     minLength={8}
-                    autoComplete={
-                      mode === "register" ? "new-password" : "current-password"
-                    }
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                    placeholder={
-                      mode === "register"
-                        ? "Password (min. 8 characters)"
-                        : "Password"
-                    }
-                    aria-label="Password"
-                    data-test-id="auth-password"
-                    className={inputClass}
+                    autoComplete="new-password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Confirm password"
+                    aria-label="Confirm password"
+                    data-test-id="auth-confirm-password"
                   />
-                </div>
+                )}
+
                 <Button
                   type="submit"
                   data-test-id="auth-submit"

@@ -13,7 +13,9 @@ export const testUser: AuthUser = {
   id: "u-1",
   email: "omar@example.com",
   emailVerified: true,
-  name: "Omar Muhammad",
+  username: "omar",
+  firstName: "Omar",
+  lastName: "Muhammad",
   avatarUrl: null,
 };
 

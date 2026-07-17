@@ -8,25 +8,35 @@ import {
 
 export type { AuthUser };
 
+export type RegisterInput = {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  /** Optional small avatar as an image data URL (see fileToAvatarDataUrl). */
+  avatar?: string;
+};
+
 /**
  * Create an email/password account. Resolves once the account exists and the
  * verification email is on its way — there is NO session yet; the user logs in
  * after clicking the emailed link.
  */
-export const register = async (
-  email: string,
-  password: string,
-): Promise<void> => {
-  await api.post("/auth/register", { email, password });
+export const register = async (input: RegisterInput): Promise<void> => {
+  await api.post("/auth/register", input);
 };
 
-/** Email + password login. Throws with code EMAIL_NOT_VERIFIED when pending. */
+/**
+ * Login with email or username + password. Throws with code
+ * EMAIL_NOT_VERIFIED while the account's email is still unconfirmed.
+ */
 export const login = async (
-  email: string,
+  identifier: string,
   password: string,
 ): Promise<AuthUser> => {
   const { data } = await api.post<SessionPayload>("/auth/login", {
-    email,
+    identifier,
     password,
   });
   setAccessToken(data.accessToken);
@@ -72,7 +82,10 @@ export const verifyEmail = async (token: string): Promise<void> => {
   await api.post("/auth/verify-email", { token });
 };
 
-/** Ask for a fresh verification link. Always resolves (no enumeration). */
-export const resendVerification = async (email: string): Promise<void> => {
-  await api.post("/auth/resend-verification", { email });
+/**
+ * Ask for a fresh verification link, by email or username. Always resolves
+ * (no enumeration); the mail goes to the account's stored address.
+ */
+export const resendVerification = async (identifier: string): Promise<void> => {
+  await api.post("/auth/resend-verification", { identifier });
 };

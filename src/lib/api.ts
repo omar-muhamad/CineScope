@@ -12,7 +12,11 @@ export type AuthUser = {
   id: string;
   email: string;
   emailVerified: boolean;
-  name: string | null;
+  /** Login handle. Null for Google-created accounts. */
+  username: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  /** Data-URL avatar uploaded at signup, or the Google profile photo URL. */
   avatarUrl: string | null;
 };
 

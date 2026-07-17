@@ -18,8 +18,9 @@ const UserCard: FC = () => {
     navigate("/", { replace: true });
   };
 
-  const displayName = user?.name ?? user?.email;
-  const firstName = displayName?.split(" ")[0];
+  // Google-created accounts may lack a username; password accounts always
+  // have one. Email is the last-resort display handle.
+  const greetName = user?.firstName || user?.username || user?.email;
   const avatarUrl = user?.avatarUrl ?? "";
 
   return (
@@ -39,7 +40,7 @@ const UserCard: FC = () => {
         </span>
         <div className="min-w-0">
           <Heading as="h3" size="sm" className="truncate leading-tight">
-            {isLogged ? `Hi, ${firstName}!` : "Hi, User!"}
+            {isLogged ? `Hi, ${greetName}!` : "Hi, User!"}
           </Heading>
           <Text size="sm" className="truncate text-gray">
             {isLogged ? user?.email : "You're signed out"}

@@ -8,6 +8,20 @@
       "when": 1784310010378,
       "tag": "0000_auth_and_saved_items",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1784316911992,
+      "tag": "0001_user_profile_fields",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784316927927,
+      "tag": "0002_drop_users_name",
+      "breakpoints": true
     }
   ]
 }

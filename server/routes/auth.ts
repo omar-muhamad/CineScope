@@ -47,11 +47,14 @@ const publicUser = (user: User) => ({
   id: user.id,
   email: user.email,
   emailVerified: user.emailVerified,
-  name: user.name,
+  username: user.username,
+  firstName: user.firstName,
+  lastName: user.lastName,
   avatarUrl: user.avatarUrl,
 });
 
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
+const normalizeUsername = (username: string) => username.trim().toLowerCase();
 
 const findUserByEmail = async (email: string) => {
   const [user] = await db
@@ -61,6 +64,24 @@ const findUserByEmail = async (email: string) => {
     .limit(1);
   return user;
 };
+
+const findUserByUsername = async (username: string) => {
+  const [user] = await db
+    .select()
+    .from(users)
+    .where(eq(users.username, username))
+    .limit(1);
+  return user;
+};
+
+/**
+ * Login accepts either identifier in one field. Usernames can't contain "@"
+ * (see USERNAME_PATTERN), so its presence reliably picks the email path.
+ */
+const findUserByIdentifier = (identifier: string) =>
+  identifier.includes("@")
+    ? findUserByEmail(normalizeEmail(identifier))
+    : findUserByUsername(normalizeUsername(identifier));
 
 const findUserById = async (id: string) => {
   const [user] = await db.select().from(users).where(eq(users.id, id)).limit(1);
@@ -77,25 +98,59 @@ const issueSession = async (reply: FastifyReply, user: User) => {
 // Body schemas (Fastify's built-in Ajv validation). The email pattern is a
 // sanity check only — real ownership is proven by the verification email.
 const EMAIL_PATTERN = "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$";
+// No "@" allowed, so a login identifier is never ambiguous between the two.
+const USERNAME_PATTERN = "^[A-Za-z0-9._]{3,30}$";
 
-const credentialsSchema = {
+const passwordSchema = { type: "string", minLength: 8, maxLength: 128 };
+
+const registerSchema = {
   type: "object",
-  required: ["email", "password"],
+  required: ["email", "password", "firstName", "lastName", "username"],
   properties: {
     email: { type: "string", maxLength: 254, pattern: EMAIL_PATTERN },
-    password: { type: "string", minLength: 8, maxLength: 128 },
+    password: passwordSchema,
+    firstName: { type: "string", minLength: 1, maxLength: 50 },
+    lastName: { type: "string", minLength: 1, maxLength: 50 },
+    username: { type: "string", pattern: USERNAME_PATTERN },
+    // Optional small avatar, uploaded as an image data URL (client resizes to
+    // ~256px before sending; ~700KB of base64 stays well under the body cap).
+    avatar: {
+      type: "string",
+      maxLength: 700_000,
+      pattern: "^data:image/(png|jpe?g|webp);base64,",
+    },
   },
 } as const;
 
-type Credentials = { email: string; password: string };
+type RegisterBody = {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  avatar?: string;
+};
+
+const loginSchema = {
+  type: "object",
+  required: ["identifier", "password"],
+  properties: {
+    // Email or username — resolved by findUserByIdentifier.
+    identifier: { type: "string", minLength: 3, maxLength: 254 },
+    password: passwordSchema,
+  },
+} as const;
+
+type LoginBody = { identifier: string; password: string };
 
 export const authRoutes = (app: FastifyInstance) => {
   /** Create an email/password account. Login stays blocked until verified. */
-  app.post<{ Body: Credentials }>(
+  app.post<{ Body: RegisterBody }>(
     "/register",
-    { schema: { body: credentialsSchema } },
+    { schema: { body: registerSchema } },
     async (request, reply) => {
       const email = normalizeEmail(request.body.email);
+      const username = normalizeUsername(request.body.username);
 
       const existing = await findUserByEmail(email);
       if (existing) {
@@ -110,10 +165,21 @@ export const authRoutes = (app: FastifyInstance) => {
         });
       }
 
+      if (await findUserByUsername(username)) {
+        return reply.code(409).send({
+          code: "USERNAME_TAKEN",
+          message: "This username is already taken. Pick another one.",
+        });
+      }
+
       const [user] = await db
         .insert(users)
         .values({
           email,
+          username,
+          firstName: request.body.firstName.trim(),
+          lastName: request.body.lastName.trim(),
+          avatarUrl: request.body.avatar ?? null,
           passwordHash: await hashPassword(request.body.password),
         })
         .returning();
@@ -134,22 +200,21 @@ export const authRoutes = (app: FastifyInstance) => {
     },
   );
 
-  /** Email + password login. */
-  app.post<{ Body: Credentials }>(
+  /** Login with email or username + password. */
+  app.post<{ Body: LoginBody }>(
     "/login",
-    { schema: { body: credentialsSchema } },
+    { schema: { body: loginSchema } },
     async (request, reply) => {
-      const email = normalizeEmail(request.body.email);
-      const user = await findUserByEmail(email);
+      const user = await findUserByIdentifier(request.body.identifier);
 
-      // Same response for unknown email and wrong password — no enumeration.
+      // Same response for unknown account and wrong password — no enumeration.
       const passwordOk =
         user?.passwordHash != null &&
         (await verifyPassword(request.body.password, user.passwordHash));
       if (!user || !passwordOk) {
         return reply.code(401).send({
           code: "INVALID_CREDENTIALS",
-          message: "Incorrect email or password.",
+          message: "Incorrect email/username or password.",
         });
       }
 
@@ -207,6 +272,15 @@ export const authRoutes = (app: FastifyInstance) => {
       }
 
       const email = normalizeEmail(payload.email);
+      // Google's ID token carries a split name; fall back to slicing the
+      // display name. Username stays null — Google accounts never pick one.
+      const googleFirstName =
+        payload.given_name ?? payload.name?.split(" ")[0] ?? null;
+      const googleLastName =
+        payload.family_name ??
+        payload.name?.split(" ").slice(1).join(" ") ??
+        null;
+
       let user =
         (await db
           .select()
@@ -223,7 +297,8 @@ export const authRoutes = (app: FastifyInstance) => {
           .set({
             googleId: payload.sub,
             emailVerified: true,
-            name: user.name ?? payload.name ?? null,
+            firstName: user.firstName ?? googleFirstName,
+            lastName: user.lastName ?? googleLastName,
             avatarUrl: user.avatarUrl ?? payload.picture ?? null,
             updatedAt: new Date(),
           })
@@ -236,7 +311,8 @@ export const authRoutes = (app: FastifyInstance) => {
             email,
             googleId: payload.sub,
             emailVerified: true,
-            name: payload.name ?? null,
+            firstName: googleFirstName,
+            lastName: googleLastName,
             avatarUrl: payload.picture ?? null,
           })
           .returning();
@@ -323,21 +399,23 @@ export const authRoutes = (app: FastifyInstance) => {
   );
 
   /** Re-send the verification link. Always 200 — no account enumeration. */
-  app.post<{ Body: { email: string } }>(
+  app.post<{ Body: { identifier: string } }>(
     "/resend-verification",
     {
       schema: {
         body: {
           type: "object",
-          required: ["email"],
+          required: ["identifier"],
           properties: {
-            email: { type: "string", maxLength: 254, pattern: EMAIL_PATTERN },
+            // Email or username — the mail always goes to the account's
+            // stored address, so accepting a username leaks nothing.
+            identifier: { type: "string", minLength: 3, maxLength: 254 },
           },
         },
       },
     },
     async (request) => {
-      const user = await findUserByEmail(normalizeEmail(request.body.email));
+      const user = await findUserByIdentifier(request.body.identifier);
       if (user && !user.emailVerified) {
         try {
           await sendVerificationEmail(

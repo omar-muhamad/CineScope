@@ -31,13 +31,22 @@ const apiError = (status: number, code: string, message: string) => {
   return error;
 };
 
-const fillCredentials = async (
+const fillLogin = async (
   user: ReturnType<typeof userEvent.setup>,
-  email = "viewer@example.com",
+  identifier = "viewer@example.com",
   password = "password123",
 ) => {
-  await user.type(screen.getByLabelText("Email address"), email);
+  await user.type(screen.getByLabelText("Email or username"), identifier);
   await user.type(screen.getByLabelText("Password"), password);
+};
+
+const fillRegister = async (user: ReturnType<typeof userEvent.setup>) => {
+  await user.type(screen.getByLabelText("First name"), "Viewer");
+  await user.type(screen.getByLabelText("Last name"), "Person");
+  await user.type(screen.getByLabelText("Username"), "viewer_1");
+  await user.type(screen.getByLabelText("Email address"), "viewer@example.com");
+  await user.type(screen.getByLabelText("Password"), "password123");
+  await user.type(screen.getByLabelText("Confirm password"), "password123");
 };
 
 beforeEach(() => {
@@ -50,33 +59,37 @@ describe("Login Page", () => {
   test("renders the sign-in form when signed out", () => {
     renderWithProviders(<Login />, { route: "/login" });
     expect(screen.getByText("Sign in to CineScope")).toBeInTheDocument();
-    expect(screen.getByLabelText("Email address")).toBeInTheDocument();
+    expect(screen.getByLabelText("Email or username")).toBeInTheDocument();
     expect(screen.getByLabelText("Password")).toBeInTheDocument();
   });
 
-  test("submits credentials on sign-in", async () => {
+  test("submits the identifier and password on sign-in", async () => {
     loginMock.mockResolvedValue(testUser);
     const user = userEvent.setup();
     renderWithProviders(<Login />, { route: "/login" });
 
-    await fillCredentials(user);
+    await fillLogin(user, "omar", "password123");
     await user.click(screen.getByRole("button", { name: "Sign in" }));
 
-    expect(loginMock).toHaveBeenCalledWith("viewer@example.com", "password123");
+    expect(loginMock).toHaveBeenCalledWith("omar", "password123");
   });
 
   test("surfaces the API message on bad credentials", async () => {
     loginMock.mockRejectedValue(
-      apiError(401, "INVALID_CREDENTIALS", "Incorrect email or password."),
+      apiError(
+        401,
+        "INVALID_CREDENTIALS",
+        "Incorrect email/username or password.",
+      ),
     );
     const user = userEvent.setup();
     renderWithProviders(<Login />, { route: "/login" });
 
-    await fillCredentials(user);
+    await fillLogin(user);
     await user.click(screen.getByRole("button", { name: "Sign in" }));
 
     expect(
-      await screen.findByText("Incorrect email or password."),
+      await screen.findByText("Incorrect email/username or password."),
     ).toBeInTheDocument();
   });
 
@@ -88,7 +101,7 @@ describe("Login Page", () => {
     const user = userEvent.setup();
     renderWithProviders(<Login />, { route: "/login" });
 
-    await fillCredentials(user);
+    await fillLogin(user);
     await user.click(screen.getByRole("button", { name: "Sign in" }));
 
     expect(await screen.findByText(/check your inbox/i)).toBeInTheDocument();
@@ -99,7 +112,7 @@ describe("Login Page", () => {
     expect(await screen.findByText("Email sent!")).toBeInTheDocument();
   });
 
-  test("creates an account and shows the inbox confirmation", async () => {
+  test("creates an account with the profile fields and shows the inbox confirmation", async () => {
     registerMock.mockResolvedValue(undefined);
     const user = userEvent.setup();
     renderWithProviders(<Login />, { route: "/login" });
@@ -107,33 +120,71 @@ describe("Login Page", () => {
     await user.click(screen.getByRole("button", { name: "Create an account" }));
     expect(screen.getByText("Create your account")).toBeInTheDocument();
 
-    await fillCredentials(user);
+    await fillRegister(user);
     await user.click(screen.getByRole("button", { name: "Create account" }));
 
-    expect(registerMock).toHaveBeenCalledWith(
-      "viewer@example.com",
-      "password123",
-    );
+    expect(registerMock).toHaveBeenCalledWith({
+      email: "viewer@example.com",
+      password: "password123",
+      firstName: "Viewer",
+      lastName: "Person",
+      username: "viewer_1",
+      avatar: undefined,
+    });
     expect(await screen.findByText(/check your inbox/i)).toBeInTheDocument();
     expect(screen.getByText("viewer@example.com")).toBeInTheDocument();
   });
 
+  test("blocks registration when the passwords don't match", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Login />, { route: "/login" });
+
+    await user.click(screen.getByRole("button", { name: "Create an account" }));
+    await user.type(screen.getByLabelText("First name"), "Viewer");
+    await user.type(screen.getByLabelText("Last name"), "Person");
+    await user.type(screen.getByLabelText("Username"), "viewer_1");
+    await user.type(
+      screen.getByLabelText("Email address"),
+      "viewer@example.com",
+    );
+    await user.type(screen.getByLabelText("Password"), "password123");
+    await user.type(screen.getByLabelText("Confirm password"), "password456");
+    await user.click(screen.getByRole("button", { name: "Create account" }));
+
+    expect(
+      await screen.findByText("Passwords don't match."),
+    ).toBeInTheDocument();
+    expect(registerMock).not.toHaveBeenCalled();
+  });
+
   test("does not show the confirmation when registration fails", async () => {
     registerMock.mockRejectedValue(
-      apiError(
-        409,
-        "EMAIL_TAKEN",
-        "An account with this email already exists. Try logging in.",
-      ),
+      apiError(409, "USERNAME_TAKEN", "This username is already taken."),
     );
     const user = userEvent.setup();
     renderWithProviders(<Login />, { route: "/login" });
 
     await user.click(screen.getByRole("button", { name: "Create an account" }));
-    await fillCredentials(user);
+    await fillRegister(user);
     await user.click(screen.getByRole("button", { name: "Create account" }));
 
-    expect(await screen.findByText(/already exists/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/username is already taken/i),
+    ).toBeInTheDocument();
     expect(screen.queryByText(/check your inbox/i)).not.toBeInTheDocument();
+  });
+
+  test("toggles password visibility with the eye button", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Login />, { route: "/login" });
+
+    const password = screen.getByLabelText("Password");
+    expect(password).toHaveAttribute("type", "password");
+
+    await user.click(screen.getByRole("button", { name: "Show password" }));
+    expect(password).toHaveAttribute("type", "text");
+
+    await user.click(screen.getByRole("button", { name: "Hide password" }));
+    expect(password).toHaveAttribute("type", "password");
   });
 });

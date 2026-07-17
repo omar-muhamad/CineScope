@@ -56,13 +56,13 @@ export const AuthProvider: FC<AuthProviderProps> = ({
     return () => setOnSessionExpired(null);
   }, []);
 
-  const signIn = useCallback(async (email: string, password: string) => {
-    setUser(await authApi.login(email, password));
+  const signIn = useCallback(async (identifier: string, password: string) => {
+    setUser(await authApi.login(identifier, password));
   }, []);
 
-  const signUp = useCallback(async (email: string, password: string) => {
+  const signUp = useCallback(async (input: authApi.RegisterInput) => {
     // No session yet — the account must be verified via email first.
-    await authApi.register(email, password);
+    await authApi.register(input);
   }, []);
 
   const signInWithGoogle = useCallback(async (credential: string) => {

@@ -21,6 +21,9 @@ export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   // Stored lowercase; the API normalizes before insert/lookup.
   email: text("email").notNull().unique(),
+  // Stored lowercase; usable as a login identifier alongside email. Null for
+  // Google-created accounts, which never pass through the signup form.
+  username: text("username").unique(),
   // Null for Google-only accounts (no password set).
   passwordHash: text("password_hash"),
   // Google `sub` claim. Null until the account is linked to a Google identity.
@@ -28,7 +31,10 @@ export const users = pgTable("users", {
   // Password signups must verify via emailed link before they can log in.
   // Google sign-ins are trusted as verified (Google asserts email_verified).
   emailVerified: boolean("email_verified").notNull().default(false),
-  name: text("name"),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  // Either a small data-URL avatar uploaded at signup (stored inline — the
+  // app has no object storage) or the Google profile photo URL.
   avatarUrl: text("avatar_url"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
