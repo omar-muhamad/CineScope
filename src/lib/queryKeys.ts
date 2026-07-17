@@ -7,8 +7,6 @@ import type { MediaCategory } from "@/api/tmdb";
  */
 export const queryKeys = {
   trending: (scope: "all" | "movie" | "tv") => ["trending", scope] as const,
-  popular: (mediaType: MediaType, page: number) =>
-    ["popular", mediaType, page] as const,
   mediaList: (mediaType: MediaType, category: MediaCategory, page: number) =>
     ["mediaList", mediaType, category, page] as const,
   search: (query: string, page: number) => ["search", query, page] as const,

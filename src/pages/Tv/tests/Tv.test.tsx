@@ -7,7 +7,7 @@ vi.mock("@/api/tmdb", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/api/tmdb")>();
   return {
     ...actual,
-    fetchPopular: vi.fn(() =>
+    fetchMediaList: vi.fn(() =>
       Promise.resolve({
         page: 1,
         total_pages: 5,
@@ -31,10 +31,16 @@ vi.mock("@/api/tmdb", async (importOriginal) => {
 });
 
 describe("Tv Page", () => {
-  it("renders the heading and fetched shows", async () => {
+  it("renders the popular heading and fetched shows by default", async () => {
     renderWithProviders(<Tv />);
     // Heading lives inside PageLayout's children, shown only after load.
     expect(await screen.findByText("Popular Show")).toBeInTheDocument();
     expect(screen.getByText("Popular TV Shows")).toBeInTheDocument();
+  });
+
+  it("renders the heading for the category passed as a prop", async () => {
+    renderWithProviders(<Tv category="on_the_air" />);
+    expect(await screen.findByText("Popular Show")).toBeInTheDocument();
+    expect(screen.getByText("On TV")).toBeInTheDocument();
   });
 });

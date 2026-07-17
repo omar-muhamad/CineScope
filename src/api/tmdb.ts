@@ -17,32 +17,21 @@ export const fetchTrending = async (
   return data.results;
 };
 
-/** A page of popular movies or TV shows. */
-export const fetchPopular = async (
-  mediaType: MediaType,
-  page: number,
-): Promise<Paginated<MediaSummary>> => {
-  const { data } = await tmdb.get(`/${mediaType}/popular`, {
-    params: { page },
-  });
-  const { page: resultPage, results, total_pages } = data;
-  return { page: resultPage, results, total_pages };
-};
-
 /** Browse categories backed by a paginated TMDB list endpoint. */
 export type MovieCategory =
+  | "popular"
   | "trending"
   | "now_playing"
   | "upcoming"
   | "top_rated";
-export type TvCategory = "trending" | "on_the_air" | "top_rated";
+export type TvCategory = "popular" | "trending" | "on_the_air" | "top_rated";
 export type MediaCategory = MovieCategory | TvCategory;
 
 /**
- * A page of a browse category (trending / now playing / upcoming / top rated /
- * on the air). `trending` hits `/trending/{mediaType}/week`; every other
- * category maps straight to `/{mediaType}/{category}`. All return the same
- * paginated shape as the other list endpoints.
+ * A page of a browse category (popular / trending / now playing / upcoming /
+ * top rated / on the air). `trending` hits `/trending/{mediaType}/week`; every
+ * other category maps straight to `/{mediaType}/{category}`. All return the
+ * same paginated shape as the other list endpoints.
  */
 export const fetchMediaList = async (
   mediaType: MediaType,
