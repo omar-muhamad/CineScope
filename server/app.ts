@@ -1,5 +1,6 @@
 import Fastify, { type FastifyError } from "fastify";
 import cookie from "@fastify/cookie";
+import rateLimit from "@fastify/rate-limit";
 
 import { env } from "./env";
 import { authRoutes } from "./routes/auth";
@@ -16,9 +17,23 @@ export const buildApp = () => {
     logger: {
       level: env.isProduction ? "info" : "debug",
     },
+    // Both deployments front this server with a proxy (Vite dev server /
+    // Render's static-site rewrite), so the client IP that rate limiting
+    // keys on comes from X-Forwarded-For.
+    trustProxy: true,
   });
 
   app.register(cookie);
+  // global: false — only routes that opt in via config.rateLimit are limited
+  // (credential guessing and email-sending endpoints; see routes/auth.ts).
+  app.register(rateLimit, {
+    global: false,
+    errorResponseBuilder: (_request, context) => ({
+      statusCode: 429,
+      code: "TOO_MANY_REQUESTS",
+      message: `Too many attempts. Try again in ${context.after}.`,
+    }),
+  });
   // Declared up-front so every request object has a stable shape; requireAuth
   // overwrites it with the real user id on protected routes.
   app.decorateRequest("userId", "");
@@ -34,6 +49,17 @@ export const buildApp = () => {
       return reply
         .code(400)
         .send({ code: "INVALID_INPUT", message: error.message });
+    }
+    // Client-caused errors keep their status and message instead of being
+    // masked as 500s: rate limiting (429), body too large (413), bad
+    // content-type (415), and friends.
+    if (error.statusCode && error.statusCode < 500) {
+      return reply
+        .code(error.statusCode)
+        .send({
+          code: error.code ?? "REQUEST_REJECTED",
+          message: error.message,
+        });
     }
     request.log.error(error);
     return reply

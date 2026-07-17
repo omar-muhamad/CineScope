@@ -148,11 +148,21 @@ const loginSchema = {
 
 type LoginBody = { identifier: string; password: string };
 
+// Per-IP limits (@fastify/rate-limit, registered global:false in app.ts).
+// Credential endpoints absorb guessing; the email-sending ones are tighter
+// because each request costs real mail and sender reputation.
+const credentialRateLimit = {
+  rateLimit: { max: 10, timeWindow: "1 minute" },
+};
+const emailRateLimit = {
+  rateLimit: { max: 5, timeWindow: "15 minutes" },
+};
+
 export const authRoutes = (app: FastifyInstance) => {
   /** Create an email/password account. Login stays blocked until verified. */
   app.post<{ Body: RegisterBody }>(
     "/register",
-    { schema: { body: registerSchema } },
+    { schema: { body: registerSchema }, config: credentialRateLimit },
     async (request, reply) => {
       const email = normalizeEmail(request.body.email);
       const username = normalizeUsername(request.body.username);
@@ -208,7 +218,7 @@ export const authRoutes = (app: FastifyInstance) => {
   /** Login with email or username + password. */
   app.post<{ Body: LoginBody }>(
     "/login",
-    { schema: { body: loginSchema } },
+    { schema: { body: loginSchema }, config: credentialRateLimit },
     async (request, reply) => {
       const user = await findUserByIdentifier(request.body.identifier);
 
@@ -250,6 +260,7 @@ export const authRoutes = (app: FastifyInstance) => {
           properties: { credential: { type: "string", minLength: 1 } },
         },
       },
+      config: credentialRateLimit,
     },
     async (request, reply) => {
       if (!env.googleClientId) {
@@ -390,6 +401,7 @@ export const authRoutes = (app: FastifyInstance) => {
           properties: { token: { type: "string", minLength: 1 } },
         },
       },
+      config: credentialRateLimit,
     },
     async (request, reply) => {
       const ok = await consumeVerificationToken(request.body.token);
@@ -418,6 +430,7 @@ export const authRoutes = (app: FastifyInstance) => {
           },
         },
       },
+      config: emailRateLimit,
     },
     async (request) => {
       const user = await findUserByIdentifier(request.body.identifier);
@@ -452,6 +465,7 @@ export const authRoutes = (app: FastifyInstance) => {
           },
         },
       },
+      config: emailRateLimit,
     },
     async (request) => {
       const user = await findUserByIdentifier(request.body.identifier);
@@ -487,6 +501,7 @@ export const authRoutes = (app: FastifyInstance) => {
           },
         },
       },
+      config: credentialRateLimit,
     },
     async (request, reply) => {
       const userId = await consumePasswordResetToken(request.body.token);
