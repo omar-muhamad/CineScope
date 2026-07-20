@@ -29,14 +29,14 @@ const optional = (name: string): string | undefined =>
  * magic-link URLs, the Google redirect_uri, secure-cookie mode, and the
  * auto-trusted origin. Production sets BETTER_AUTH_URL explicitly; preview
  * deployments fall back to VERCEL_URL (magic-link works there, Google doesn't
- * — its redirect URI isn't registered per-preview); local dev is vercel dev
- * on port 3000.
+ * — its redirect URI isn't registered per-preview); local dev is the Vite
+ * server on port 5173 (/api proxies to vercel dev on 3000).
  */
 const baseUrl =
   optional("BETTER_AUTH_URL") ??
   (process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
-    : "http://localhost:3000");
+    : "http://localhost:5173");
 
 export const env = {
   /**
@@ -52,9 +52,9 @@ export const env = {
   baseUrl,
   trustedOrigins: [
     baseUrl,
-    // Keep the Vite-standalone dev mode (npm run dev:web) passing origin
+    // Keep direct vercel-dev access (npm run dev, port 3000) passing origin
     // checks; cookies ignore ports so localhost sessions work on both.
-    ...(process.env.NODE_ENV === "production" ? [] : ["http://localhost:5173"]),
+    ...(process.env.NODE_ENV === "production" ? [] : ["http://localhost:3000"]),
   ],
 
   /** Google OAuth web client (server-side redirect flow). Empty = Google
