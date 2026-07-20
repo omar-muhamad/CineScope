@@ -3,6 +3,10 @@
   "framework": "vite",
   "rewrites": [
     {
+      "source": "/api/auth/:path*",
+      "destination": "/api/auth/[...all]?__ba_path=/api/auth/:path*"
+    },
+    {
       "source": "/api/saved/:listType/:mediaType/:mediaId",
       "destination": "/api/saved?listType=:listType&mediaType=:mediaType&mediaId=:mediaId"
     },
