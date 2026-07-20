@@ -5,28 +5,23 @@ import { env } from "../env";
 import * as schema from "./schema";
 
 /**
- * Transaction-mode poolers (PgBouncer and friends) hand each statement a
- * different backend connection, which breaks postgres.js's named prepared
- * statements. Detect the common pooled-URL conventions — Supabase's
- * `?pgbouncer=true` flag and Neon's `-pooler` host — and disable them.
+ * Serverless-tuned Postgres client. The module-level singleton is reused
+ * across warm invocations of one function instance; cold instances open
+ * fresh connections. DATABASE_URL must be Neon's -pooler endpoint
+ * (transaction-mode PgBouncer), which hands each statement a different
+ * backend connection — named prepared statements break there, so they stay
+ * off. (Better Auth's flows also need real transactions, which is why this
+ * is postgres-js over TCP and not Neon's HTTP driver.)
  */
-const isPooledUrl = (url: string) => {
-  try {
-    const parsed = new URL(url);
-    return (
-      parsed.searchParams.get("pgbouncer") === "true" ||
-      parsed.hostname.includes("-pooler")
-    );
-  } catch {
-    return false;
-  }
-};
-
 const client = postgres(env.databaseUrl, {
-  prepare: !isPooledUrl(env.databaseUrl),
+  prepare: false,
+  // A fluid-compute instance serves concurrent requests — don't serialize
+  // them on a single connection, but stay far under the pooler's limits.
+  max: 5,
+  // Release idle connections between request bursts.
+  idle_timeout: 20,
+  // Ride out Neon's scale-to-zero resume (~500ms–2s after idle).
+  connect_timeout: 30,
 });
 
 export const db = drizzle(client, { schema });
-
-/** Close the underlying pool — used on graceful shutdown. */
-export const closeDb = () => client.end();

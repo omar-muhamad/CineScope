@@ -8,10 +8,12 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   plugins: [tailwindcss(), react(), tsconfigPaths(), svgr()],
   server: {
-    // The Fastify API (npm run dev:server) is proxied under the same origin so
-    // the httpOnly refresh cookie is first-party and no CORS setup is needed.
+    // Only used by the optional UI-only mode (npm run dev:web): /api is
+    // proxied to `vercel dev` (npm run dev, port 3000) so the session cookie
+    // stays first-party. Note the /api/saved/:list/:media/:id DELETE rewrite
+    // lives in vercel.json — full API testing happens under `npm run dev`.
     proxy: {
-      "/api": "http://localhost:3001",
+      "/api": "http://localhost:3000",
     },
   },
 });

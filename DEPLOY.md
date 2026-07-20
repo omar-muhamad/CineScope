@@ -1,133 +1,93 @@
-# Deploying CineScope on Render
+# Deploying CineScope on Vercel
 
-Two services deploy from this one repo (no repo split needed), defined in
-[render.yaml](render.yaml):
+One Vercel project deploys everything from this repo:
 
-| Layer    | Render service           | What it is                                           |
-| -------- | ------------------------ | ---------------------------------------------------- |
-| Frontend | `cinescope-web` (static) | Vite build of `src/`, served from Render's CDN, free |
-| Backend  | `cinescope-api` (Node)   | Fastify server (`server/`), free instance            |
+| Layer    | What Vercel builds                                                 |
+| -------- | ------------------------------------------------------------------ |
+| Frontend | Vite build of `src/`, served from Vercel's CDN                     |
+| Backend  | Two serverless functions in `api/`: the Better Auth catch-all      |
+|          | (`api/auth/[...all].ts`) and the saved-lists CRUD (`api/saved.ts`) |
 
-The static site rewrites `/api/*` to the API service, so the browser only ever
-talks to one origin — the httpOnly refresh cookie stays first-party and no
-CORS configuration is needed (same design as the local Vite proxy).
+The SPA and the API share one origin, so Better Auth's httpOnly session
+cookie is first-party with no CORS or proxy configuration. [vercel.json](vercel.json)
+adds two rewrites: the path-style saved-lists DELETE URL → query params, and
+the SPA fallback (everything except `/api/*` → `index.html`). The database is
+[Neon](https://neon.tech) Postgres; auth emails go out via SMTP (Gmail).
 
 ## One-time setup
 
-### 1. Push the branch
+### 1. Link the repo
 
-Merge `render.yaml` (and the rest of this branch) into the branch you want
-Render to deploy — Render asks which branch when you connect the repo.
+Vercel dashboard → **Add New → Project** → import this GitHub repo (framework
+preset: Vite — auto-detected). Or from the CLI: `npx vercel link`.
 
-### 2. Create both services from the Blueprint
+### 2. Environment variables (Production)
 
-Render dashboard → **Blueprints** (left sidebar, or
-[dashboard.render.com/blueprints](https://dashboard.render.com/blueprints)) →
-**New Blueprint Instance** → connect this GitHub repo. (The "Create a new
-Service" wizard doesn't list Blueprints — skip it.) Render
-reads `render.yaml`, shows both services, and prompts for the secret env vars:
+Project → **Settings → Environment Variables**:
 
-**cinescope-web (frontend, baked in at build time):**
+| Var                       | Value                                                           |
+| ------------------------- | --------------------------------------------------------------- |
+| `DATABASE_URL`            | Neon **pooled** connection string (host has a `-pooler` suffix) |
+| `BETTER_AUTH_SECRET`      | `openssl rand -base64 32`                                       |
+| `BETTER_AUTH_URL`         | The deployed URL, e.g. `https://cine-scope-one.vercel.app`      |
+| `GOOGLE_CLIENT_ID`        | Google OAuth web client ID                                      |
+| `GOOGLE_CLIENT_SECRET`    | Google OAuth web client secret                                  |
+| `SMTP_HOST`               | e.g. `smtp.gmail.com` (leave empty to log email links instead)  |
+| `SMTP_PORT`               | `587` (use `465` for implicit-TLS providers)                    |
+| `SMTP_USER` / `SMTP_PASS` | SMTP credentials (for Gmail: an app password)                   |
+| `MAIL_FROM`               | From address (blank = send as `SMTP_USER`)                      |
+| `VITE_TMDB_READ_TOKEN`    | TMDB API read access token (baked in at build time)             |
+| `VITE_APP_OMDB_API_KEY`   | OMDb API key (baked in at build time)                           |
 
-| Var                     | Value                      |
-| ----------------------- | -------------------------- |
-| `VITE_GOOGLE_CLIENT_ID` | Google OAuth web client ID |
-| `VITE_TMDB_READ_TOKEN`  | TMDB API read access token |
-| `VITE_APP_OMDB_API_KEY` | OMDB API key               |
+Preview deployments (optional): leave `BETTER_AUTH_URL` unset there — it falls
+back to `VERCEL_URL`, so magic-link auth works on previews. Google sign-in
+won't (its redirect URI isn't registered per-preview); that's expected.
 
-**cinescope-api (backend):**
+### 3. Google OAuth redirect URIs
 
-| Var                | Value                                                       |
-| ------------------ | ----------------------------------------------------------- |
-| `DATABASE_URL`     | The deployed Postgres connection string                     |
-| `GOOGLE_CLIENT_ID` | Same value as `VITE_GOOGLE_CLIENT_ID`                       |
-| `APP_ORIGIN`       | The static site's URL (see step 3) — email links point here |
-| `SMTP_HOST`        | SMTP server (leave empty to log email links instead)        |
-| `SMTP_USER`        | SMTP username                                               |
-| `SMTP_PASS`        | SMTP password                                               |
-| `MAIL_FROM`        | From address (blank = send as `SMTP_USER`)                  |
+Google Cloud Console → APIs & Services → Credentials → the OAuth **web**
+client → **Authorized redirect URIs** — add both:
 
-`SMTP_PORT` defaults to 587 in the blueprint — change it on the service for
-providers that need implicit-TLS port 465.
+- `http://localhost:3000/api/auth/callback/google` (local `vercel dev`)
+- `https://<your-prod-domain>/api/auth/callback/google`
 
-`JWT_SECRET` is auto-generated by Render; `NODE_ENV=production` is set in the
-blueprint. Migrations (`npm run db:migrate`) run automatically on every API
-deploy, so the schema always matches the deployed code.
+Copy the **client secret** from the same page into `GOOGLE_CLIENT_SECRET`
+(locally in `.env.local` and in the Vercel dashboard).
 
-#### No credit card? Create the services manually
+### 4. Migrate the database, then deploy
 
-Render requires a payment method on file to deploy Blueprints, even when
-every service is free — but free services created individually need no card.
-To mirror [render.yaml](render.yaml) by hand (create the API first so its
-real URL exists when you add the frontend rewrite):
+Migrations run from your machine — **never** in the Vercel build (preview
+builds share the Production env and would migrate the real database):
 
-1. **cinescope-api** — New → **Web Service** → this repo. Runtime Node,
-   instance type Free. Build command `npm ci --include=dev && npm run
-db:migrate`, start command `npx tsx server/index.ts`, health check path
-   `/api/health`. Set the env vars from the table above plus
-   `NODE_ENV=production` and a `JWT_SECRET` (use the dashboard's
-   **Generate** button, or `openssl rand -base64 48`).
-2. **cinescope-web** — New → **Static Site** → this repo. Build command
-   `npm ci && npm run build`, publish directory `dist`. Set the three
-   `VITE_*` vars, then under **Redirects/Rewrites** add, in this order:
-   `/api/*` → `https://<the API's real URL>/api/*` (Rewrite), then
-   `/*` → `/index.html` (Rewrite).
-3. Optionally copy the build filters from render.yaml into each service's
-   settings so frontend-only and server-only pushes don't rebuild the other
-   service.
+```sh
+npm run db:migrate   # applies drizzle/ against DATABASE_URL_UNPOOLED (or DATABASE_URL)
+git push             # Vercel deploys code matching the already-migrated schema
+```
 
-With manual services the render.yaml rewrite fix in step 3 doesn't apply —
-you set the destination directly in the dashboard instead.
+### 5. Verify
 
-### 3. Fix the URLs after first creation
-
-Render suffixes subdomains when a name is taken (e.g.
-`cinescope-api-xyz1.onrender.com`). Once both services exist, check their real
-URLs in the dashboard, then:
-
-- Update the `/api/*` rewrite `destination` in [render.yaml](render.yaml) to
-  the API's real URL and push (the blueprint re-syncs on push).
-- Set `APP_ORIGIN` on **cinescope-api** to the static site's real URL.
-- Update the ping URL in
-  [.github/workflows/keep-alive.yml](.github/workflows/keep-alive.yml).
-
-### 4. Allow the new origin in Google OAuth
-
-Google Cloud Console → the OAuth client → **Authorized JavaScript origins** →
-add the static site URL (e.g. `https://cinescope-web.onrender.com`), otherwise
-the Google sign-in button refuses to render in production.
-
-### 5. Keep the API awake
-
-The free instance sleeps after 15 idle minutes (30–60 s wake-up, long enough
-that the `/api` rewrite times out). The
-[keep-alive workflow](.github/workflows/keep-alive.yml) pings
-`/api/health` every 10 minutes from GitHub Actions — it starts working as soon
-as the branch containing it is the repo's default branch. Alternative: a free
-[cron-job.org](https://cron-job.org) monitor hitting the same URL.
-
-### 6. Verify
-
-1. Open the static site URL — the SPA should load on any deep link
-   (e.g. `/login`), proving the `/*` → `/index.html` fallback works.
-2. Register a new account — the verification email should arrive with a link
-   pointing at `APP_ORIGIN`.
-3. Log in, reload the page — the session should survive (refresh cookie set
-   with `Secure` over HTTPS, proxied through the static site origin).
-4. `curl https://<api-url>/api/health` → `{"status":"ok"}`.
-
-### 7. Retire Vercel
-
-Once Render serves production traffic, delete the Vercel project (or keep it
-as a preview environment). `vercel.json` is unused by Render and only matters
-if Vercel keeps deploying the repo.
+1. Open the deployed URL — the SPA loads on any deep link (e.g. `/login`),
+   proving the SPA-fallback rewrite works.
+2. Request a magic link — the email arrives with an `https://<prod-domain>`
+   link; opening it signs you in and (first time) starts onboarding.
+3. Sign in with Google — round-trips through the registered redirect URI.
+4. Save a favorite, reload — the session survives (cookie is `Secure`,
+   first-party) and the list persists.
+5. `curl https://<prod-domain>/api/auth/ok` → `{"ok":true}`.
 
 ## Day-to-day
 
-- Push to the connected branch → Render builds only what changed
-  (`buildFilter` in the blueprint keeps frontend pushes from rebuilding the
-  API and vice versa).
-- Schema changes: commit the generated migration (`npm run db:generate`) —
-  the API deploy applies it.
-- Free-tier budget: 750 instance-hours/month covers the API running 24/7;
-  static sites are unmetered (100 GB bandwidth).
+- Push to the production branch → Vercel builds and deploys; PRs get preview
+  URLs automatically.
+- Schema changes: `npm run db:generate` → review + commit the migration →
+  `npm run db:migrate` → push. (Changing `additionalFields` in
+  `server/auth.ts` also needs `npm run auth:schema` first.)
+- Env var changes in the dashboard require a redeploy to take effect.
+
+## Limits worth knowing (Hobby plan)
+
+- 12 serverless functions per deployment (this repo ships 2).
+- 4.5 MB request bodies — far above the ~50 KB avatar data-URLs.
+- Gmail SMTP: ~500 mails/day and 1–3 s per send; fine at this scale.
+- Neon scale-to-zero: the first auth call after idle can take 1–3 s while the
+  database resumes (the server's `connect_timeout` covers it).

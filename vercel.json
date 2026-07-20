@@ -1,3 +1,11 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/api/saved/:listType/:mediaType/:mediaId",
+      "destination": "/api/saved?listType=:listType&mediaType=:mediaType&mediaId=:mediaId"
+    },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ]
 }

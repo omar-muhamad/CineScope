@@ -9,5 +9,11 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: "src/tests/setup.ts",
+    // The auth seam (setup.ts module mock + test-utils seedSession) is built
+    // from vi.fn()s — reset them between tests so call history and per-test
+    // mockResolvedValue overrides never leak across tests. (vi.fn(impl)
+    // factory implementations survive a reset.)
+    resetMocks: true,
+    restoreMocks: true,
   },
 });

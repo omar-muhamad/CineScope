@@ -1,8 +1,6 @@
 import { InputHTMLAttributes } from "react";
 import { IconType } from "react-icons";
 
-// Right padding is per-variant: room for text only, or for the eye toggle
-// (see PasswordInput).
 export const inputClass =
   "w-full rounded-md bg-main-dark py-3 pl-11 text-sm text-white outline-hidden ring-1 ring-white/10 transition focus:ring-2 focus:ring-orange placeholder:text-gray caret-orange";
 

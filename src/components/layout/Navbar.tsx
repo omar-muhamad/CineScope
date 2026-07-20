@@ -160,7 +160,9 @@ const Navbar: FC = () => {
               <FaUserCircle className="h-full w-full rounded-full text-orange hover:text-white" />
             )}
           </button>
-          {isUserIconClicked && <UserCard />}
+          {isUserIconClicked && (
+            <UserCard onClose={() => setIsUserIconClicked(false)} />
+          )}
         </div>
         <button
           className="md:hidden flex items-center justify-center size-8 shrink-0 text-2xl text-gray hover:text-white"
