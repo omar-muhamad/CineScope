@@ -1,8 +1,12 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import { IoCameraOutline } from "react-icons/io5";
 
 import { fileToAvatarDataUrl } from "@/lib/image";
 import Text from "./Text";
+
+// `accept` is only a picker hint — gate before decoding so a mispicked
+// video/huge file doesn't get object-URL'd and synchronously decoded.
+const MAX_FILE_BYTES = 20 * 1024 * 1024;
 
 type AvatarPickerProps = {
   /** id for the file input (label htmlFor) — must be unique per page. */
@@ -20,16 +24,30 @@ type AvatarPickerProps = {
  */
 const AvatarPicker = ({ id, value, onChange }: AvatarPickerProps) => {
   const [readError, setReadError] = useState<string | null>(null);
+  // Two rapid picks race their decodes; only the latest may win onChange.
+  const pickToken = useRef(0);
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     // Allow re-picking the same file after removing it.
     event.target.value = "";
     if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setReadError("That file isn't an image. Pick a JPG, PNG or WebP.");
+      return;
+    }
+    if (file.size > MAX_FILE_BYTES) {
+      setReadError("That image is too large. Pick one under 20MB.");
+      return;
+    }
+    const token = ++pickToken.current;
     try {
-      onChange(await fileToAvatarDataUrl(file));
+      const dataUrl = await fileToAvatarDataUrl(file);
+      if (token !== pickToken.current) return;
+      onChange(dataUrl);
       setReadError(null);
     } catch {
+      if (token !== pickToken.current) return;
       setReadError("That file couldn't be read as an image. Try another one.");
     }
   };
@@ -39,7 +57,7 @@ const AvatarPicker = ({ id, value, onChange }: AvatarPickerProps) => {
       <div className="flex items-center gap-4">
         <label
           htmlFor={id}
-          className="group relative flex size-16 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-main-dark ring-1 ring-white/10 transition hover:ring-orange"
+          className="group relative flex size-16 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-main-dark ring-1 ring-white/10 transition hover:ring-orange focus-within:ring-2 focus-within:ring-orange"
         >
           {value ? (
             <img
@@ -55,6 +73,7 @@ const AvatarPicker = ({ id, value, onChange }: AvatarPickerProps) => {
             id={id}
             type="file"
             accept="image/*"
+            aria-label={value ? "Change profile photo" : "Add profile photo"}
             className="sr-only"
             data-test-id="avatar-input"
             onChange={handleFileChange}

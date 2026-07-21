@@ -2,16 +2,22 @@
 
 One Vercel project deploys everything from this repo:
 
-| Layer    | What Vercel builds                                                 |
-| -------- | ------------------------------------------------------------------ |
-| Frontend | Vite build of `src/`, served from Vercel's CDN                     |
-| Backend  | Two serverless functions in `api/`: the Better Auth catch-all      |
-|          | (`api/auth/[...all].ts`) and the saved-lists CRUD (`api/saved.ts`) |
+| Layer    | What Vercel builds                                               |
+| -------- | ---------------------------------------------------------------- |
+| Frontend | Vite build of `src/`, served from Vercel's CDN                   |
+| Backend  | Four serverless functions in `api/`: the Better Auth catch-all   |
+|          | (`api/auth/[...all].ts`), saved lists, watch history, and avatar |
 
 The SPA and the API share one origin, so Better Auth's httpOnly session
 cookie is first-party with no CORS or proxy configuration. [vercel.json](vercel.json)
-adds two rewrites: the path-style saved-lists DELETE URL → query params, and
-the SPA fallback (everything except `/api/*` → `index.html`). The database is
+adds three rewrites, one of which is **load-bearing for auth**: Vercel routes
+`[...all].ts` as a single path segment, so multi-segment auth endpoints
+(`/api/auth/callback/google`, `/api/auth/sign-in/magic-link`) only work
+because the `/api/auth/:path*` rewrite smuggles the real path to the function
+via `__ba_path` (restored in `api/auth/[...all].ts`). Don't "simplify" it
+away — `vercel dev` masks its absence and production auth 404s. The other two
+map the path-style saved-lists DELETE URL onto query params and provide the
+SPA fallback (everything except `/api/*` → `index.html`). The database is
 [Neon](https://neon.tech) Postgres; auth emails go out via SMTP (Gmail).
 
 ## One-time setup
@@ -48,7 +54,9 @@ won't (its redirect URI isn't registered per-preview); that's expected.
 Google Cloud Console → APIs & Services → Credentials → the OAuth **web**
 client → **Authorized redirect URIs** — add both:
 
-- `http://localhost:3000/api/auth/callback/google` (local `vercel dev`)
+- `http://localhost:5173/api/auth/callback/google` (local dev — the
+  redirect_uri derives from `BETTER_AUTH_URL`, which defaults to the Vite
+  origin `:5173`; its `/api` proxy forwards the callback to `vercel dev`)
 - `https://<your-prod-domain>/api/auth/callback/google`
 
 Copy the **client secret** from the same page into `GOOGLE_CLIENT_SECRET`
@@ -86,7 +94,7 @@ git push             # Vercel deploys code matching the already-migrated schema
 
 ## Limits worth knowing (Hobby plan)
 
-- 12 serverless functions per deployment (this repo ships 2).
+- 12 serverless functions per deployment (this repo ships 4).
 - 4.5 MB request bodies — far above the ~50 KB avatar data-URLs.
 - Gmail SMTP: ~500 mails/day and 1–3 s per send; fine at this scale.
 - Neon scale-to-zero: the first auth call after idle can take 1–3 s while the

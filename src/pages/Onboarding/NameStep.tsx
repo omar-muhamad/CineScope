@@ -26,10 +26,16 @@ const NameStep = ({
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (busy) return;
-    setBusy(true);
     setError(null);
     const trimmedFirst = firstName.trim();
     const trimmedLast = lastName.trim();
+    // `required` accepts whitespace-only input; the trimmed values are what
+    // gets saved, so they are what must be non-empty.
+    if (!trimmedFirst || !trimmedLast) {
+      setError("Names can't be empty.");
+      return;
+    }
+    setBusy(true);
     const { error: updateError } = await authClient.updateUser({
       firstName: trimmedFirst,
       lastName: trimmedLast,

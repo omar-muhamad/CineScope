@@ -108,7 +108,7 @@ const SaveToggle: FC<SaveToggleProps> = ({
       onClick={handleClick}
       aria-pressed={active}
       aria-label={active ? `Remove from ${label}` : `Add to ${label}`}
-      className={`${BASE_CLASSES} hover:bg-white active:bg-orange hover:opacity-100 cursor-pointer ${className}`}
+      className={`${BASE_CLASSES} hover:bg-white active:bg-orange hover:opacity-100 cursor-pointer ${className ?? ""}`}
     >
       {active ? (
         <OnIcon className="text-xl text-orange" />

@@ -22,6 +22,10 @@ export const fileToAvatarDataUrl = (file: File, size = 256): Promise<string> =>
         reject(new Error("Canvas is not supported in this browser."));
         return;
       }
+      // JPEG has no alpha — without a backdrop, transparent PNG regions
+      // composite onto black.
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, size, size);
       ctx.drawImage(image, sx, sy, side, side, 0, 0, size, size);
       resolve(canvas.toDataURL("image/jpeg", 0.85));
     };

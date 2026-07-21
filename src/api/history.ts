@@ -62,15 +62,17 @@ export const recordWatch = async ({
   episode = 0,
   meta,
 }: RecordWatchVars): Promise<void> => {
+  // TMDB returns null (not undefined) for missing posters/dates; normalize so
+  // axios drops the keys instead of serializing null into the payload.
   await api.post("/history", {
     mediaType,
     mediaId,
     season,
     episode,
-    title: meta.title,
-    posterPath: meta.poster_path,
-    releaseDate: meta.release_date,
-    voteAverage: meta.vote_average,
+    title: meta.title ?? undefined,
+    posterPath: meta.poster_path ?? undefined,
+    releaseDate: meta.release_date ?? undefined,
+    voteAverage: meta.vote_average ?? undefined,
   });
 };
 

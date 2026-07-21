@@ -87,11 +87,11 @@ const WatchDetailsContent: FC<WatchContentProps> = ({
   const season = urlSeason ?? availableSeasons[0]?.season_number ?? 1;
   const episode = urlEpisode ?? 1;
 
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const mediaId = Number(id);
 
   // Resume point for bare URLs: the show's most recently watched episode.
-  const { lastWatched, isLoading: historyLoading } =
+  const { lastWatched, isPending: historyPending } =
     useLastWatchedEpisode(mediaId);
 
   const goToEpisode = (s: number, e: number, opts?: { replace?: boolean }) => {
@@ -106,15 +106,30 @@ const WatchDetailsContent: FC<WatchContentProps> = ({
 
   // Canonicalize bare TV URLs (e.g. /watch/tv/123 from the details page) once
   // details load, replacing so back doesn't bounce through the bare URL.
-  // Shows with watch history resume at the last watched episode, so the
-  // redirect waits for the history fetch (a render or two when signed in;
-  // isLoading stays false when logged out).
+  // Shows with watch history resume at the last watched episode. The redirect
+  // holds until the resume point is knowable: on a hard load the session is
+  // still resolving (the history query hasn't even started — checking only
+  // the query would let the redirect win the race and canonicalize to S1E1),
+  // and once signed in it waits for the history rows themselves. Signed-out
+  // sessions resolve fast and fall straight through. An explicit season in
+  // the URL is always kept — only the episode gets filled in.
   useEffect(() => {
     if (!isTv || (urlSeason !== undefined && urlEpisode !== undefined)) return;
-    if (historyLoading) return;
+    if (authLoading || (user && historyPending)) return;
+    const target =
+      urlSeason !== undefined
+        ? {
+            season: urlSeason,
+            episode:
+              lastWatched?.season === urlSeason ? lastWatched.episode : 1,
+          }
+        : {
+            season: lastWatched?.season ?? season,
+            episode: lastWatched?.episode ?? episode,
+          };
     navigate(
       {
-        pathname: `/watch/tv/${id}/${lastWatched?.season ?? season}/${lastWatched?.episode ?? episode}`,
+        pathname: `/watch/tv/${id}/${target.season}/${target.episode}`,
         search: searchParams.toString(),
       },
       { replace: true },
@@ -127,7 +142,9 @@ const WatchDetailsContent: FC<WatchContentProps> = ({
     season,
     episode,
     lastWatched,
-    historyLoading,
+    authLoading,
+    user,
+    historyPending,
     navigate,
     searchParams,
   ]);
@@ -340,8 +357,11 @@ const WatchDetailsSkeleton: FC = () => (
 const WatchOnline: FC = () => {
   const { media_type, id, season, episode } = useParams();
 
-  // Optional /:season/:episode segments are TV-only and must be numeric.
-  const validSegment = (v?: string) => v === undefined || /^\d+$/.test(v);
+  // Optional /:season/:episode segments are TV-only and must be 1-based
+  // integers — season 0 (TMDB "Specials") is excluded from the season
+  // selector and rejected by the history API, so a hand-edited /0/ URL
+  // would render a season the UI can't otherwise represent.
+  const validSegment = (v?: string) => v === undefined || /^[1-9]\d*$/.test(v);
 
   // Guard written as an early return on the negation so TS narrows `media_type`
   // to "movie" | "tv" and `id` to string for the children below.

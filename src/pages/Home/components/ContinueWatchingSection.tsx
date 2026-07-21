@@ -35,12 +35,18 @@ const ContinueWatchingSection: FC = () => {
   });
 
   // isLoading is only ever true signed-in, so signed-out users skip straight
-  // to the empty branch below.
+  // to the empty branch below. The skeleton mirrors the loaded layout —
+  // including the dots row — so users WITH history (the common signed-in
+  // case) get no shift; a user with empty history sees the section collapse
+  // once the fetch settles, the accepted trade-off of reserving space.
   if (isLoading) {
     return (
       <section className="w-full mt-6 md:mt-10">
         <Skeleton className="h-8 w-56 rounded-sm" />
         <Skeleton className={`w-full ${BANNER_HEIGHT} rounded-lg mt-6`} />
+        <div className="mt-3 flex justify-center">
+          <Skeleton className="h-2 w-24 rounded-full" />
+        </div>
       </section>
     );
   }

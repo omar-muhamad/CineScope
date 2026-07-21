@@ -1,6 +1,7 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 import Loading from "@/components/common/Loading";
+import { normalizePath } from "@/lib/paths";
 import { useAuth } from "./useAuth";
 
 /**
@@ -24,7 +25,7 @@ export const RequireAuth = () => {
  */
 export const OnboardingGate = () => {
   const { user, loading } = useAuth();
-  const { pathname } = useLocation();
+  const pathname = normalizePath(useLocation().pathname);
 
   if (!loading && user) {
     if (!user.onboardingComplete && pathname !== "/onboarding") {

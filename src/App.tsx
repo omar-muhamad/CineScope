@@ -17,12 +17,13 @@ import Profile from "./pages/Profile";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import ScrollToTop from "./components/common/ScrollToTop";
 import { OnboardingGate, RequireAuth } from "./auth/guards";
+import { normalizePath } from "./lib/paths";
 
 // Focused full-screen flows — no navbar. /profile is a normal in-app page.
 const AUTH_ROUTES = ["/login", "/onboarding"];
 
 function App() {
-  const { pathname } = useLocation();
+  const pathname = normalizePath(useLocation().pathname);
   return (
     <div className="font-outfitLight min-h-screen w-full  flex bg-main-dark text-white flex-col mx-auto relative">
       <ScrollToTop />
@@ -72,9 +73,11 @@ function App() {
             <Route path="/:media_type/:id" element={<Details />} />
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/watch-later" element={<WatchLater />} />
-            <Route path="/history" element={<History />} />
             <Route path="/login" element={<Login />} />
             <Route element={<RequireAuth />}>
+              {/* Signed-out history is always empty (the query never runs) —
+                  redirect to login instead of showing a dead page. */}
+              <Route path="/history" element={<History />} />
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/profile" element={<Profile />} />
             </Route>

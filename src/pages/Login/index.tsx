@@ -23,7 +23,7 @@ const features = [
 ];
 
 /** Seconds the resend button stays disabled after a send — be polite to the
- *  rate limiter (5 sends / 15 min per IP). */
+ *  rate limiter (2 sends / minute per IP, see server/auth.ts). */
 const RESEND_COOLDOWN_S = 30;
 
 type SendState = "idle" | "sending" | "sent";
@@ -42,6 +42,7 @@ const Login = () => {
       : null,
   );
   const [cooldown, setCooldown] = useState(false);
+  const [resending, setResending] = useState(false);
   const [googleBusy, setGoogleBusy] = useState(false);
   const cooldownTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
@@ -52,8 +53,9 @@ const Login = () => {
     return <Navigate to="/" replace />;
   }
 
-  const sendMagicLink = async () => {
-    setSendState("sending");
+  // Shared by the first send and the resend; reports success so each caller
+  // manages its own screen state (the resend must NOT leave the sent panel).
+  const sendMagicLink = async (): Promise<boolean> => {
     setError(null);
     const { error: sendError } = await authClient.signIn.magicLink({
       email,
@@ -61,26 +63,36 @@ const Login = () => {
       errorCallbackURL: "/login", // failures come back here with ?error=
     });
     if (sendError) {
-      setSendState("idle");
       setError(
         sendError.status === 429
-          ? "Too many sign-in emails requested — wait a few minutes and try again."
+          ? "Too many sign-in emails requested — wait a minute and try again."
           : (sendError.message ?? "The email couldn't be sent. Try again."),
       );
-      return;
+      return false;
     }
-    setSendState("sent");
     setCooldown(true);
     cooldownTimer.current = setTimeout(
       () => setCooldown(false),
       RESEND_COOLDOWN_S * 1000,
     );
+    return true;
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (sendState === "sending") return;
+    setSendState("sending");
+    const sent = await sendMagicLink();
+    setSendState(sent ? "sent" : "idle");
+  };
+
+  const handleResend = async () => {
+    if (resending || cooldown) return;
+    setResending(true);
+    // Success and failure both stay on the sent panel; failures surface in
+    // its error block.
     await sendMagicLink();
+    setResending(false);
   };
 
   const handleGoogle = async () => {
@@ -168,10 +180,14 @@ const Login = () => {
                   type="button"
                   data-test-id="magic-resend"
                   className="text-sm text-orange underline-offset-4 hover:underline disabled:opacity-60"
-                  onClick={sendMagicLink}
-                  disabled={cooldown}
+                  onClick={handleResend}
+                  disabled={cooldown || resending}
                 >
-                  {cooldown ? "Email sent!" : "Resend email"}
+                  {resending
+                    ? "Sending..."
+                    : cooldown
+                      ? "Email sent!"
+                      : "Resend email"}
                 </button>
                 <button
                   type="button"
