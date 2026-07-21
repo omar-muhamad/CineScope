@@ -75,9 +75,7 @@ const EpisodeList: FC<EpisodeListProps> = ({
             <button
               onClick={() => onSelect(ep.episode_number)}
               aria-pressed={isPlaying}
-              className={`group w-full text-left flex gap-3 sm:gap-4 p-3 ${
-                onToggleWatched ? "pr-12" : ""
-              } rounded-xl border transition-colors duration-200 ${
+              className={`group w-full text-left flex gap-3 sm:gap-4 p-3 rounded-xl border transition-colors duration-200 ${
                 isPlaying
                   ? "border-orange bg-secondary-dark"
                   : "border-transparent bg-secondary-dark/40 hover:bg-secondary-dark"
@@ -94,7 +92,7 @@ const EpisodeList: FC<EpisodeListProps> = ({
                 ) : (
                   <PosterFallback media_type="tv" className="w-full h-full" />
                 )}
-                {isWatched && (
+                {isWatched && !onToggleWatched && (
                   <span
                     aria-hidden
                     className="absolute top-1 right-1 flex size-5 items-center justify-center rounded-full bg-black/60"
@@ -158,6 +156,9 @@ const EpisodeList: FC<EpisodeListProps> = ({
             </button>
 
             {onToggleWatched && (
+              // Overlays the thumbnail's top-right corner. Offsets are tied to
+              // the row's p-3 padding and the thumbnail width (w-28 / sm:w-40);
+              // it must stay a sibling of the row <button>, not a child.
               <button
                 type="button"
                 onClick={() => onToggleWatched(ep.episode_number, !isWatched)}
@@ -167,12 +168,12 @@ const EpisodeList: FC<EpisodeListProps> = ({
                     ? `Remove episode ${ep.episode_number} from watch history`
                     : `Mark episode ${ep.episode_number} as watched`
                 }
-                className="absolute right-3 top-1/2 -translate-y-1/2 flex size-8 cursor-pointer items-center justify-center rounded-full text-xl transition-colors hover:bg-white/10"
+                className="absolute top-4 left-24 sm:left-36 flex size-6 cursor-pointer items-center justify-center rounded-full bg-black/60 text-lg transition-colors hover:bg-black/80"
               >
                 {isWatched ? (
                   <IoCheckmarkCircle className="text-orange" />
                 ) : (
-                  <IoCheckmarkCircleOutline className="text-gray hover:text-white" />
+                  <IoCheckmarkCircleOutline className="text-orange" />
                 )}
               </button>
             )}
