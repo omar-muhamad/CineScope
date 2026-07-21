@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 
 import { db } from "../server/db";
 import { user } from "../server/db/schema";
-import { errorJson, requireUser } from "../server/http";
+import { errorJson, requireUser, withErrorBody } from "../server/http";
 
 /**
  * Read path for the uploaded avatar. `avatarData` is a returned:false field —
@@ -10,7 +10,7 @@ import { errorJson, requireUser } from "../server/http";
  * cookie (that's what keeps the cookie ~1KB) — so the client fetches it here
  * once per sign-in and caches it (see src/api/avatar.ts).
  */
-export async function GET(request: Request) {
+export const GET = withErrorBody(async (request: Request) => {
   const sessionUser = await requireUser(request);
   if (!sessionUser) return errorJson(401, "UNAUTHORIZED", "Not authenticated.");
 
@@ -21,4 +21,4 @@ export async function GET(request: Request) {
     .limit(1);
 
   return Response.json({ avatar: row?.avatarData ?? null });
-}
+});

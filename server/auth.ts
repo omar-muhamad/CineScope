@@ -16,6 +16,66 @@ import {
 const normalizeUsername = (value: unknown): string | null =>
   typeof value === "string" && value.trim() ? value.trim().toLowerCase() : null;
 
+// Server-side field constraints (the DB columns are unbounded text; these are
+// the real limits). Oversized username/name values would also inflate the
+// cookieCache session_data cookie past the ~4KB browser cap and break the
+// user's own session.
+const USERNAME_PATTERN = /^[a-z0-9._]{3,30}$/;
+const MAX_NAME_LENGTH = 50;
+const MAX_AVATAR_DATA_LENGTH = 700_000; // ~512KB image as base64
+const AVATAR_DATA_PATTERN = /^data:image\/(png|jpe?g|webp);base64,/;
+
+const invalidField = (code: string, message: string) =>
+  new APIError("UNPROCESSABLE_ENTITY", { code, message });
+
+/**
+ * Validate client-writable profile fields. `strict` rejects oversized names
+ * (client-driven updates); non-strict truncates them instead — user creation
+ * runs on OAuth callbacks where a long Google display name must not be able
+ * to fail the whole sign-in.
+ */
+const validateProfileFields = <T extends Record<string, unknown>>(
+  data: T,
+  { strict }: { strict: boolean },
+): T => {
+  if (data.avatarData != null) {
+    const avatar = data.avatarData;
+    if (
+      typeof avatar !== "string" ||
+      avatar.length > MAX_AVATAR_DATA_LENGTH ||
+      !AVATAR_DATA_PATTERN.test(avatar)
+    ) {
+      throw invalidField(
+        "AVATAR_INVALID",
+        "Avatar must be a PNG, JPEG or WebP image under 512KB.",
+      );
+    }
+  }
+  const out: Record<string, unknown> = { ...data };
+  for (const field of ["firstName", "lastName", "name"] as const) {
+    const value = out[field];
+    if (typeof value === "string" && value.length > MAX_NAME_LENGTH) {
+      if (strict) {
+        throw invalidField(
+          "NAME_TOO_LONG",
+          `Names are limited to ${MAX_NAME_LENGTH} characters.`,
+        );
+      }
+      out[field] = value.slice(0, MAX_NAME_LENGTH);
+    }
+  }
+  return out as T;
+};
+
+const assertUsernameFormat = (username: string) => {
+  if (!USERNAME_PATTERN.test(username)) {
+    throw invalidField(
+      "USERNAME_INVALID",
+      "Usernames are 3-30 characters: letters, numbers, dots or underscores.",
+    );
+  }
+};
+
 /**
  * Pre-check username uniqueness so the client gets a clean USERNAME_TAKEN
  * error instead of an opaque 500 from the DB unique constraint (which stays
@@ -52,9 +112,11 @@ export const auth = betterAuth({
     // the data-URL avatar — lives in `avatarData` (returned: false, stripped
     // from responses and this cookie alike); `image` only ever holds small
     // provider photo URLs. getSession answers from the signed session_data
-    // cookie (~1KB) with zero Neon roundtrips; updateUser rewrites it, so
-    // profile edits are never stale. Trade-off: a revoked session keeps
-    // working for up to maxAge on routes that don't disableCookieCache.
+    // cookie (~1KB) without touching the session/user tables (the DB-backed
+    // rate limiter still does one small read+write per HTTP auth request);
+    // updateUser rewrites it, so profile edits are never stale. Trade-off:
+    // a revoked session keeps working for up to maxAge on routes that don't
+    // disableCookieCache — the /api data endpoints opt out via requireUser.
     cookieCache: {
       enabled: true,
       maxAge: 60 * 5,
@@ -69,7 +131,12 @@ export const auth = betterAuth({
     storage: "database",
     customRules: {
       // The email-sending endpoint is the abuse target — keep it tight.
-      "/sign-in/magic-link": { window: 60 * 15, max: 5 },
+      // NOTE: the database storage prunes rate_limit rows older than the
+      // largest BUILT-IN window (60s); customRules windows are not included
+      // in that cutoff, so any window over 60s silently degrades to ~60s.
+      // Keep the window at 60s so enforcement is exact. 2/min also matches
+      // the client's 30s resend cooldown, so legit resends never 429.
+      "/sign-in/magic-link": { window: 60, max: 2 },
     },
   },
 
@@ -160,6 +227,9 @@ export const auth = betterAuth({
   plugins: [
     magicLink({
       expiresIn: 60 * 10, // keep the mailer copy in sync (10 minutes)
+      // Store only a hash at rest so a DB leak/backup doesn't yield live
+      // sign-in links (same posture as the old SHA-256 token scheme).
+      storeToken: "hashed",
       sendMagicLink: async ({ email, url }) => {
         await sendMagicLinkEmail(email, url);
       },
@@ -170,25 +240,41 @@ export const auth = betterAuth({
     user: {
       create: {
         before: async (user) => {
-          const username = normalizeUsername(
-            (user as Record<string, unknown>).username,
+          // Non-strict: creation runs on OAuth callbacks, where an oversized
+          // Google display name gets truncated rather than failing sign-in.
+          const validated = validateProfileFields(
+            user as Record<string, unknown>,
+            { strict: false },
           );
-          if (username) await assertUsernameFree(username);
+          const username = normalizeUsername(validated.username);
+          if (username) {
+            assertUsernameFormat(username);
+            await assertUsernameFree(username);
+          }
           return {
-            data: { ...user, email: user.email.toLowerCase(), username },
+            data: {
+              ...user,
+              ...validated,
+              email: user.email.toLowerCase(),
+              username,
+            },
           };
         },
       },
       update: {
         before: async (data, ctx) => {
-          if (!("username" in data)) return { data };
-          const username = normalizeUsername(
-            (data as Record<string, unknown>).username,
+          const validated = validateProfileFields(
+            data as Record<string, unknown>,
+            { strict: true },
           );
+          if (!("username" in validated))
+            return { data: { ...data, ...validated } };
+          const username = normalizeUsername(validated.username);
           if (username) {
+            assertUsernameFormat(username);
             await assertUsernameFree(username, ctx?.context.session?.user.id);
           }
-          return { data: { ...data, username } };
+          return { data: { ...data, ...validated, username } };
         },
       },
     },

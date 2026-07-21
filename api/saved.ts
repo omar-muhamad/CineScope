@@ -2,7 +2,7 @@ import { and, desc, eq } from "drizzle-orm";
 
 import { db } from "../server/db";
 import { savedItems } from "../server/db/schema";
-import { errorJson, requireUser } from "../server/http";
+import { errorJson, requireUser, withErrorBody } from "../server/http";
 
 /**
  * Favorites / watch-later CRUD, scoped to the session user (the authorization
@@ -21,14 +21,22 @@ const isListType = (value: unknown): value is ListType =>
   LIST_TYPES.includes(value as ListType);
 const isMediaType = (value: unknown): value is MediaType =>
   MEDIA_TYPES.includes(value as MediaType);
+// Upper bound keeps values inside Postgres `integer`; without it an oversized
+// id overflows into a driver error (500) instead of a 400.
+const PG_INT_MAX = 2_147_483_647;
+
 const isMediaId = (value: unknown): value is number =>
-  typeof value === "number" && Number.isInteger(value) && value >= 1;
+  typeof value === "number" &&
+  Number.isInteger(value) &&
+  value >= 1 &&
+  value <= PG_INT_MAX;
 
+// TMDB legitimately returns null for missing posters/dates — treat it like
+// the field being absent (the columns are nullable anyway).
 const isShortString = (value: unknown, maxLength: number): boolean =>
-  value === undefined ||
-  (typeof value === "string" && value.length <= maxLength);
+  value == null || (typeof value === "string" && value.length <= maxLength);
 
-export async function GET(request: Request) {
+export const GET = withErrorBody(async (request: Request) => {
   const user = await requireUser(request);
   if (!user) return errorJson(401, "UNAUTHORIZED", "Not authenticated.");
 
@@ -52,10 +60,10 @@ export async function GET(request: Request) {
     .orderBy(desc(savedItems.createdAt));
 
   return Response.json({ items });
-}
+});
 
 /** Add a title to a list. Saving an already-saved title is a no-op. */
-export async function POST(request: Request) {
+export const POST = withErrorBody(async (request: Request) => {
   const user = await requireUser(request);
   if (!user) return errorJson(401, "UNAUTHORIZED", "Not authenticated.");
 
@@ -80,7 +88,7 @@ export async function POST(request: Request) {
     !isShortString(title, 512) ||
     !isShortString(posterPath, 512) ||
     !isShortString(releaseDate, 32) ||
-    (voteAverage !== undefined && typeof voteAverage !== "number")
+    (voteAverage != null && typeof voteAverage !== "number")
   ) {
     return errorJson(400, "INVALID_INPUT", "Invalid saved-item payload.");
   }
@@ -92,18 +100,18 @@ export async function POST(request: Request) {
       listType,
       mediaType,
       mediaId,
-      title: (title as string | undefined) ?? null,
-      posterPath: (posterPath as string | undefined) ?? null,
-      releaseDate: (releaseDate as string | undefined) ?? null,
-      voteAverage: (voteAverage as number | undefined) ?? null,
+      title: (title as string | null | undefined) ?? null,
+      posterPath: (posterPath as string | null | undefined) ?? null,
+      releaseDate: (releaseDate as string | null | undefined) ?? null,
+      voteAverage: (voteAverage as number | null | undefined) ?? null,
     })
     .onConflictDoNothing();
 
   return Response.json({ message: "Saved." }, { status: 201 });
-}
+});
 
 /** Remove a title from a list. Removing a non-saved title is a no-op. */
-export async function DELETE(request: Request) {
+export const DELETE = withErrorBody(async (request: Request) => {
   const user = await requireUser(request);
   if (!user) return errorJson(401, "UNAUTHORIZED", "Not authenticated.");
 
@@ -129,4 +137,4 @@ export async function DELETE(request: Request) {
     );
 
   return new Response(null, { status: 204 });
-}
+});
