@@ -107,6 +107,40 @@ export const useHistoryItems = () => {
   return { items, isLoading: history.isLoading };
 };
 
+export type ContinueWatchingEntry = {
+  item: MediaItem;
+  /** Season/episode of the newest row — (0,0) for movies and show-level marks. */
+  season: number;
+  episode: number;
+};
+
+/**
+ * The newest few titles from history with their latest season/episode, for
+ * the home page's continue-watching row. Cards link to bare /watch URLs and
+ * lean on the useLastWatchedEpisode resume redirect, so the (0,0) sentinel
+ * needs no special handling here beyond hiding the episode label.
+ */
+export const useContinueWatching = (limit = 5) => {
+  const history = useWatchHistory();
+  const entries = useMemo(() => {
+    const seen = new Set<string>();
+    const result: ContinueWatchingEntry[] = [];
+    for (const row of history.data ?? []) {
+      const key = `${row.mediaType}:${row.mediaId}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      result.push({
+        item: historyRowToMediaItem(row),
+        season: row.season,
+        episode: row.episode,
+      });
+      if (result.length >= limit) break;
+    }
+    return result;
+  }, [history.data, limit]);
+  return { entries, isLoading: history.isLoading };
+};
+
 type HistoryContext = {
   key: readonly unknown[];
   previous: HistoryRow[] | undefined;
