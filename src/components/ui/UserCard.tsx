@@ -44,7 +44,7 @@ const UserCard: FC<UserCardProps> = ({ onClose }) => {
   const avatarUrl = user?.avatarUrl ?? "";
 
   return (
-    <div className="user-card absolute z-50 top-full right-2 mt-2 w-60 origin-top-right rounded-lg border border-white/10 bg-secondary-dark p-2 shadow-2xl shadow-black/50 animate-dropdown">
+    <div className="user-card absolute z-50 top-full right-0 mt-2 w-60 origin-top-right rounded-lg border border-white/10 bg-secondary-dark p-2 shadow-2xl shadow-black/50 animate-dropdown">
       <div className="flex items-center gap-3 px-3 py-3">
         <span className="size-10 shrink-0">
           {isLogged && avatarUrl ? (
