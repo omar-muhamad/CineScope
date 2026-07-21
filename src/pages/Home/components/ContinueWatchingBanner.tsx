@@ -7,8 +7,8 @@ import LazyImage from "@/components/ui/LazyImage";
 import PosterFallback from "@/components/ui/PosterFallback";
 import type { ContinueWatchingEntry } from "@/queries/useWatchHistory";
 
-/** Shared with the section skeleton so the swap doesn't shift layout. */
-export const BANNER_ASPECT = "aspect-video md:aspect-[21/9]";
+/** Fixed slide height, shared with the section skeleton. */
+export const BANNER_HEIGHT = "h-40 sm:h-48 md:h-60";
 
 type ContinueWatchingBannerProps = ContinueWatchingEntry & {
   /** Wide TMDB backdrop, fetched by the section; the poster is the fallback. */
@@ -18,8 +18,9 @@ type ContinueWatchingBannerProps = ContinueWatchingEntry & {
 };
 
 /**
- * One full-width slide of the continue-watching banner. TV links stay bare
- * (/watch/tv/:id) so the watch page's resume redirect picks the episode;
+ * One slide of the continue-watching banner: backdrop on the left, title /
+ * episode / Resume on the right over the theme card background. TV links stay
+ * bare (/watch/tv/:id) so the watch page's resume redirect picks the episode;
  * the label still names it so users know where they left off.
  */
 const ContinueWatchingBanner: FC<ContinueWatchingBannerProps> = ({
@@ -40,36 +41,37 @@ const ContinueWatchingBanner: FC<ContinueWatchingBannerProps> = ({
   return (
     <li aria-hidden={!active} className="relative w-full shrink-0">
       <NavLink
-        className="group/banner relative block"
+        className={`group/banner flex overflow-hidden rounded-lg bg-secondary-dark ${BANNER_HEIGHT}`}
         to={`/watch/${item.media_type}/${item.id}`}
         tabIndex={active ? undefined : -1}
       >
-        {imgSrc ? (
-          <LazyImage
-            className={`w-full ${BANNER_ASPECT} object-cover rounded-lg`}
-            src={imgSrc}
-            alt={`${title} backdrop`}
-          />
-        ) : (
-          <PosterFallback
-            media_type={item.media_type}
-            className={`w-full ${BANNER_ASPECT} rounded-lg`}
-          />
-        )}
-
-        {/* Gradient overlay for readability over the backdrop */}
-        <div className="absolute inset-0 rounded-lg bg-linear-to-t from-black/90 via-black/40 to-transparent" />
-        <div className="absolute inset-0 p-4 md:p-8 flex flex-col justify-end">
+        <div className="relative w-2/5 sm:w-1/2 lg:w-2/5 shrink-0">
+          {imgSrc ? (
+            <LazyImage
+              className="absolute inset-0 h-full w-full object-cover"
+              src={imgSrc}
+              alt={`${title} backdrop`}
+            />
+          ) : (
+            <PosterFallback
+              media_type={item.media_type}
+              className="absolute inset-0 h-full w-full"
+            />
+          )}
+          {/* Fade the backdrop's edge into the card background */}
+          <div className="absolute inset-0 bg-linear-to-r from-transparent via-transparent to-secondary-dark" />
+        </div>
+        <div className="flex flex-col min-w-0 flex-1 items-start justify-center gap-1">
           {/* Season 0 is the movie / show-level sentinel — no episode to name. */}
           {season > 0 && (
-            <Text size="sm" className="text-orange">
+            <Text size="base" className="text-orange md:text-lg">
               S{season} · E{episode}
             </Text>
           )}
-          <h3 className="font-outfitMedium text-xl md:text-3xl truncate text-ellipsis">
+          <h3 className="w-full font-outfitMedium text-xl sm:text-2xl md:text-4xl line-clamp-2 text-ellipsis">
             {title}
           </h3>
-          <span className="mt-2 md:mt-4 flex items-center gap-2 self-start bg-orange text-black font-outfitMedium text-sm md:text-base py-2 px-4 rounded-full transition-colors group-hover/banner:bg-white">
+          <span className="mt-2 md:mt-4 flex items-center gap-2 bg-orange text-black font-outfitMedium text-sm sm:text-base md:text-lg py-2 px-4 md:py-2.5 md:px-6 rounded-full transition-colors group-hover/banner:bg-white">
             <IoPlay />
             Resume
           </span>

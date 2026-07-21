@@ -8,7 +8,7 @@ import { fetchDetails } from "@/api/tmdb";
 import { queryKeys } from "@/lib/queryKeys";
 import { useContinueWatching } from "@/queries/useWatchHistory";
 import ContinueWatchingBanner, {
-  BANNER_ASPECT,
+  BANNER_HEIGHT,
 } from "./ContinueWatchingBanner";
 
 const arrowClasses =
@@ -40,7 +40,7 @@ const ContinueWatchingSection: FC = () => {
     return (
       <section className="w-full mt-6 md:mt-10">
         <Skeleton className="h-8 w-56 rounded-sm" />
-        <Skeleton className={`w-full ${BANNER_ASPECT} rounded-lg mt-6`} />
+        <Skeleton className={`w-full ${BANNER_HEIGHT} rounded-lg mt-6`} />
       </section>
     );
   }
