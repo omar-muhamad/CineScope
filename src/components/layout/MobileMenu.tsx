@@ -5,6 +5,7 @@ import { IconType } from "react-icons";
 import { IoClose, IoChevronDown } from "react-icons/io5";
 
 import { useAuth } from "@/auth/useAuth";
+import Skeleton from "../skeletons/Skeleton";
 import Button from "../ui/Button";
 import NavSearch from "../common/NavSearch";
 
@@ -31,6 +32,8 @@ type MobileMenuProps = {
   isOpen: boolean;
   navLinks: NavLinkItem[];
   isLogged: boolean;
+  /** Initial session fetch in flight — auth-dependent UI renders as skeletons. */
+  loading: boolean;
   onClose: () => void;
 };
 
@@ -100,6 +103,7 @@ const MobileMenu: FC<MobileMenuProps> = ({
   isOpen,
   navLinks,
   isLogged,
+  loading,
   onClose,
 }) => {
   const { signOut } = useAuth();
@@ -148,13 +152,28 @@ const MobileMenu: FC<MobileMenuProps> = ({
         </button>
         <NavSearch variant="block" onSearch={onClose} />
         <nav className="flex flex-col gap-4" data-testid="mobile-nav-links">
-          {navLinks.map((link) => (
-            <MobileNavItem key={link.id} link={link} onClose={onClose} />
-          ))}
+          {navLinks.map((link) =>
+            link.requiresAuth && !isLogged ? (
+              // Session still resolving — hold the slot instead of popping in.
+              <Skeleton
+                key={link.id}
+                className="h-7 w-32 rounded-md ring-1 ring-white/10"
+              />
+            ) : (
+              <MobileNavItem key={link.id} link={link} onClose={onClose} />
+            ),
+          )}
         </nav>
-        <Button className="w-full py-2 mt-auto text-white" onClick={handleAuth}>
-          {isLogged ? "Logout" : "Login"}
-        </Button>
+        {loading ? (
+          <Skeleton className="h-10 w-full mt-auto rounded-md ring-1 ring-white/10" />
+        ) : (
+          <Button
+            className="w-full py-2 mt-auto text-white"
+            onClick={handleAuth}
+          >
+            {isLogged ? "Logout" : "Login"}
+          </Button>
+        )}
       </div>
     </div>,
     document.body,

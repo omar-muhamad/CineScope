@@ -7,6 +7,7 @@ import { FaUserCircle } from "react-icons/fa";
 
 import { useAuth } from "@/auth/useAuth";
 import Logo from "@/assets/icons/logo.svg?react";
+import Skeleton from "../skeletons/Skeleton";
 import UserCard from "../ui/UserCard";
 import NavSearch from "../common/NavSearch";
 import NavDropdown from "./NavDropdown";
@@ -60,11 +61,14 @@ const Navbar: FC = () => {
   const [isUserIconClicked, setIsUserIconClicked] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const isLogged = Boolean(user);
   // Auth-gated links (favorites, watch later) only show once signed in.
+  // While the initial session fetch is in flight they stay in the list and
+  // render as skeleton slots, so a signed-in reload never flashes the
+  // logged-out navbar before flipping.
   const visibleLinks = navLinks.filter(
-    (link) => !link.requiresAuth || isLogged,
+    (link) => !link.requiresAuth || isLogged || loading,
   );
   const avatarUrl = user?.avatarUrl ?? "";
 
@@ -117,7 +121,13 @@ const Navbar: FC = () => {
           className="hidden md:flex items-center gap-4"
         >
           {visibleLinks.map((link) =>
-            link.children ? (
+            link.requiresAuth && !isLogged ? (
+              // Session still resolving — hold the slot instead of popping in.
+              <Skeleton
+                key={link.id}
+                className="h-7 w-24 rounded-md ring-1 ring-white/10"
+              />
+            ) : link.children ? (
               <NavDropdown
                 key={link.id}
                 title={link.title}
@@ -141,25 +151,29 @@ const Navbar: FC = () => {
           <NavSearch />
         </div>
         <div ref={userMenuRef} className="hidden md:block">
-          <button
-            className="size-10 flex shrink-0 rounded-full"
-            type="button"
-            aria-label="User image"
-            aria-haspopup="menu"
-            aria-expanded={isUserIconClicked}
-            onClick={handleClick}
-          >
-            {isLogged && avatarUrl ? (
-              <img
-                className="h-full w-full rounded-full object-cover"
-                src={avatarUrl}
-                alt="User avatar"
-                referrerPolicy="no-referrer"
-              />
-            ) : (
-              <FaUserCircle className="h-full w-full rounded-full text-orange hover:text-white" />
-            )}
-          </button>
+          {loading ? (
+            <Skeleton className="size-10 rounded-full ring-1 ring-white/10" />
+          ) : (
+            <button
+              className="size-10 flex shrink-0 rounded-full"
+              type="button"
+              aria-label="User image"
+              aria-haspopup="menu"
+              aria-expanded={isUserIconClicked}
+              onClick={handleClick}
+            >
+              {isLogged && avatarUrl ? (
+                <img
+                  className="h-full w-full rounded-full object-cover"
+                  src={avatarUrl}
+                  alt="User avatar"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <FaUserCircle className="h-full w-full rounded-full text-orange hover:text-white" />
+              )}
+            </button>
+          )}
           {isUserIconClicked && (
             <UserCard onClose={() => setIsUserIconClicked(false)} />
           )}
@@ -180,6 +194,7 @@ const Navbar: FC = () => {
         isOpen={isMobileMenuOpen}
         navLinks={visibleLinks}
         isLogged={isLogged}
+        loading={loading}
         onClose={() => setIsMobileMenuOpen(false)}
       />
     </nav>

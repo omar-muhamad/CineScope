@@ -2,7 +2,7 @@ import { fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import Navbar from "@/components/layout/Navbar";
-import { renderWithProviders } from "@/tests/test-utils";
+import { renderWithProviders, testUser } from "@/tests/test-utils";
 
 describe("Navbar dropdowns", () => {
   // Scope queries to the desktop nav so we don't collide with the mobile menu,
@@ -51,5 +51,57 @@ describe("Navbar dropdowns", () => {
     expect(nav.getByRole("menuitem", { name: "upcoming" })).toBeInTheDocument();
     fireEvent.mouseDown(document.body);
     expect(nav.queryByRole("menuitem", { name: "upcoming" })).toBeNull();
+  });
+});
+
+describe("Navbar while the session is resolving", () => {
+  it("holds skeleton slots instead of flashing the logged-out navbar", () => {
+    renderWithProviders(<Navbar />, {
+      user: testUser,
+      session: { pending: true },
+    });
+    const nav = within(screen.getByTestId("nav-links"));
+
+    // Auth-gated links aren't committed either way yet — placeholders only.
+    expect(nav.queryByRole("link", { name: /favorites/i })).toBeNull();
+    expect(nav.getAllByTestId("skeleton")).toHaveLength(2);
+
+    // The avatar button and the mobile Login/Logout button wait too.
+    expect(screen.queryByRole("button", { name: "User image" })).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: /^(login|logout)$/i }),
+    ).toBeNull();
+    expect(
+      within(screen.getByTestId("mobile-nav-links")).getAllByTestId("skeleton"),
+    ).toHaveLength(2);
+  });
+
+  it("swaps the skeletons for gated links and the avatar once signed in", () => {
+    renderWithProviders(<Navbar />, { user: testUser });
+    const nav = within(screen.getByTestId("nav-links"));
+
+    expect(nav.getByRole("link", { name: /favorites/i })).toHaveAttribute(
+      "href",
+      "/favorites",
+    );
+    expect(nav.getByRole("link", { name: /watch later/i })).toHaveAttribute(
+      "href",
+      "/watch-later",
+    );
+    expect(nav.queryAllByTestId("skeleton")).toHaveLength(0);
+    expect(
+      screen.getByRole("button", { name: "User image" }),
+    ).toBeInTheDocument();
+  });
+
+  it("drops the gated slots entirely once resolved signed out", () => {
+    renderWithProviders(<Navbar />);
+    const nav = within(screen.getByTestId("nav-links"));
+
+    expect(nav.queryByRole("link", { name: /favorites/i })).toBeNull();
+    expect(nav.queryAllByTestId("skeleton")).toHaveLength(0);
+    expect(
+      screen.getByRole("button", { name: "User image" }),
+    ).toBeInTheDocument();
   });
 });
