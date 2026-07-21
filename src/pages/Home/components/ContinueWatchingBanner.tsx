@@ -61,7 +61,7 @@ const ContinueWatchingBanner: FC<ContinueWatchingBannerProps> = ({
           {/* Fade the backdrop's edge into the card background */}
           <div className="absolute inset-0 bg-linear-to-r from-transparent via-transparent to-secondary-dark" />
         </div>
-        <div className="flex flex-col min-w-0 flex-1 items-start justify-center gap-1">
+        <div className="flex flex-col min-w-0 flex-1 items-start justify-center gap-1 px-4 sm:px-6 md:px-8">
           {/* Season 0 is the movie / show-level sentinel — no episode to name. */}
           {season > 0 && (
             <Text size="base" className="text-orange md:text-lg">
