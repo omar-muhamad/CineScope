@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { IoLogOutOutline, IoPersonOutline } from "react-icons/io5";
@@ -17,6 +17,7 @@ const UserCard: FC<UserCardProps> = ({ onClose }) => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const isLogged = Boolean(user);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const handleProfile = () => {
     onClose?.();
@@ -24,6 +25,8 @@ const UserCard: FC<UserCardProps> = ({ onClose }) => {
   };
 
   const handleLogout = async () => {
+    if (loggingOut) return;
+    setLoggingOut(true);
     await signOut();
     onClose?.();
     navigate("/", { replace: true });
@@ -72,10 +75,23 @@ const UserCard: FC<UserCardProps> = ({ onClose }) => {
           </button>
           <Button
             onClick={handleLogout}
-            className="mt-2 w-full flex items-center justify-center gap-2 py-2"
+            disabled={loggingOut}
+            className="mt-2 w-full flex items-center justify-center gap-2 py-2 disabled:opacity-60"
           >
-            <IoLogOutOutline className="text-xl" />
-            Logout
+            {loggingOut ? (
+              <>
+                <span
+                  aria-hidden
+                  className="size-4 animate-spin rounded-full border-2 border-current/30 border-t-current"
+                />
+                Logging out...
+              </>
+            ) : (
+              <>
+                <IoLogOutOutline className="text-xl" />
+                Logout
+              </>
+            )}
           </Button>
         </>
       ) : (
