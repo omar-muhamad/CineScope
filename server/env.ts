@@ -1,9 +1,12 @@
 import { config } from "dotenv";
 
-// The server runs in Node and doesn't read Vite's .env files, so load them
-// here. .env.local (gitignored, where secrets live) wins over .env, and real
-// shell env vars win over both (dotenv never overrides existing vars).
-config({ path: [".env.local", ".env"] });
+// On Vercel the platform injects env vars directly. Everywhere else (vercel
+// dev, drizzle-kit, the Better Auth CLI) load Vite's .env files. .env.local
+// (gitignored, where secrets live) wins over .env, and real shell env vars
+// win over both (dotenv never overrides existing vars).
+if (!process.env.VERCEL) {
+  config({ path: [".env.local", ".env"] });
+}
 
 const required = (name: string): string => {
   const value = process.env[name];
@@ -14,42 +17,52 @@ const required = (name: string): string => {
 };
 
 /**
- * Optional var where an empty string means unset — dashboards (e.g. Render's
- * Blueprint prompts) store vars left blank as "", which must fall back to
- * the default rather than yield port 0 / an empty From address.
+ * Optional var where an empty string means unset — dashboard-created vars left
+ * blank are stored as "", which must fall back to the default rather than
+ * yield an empty From address or a bogus port.
  */
 const optional = (name: string): string | undefined =>
   process.env[name] || undefined;
 
+/**
+ * The origin the BROWSER sees — Better Auth derives everything from it: the
+ * magic-link URLs, the Google redirect_uri, secure-cookie mode, and the
+ * auto-trusted origin. Production sets BETTER_AUTH_URL explicitly; preview
+ * deployments fall back to VERCEL_URL (magic-link works there, Google doesn't
+ * — its redirect URI isn't registered per-preview); local dev is the Vite
+ * server on port 5173 (/api proxies to vercel dev on 3000).
+ */
+const baseUrl =
+  optional("BETTER_AUTH_URL") ??
+  (process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "http://localhost:5173");
+
 export const env = {
-  /** Postgres connection string. Server-side only — never VITE_-prefixed. */
-  databaseUrl: required("DATABASE_URL"),
-  /** Secret for signing HS256 access tokens. Generate with `openssl rand -hex 32`. */
-  jwtSecret: required("JWT_SECRET"),
   /**
-   * Google OAuth web client ID — the `aud` we accept on Google ID tokens.
-   * Must match the VITE_GOOGLE_CLIENT_ID the frontend renders the button with,
-   * so it falls back to that var to avoid configuring the same value twice.
+   * Postgres connection string — must be the Neon POOLER endpoint
+   * (`...-pooler.<region>.aws.neon.tech`): Vercel scales function instances
+   * concurrently and the direct endpoint's connection cap can't absorb that.
+   * Server-side only — never VITE_-prefixed.
    */
-  googleClientId:
-    optional("GOOGLE_CLIENT_ID") ?? optional("VITE_GOOGLE_CLIENT_ID") ?? "",
+  databaseUrl: required("DATABASE_URL"),
+  /** Better Auth signing secret. Generate with `openssl rand -base64 32`. */
+  betterAuthSecret: required("BETTER_AUTH_SECRET"),
 
-  port: Number(optional("PORT") ?? 3001),
-  /** Frontend origin — used to build email links (and CORS if ever split-origin). */
-  appOrigin: optional("APP_ORIGIN") ?? "http://localhost:5173",
+  baseUrl,
+  trustedOrigins: [
+    baseUrl,
+    // Keep direct vercel-dev access (npm run dev, port 3000) passing origin
+    // checks; cookies ignore ports so localhost sessions work on both.
+    ...(process.env.NODE_ENV === "production" ? [] : ["http://localhost:3000"]),
+  ],
 
-  accessTokenTtlSeconds: Number(process.env.ACCESS_TOKEN_TTL_SECONDS ?? 900), // 15 min
-  refreshTokenTtlDays: Number(process.env.REFRESH_TOKEN_TTL_DAYS ?? 30),
-  verificationTokenTtlHours: Number(
-    process.env.VERIFICATION_TOKEN_TTL_HOURS ?? 24,
-  ),
-  // Reset links are deliberately shorter-lived than verification links — they
-  // grant control of the account, not just activation.
-  passwordResetTokenTtlMinutes: Number(
-    process.env.PASSWORD_RESET_TOKEN_TTL_MINUTES ?? 60,
-  ),
+  /** Google OAuth web client (server-side redirect flow). Empty = Google
+   *  sign-in disabled; magic link still works. */
+  googleClientId: optional("GOOGLE_CLIENT_ID") ?? "",
+  googleClientSecret: optional("GOOGLE_CLIENT_SECRET") ?? "",
 
-  /** SMTP transport for verification emails. Unset host = log links instead. */
+  /** SMTP transport for auth emails. Unset host = log links to the console. */
   smtp: {
     host: process.env.SMTP_HOST ?? "",
     port: Number(optional("SMTP_PORT") ?? 587),

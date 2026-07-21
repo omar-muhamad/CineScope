@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from "react";
+import { FC, ReactNode, useMemo, useState } from "react";
 
 import GridLayout from "@/components/layout/GridLayout";
 import PageLayout from "@/components/layout/PageLayout";
@@ -24,10 +24,23 @@ type SavedMediaPageProps = {
   label: string;
   items: MediaItem[] | null;
   loading: boolean;
+  /** Rendered beside the title (e.g. the history page's clear-all control). */
+  headerActions?: ReactNode;
+  /** When set, each card gets a corner remove button. */
+  onRemoveItem?: (item: MediaItem) => void;
+  /** Hide the cards' "watched" mark (on the history page it's pure noise). */
+  showWatchedBadge?: boolean;
 };
 
-/** Shared layout for the favorites and watch-later pages. */
-const SavedMediaPage: FC<SavedMediaPageProps> = ({ label, items, loading }) => {
+/** Shared layout for the favorites, watch-later and history pages. */
+const SavedMediaPage: FC<SavedMediaPageProps> = ({
+  label,
+  items,
+  loading,
+  headerActions,
+  onRemoveItem,
+  showWatchedBadge = true,
+}) => {
   const [filter, setFilter] = useState<MediaFilter>("all");
   const [page, setPage] = useState(1); // 1-based
 
@@ -66,9 +79,12 @@ const SavedMediaPage: FC<SavedMediaPageProps> = ({ label, items, loading }) => {
         </>
       }
     >
-      <Heading as="h1" className="text-orange font-bold max-md:text-xl">
-        {label}
-      </Heading>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Heading as="h1" className="text-orange font-bold max-md:text-xl">
+          {label}
+        </Heading>
+        {headerActions}
+      </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
         {FILTERS.map(({ key, label: filterLabel }) => (
@@ -109,6 +125,8 @@ const SavedMediaPage: FC<SavedMediaPageProps> = ({ label, items, loading }) => {
                   media_type={item.media_type}
                   rating={item.vote_average ?? 0}
                   title={(isMovie ? item.title : item.name) ?? ""}
+                  showWatchedBadge={showWatchedBadge}
+                  onRemove={onRemoveItem ? () => onRemoveItem(item) : undefined}
                 />
               );
             })}

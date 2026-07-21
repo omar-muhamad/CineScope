@@ -2,7 +2,7 @@ import { fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import Navbar from "@/components/layout/Navbar";
-import { renderWithProviders } from "@/tests/test-utils";
+import { renderWithProviders, testUser } from "@/tests/test-utils";
 
 describe("Navbar dropdowns", () => {
   // Scope queries to the desktop nav so we don't collide with the mobile menu,
@@ -51,5 +51,98 @@ describe("Navbar dropdowns", () => {
     expect(nav.getByRole("menuitem", { name: "upcoming" })).toBeInTheDocument();
     fireEvent.mouseDown(document.body);
     expect(nav.queryByRole("menuitem", { name: "upcoming" })).toBeNull();
+  });
+});
+
+describe("Navbar personal links", () => {
+  it("keeps favorites and watch later out of the desktop nav — they live in the user card", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Navbar />, { user: testUser });
+    const nav = within(screen.getByTestId("nav-links"));
+
+    expect(nav.queryByRole("link", { name: /favorites/i })).toBeNull();
+    expect(nav.queryByRole("link", { name: /watch later/i })).toBeNull();
+
+    await user.click(screen.getByRole("button", { name: "User image" }));
+
+    expect(
+      screen.getByRole("button", { name: /favorites/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /watch later/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("keeps them in the mobile menu, where the user card isn't reachable", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Navbar />, { user: testUser });
+
+    await user.click(screen.getByRole("button", { name: "Open menu" }));
+    const mobileNav = within(screen.getByTestId("mobile-nav-links"));
+
+    expect(mobileNav.getByRole("link", { name: /favorites/i })).toHaveAttribute(
+      "href",
+      "/favorites",
+    );
+    expect(
+      mobileNav.getByRole("link", { name: /watch later/i }),
+    ).toHaveAttribute("href", "/watch-later");
+  });
+});
+
+describe("Navbar while the session is resolving", () => {
+  it("holds skeleton slots instead of flashing the logged-out navbar", () => {
+    renderWithProviders(<Navbar />, {
+      user: testUser,
+      session: { pending: true },
+    });
+
+    // The desktop nav carries no auth-gated links anymore — no placeholders.
+    expect(
+      within(screen.getByTestId("nav-links")).queryAllByTestId("skeleton"),
+    ).toHaveLength(0);
+
+    // The avatar button and the mobile Login/Logout button wait too.
+    expect(screen.queryByRole("button", { name: "User image" })).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: /^(login|logout)$/i }),
+    ).toBeNull();
+
+    // The mobile menu keeps the gated links (favorites, watch later,
+    // history), so it holds their slots.
+    expect(
+      within(screen.getByTestId("mobile-nav-links")).getAllByTestId("skeleton"),
+    ).toHaveLength(3);
+  });
+
+  it("swaps the skeletons for the gated mobile links and the avatar once signed in", () => {
+    renderWithProviders(<Navbar />, { user: testUser });
+
+    expect(screen.queryAllByTestId("skeleton")).toHaveLength(0);
+    expect(
+      screen.getByRole("button", { name: "User image" }),
+    ).toBeInTheDocument();
+    // Role queries can't reach the closed (aria-hidden) mobile menu; the
+    // dedicated test above opens it and asserts the links.
+    expect(
+      within(screen.getByTestId("mobile-nav-links")).queryAllByTestId(
+        "skeleton",
+      ),
+    ).toHaveLength(0);
+  });
+
+  it("drops the gated slots entirely once resolved signed out", () => {
+    renderWithProviders(<Navbar />);
+
+    expect(screen.queryAllByTestId("skeleton")).toHaveLength(0);
+    expect(
+      within(screen.getByTestId("mobile-nav-links")).queryByRole("link", {
+        name: /favorites/i,
+        hidden: true,
+      }),
+    ).toBeNull();
+    expect(
+      screen.getByRole("button", { name: "User image" }),
+    ).toBeInTheDocument();
   });
 });

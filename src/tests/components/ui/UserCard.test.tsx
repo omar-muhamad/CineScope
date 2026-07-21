@@ -1,19 +1,9 @@
 import { screen, fireEvent } from "@testing-library/react";
+import { Route, Routes } from "react-router-dom";
 
 import UserCard from "@/components/ui/UserCard";
+import { authClient } from "@/lib/auth-client";
 import { renderWithProviders, testUser } from "@/tests/test-utils";
-
-const { logoutMock } = vi.hoisted(() => ({ logoutMock: vi.fn() }));
-
-vi.mock("@/api/auth", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/api/auth")>();
-  return { ...actual, logout: logoutMock };
-});
-
-beforeEach(() => {
-  logoutMock.mockReset();
-  logoutMock.mockResolvedValue(undefined);
-});
 
 describe("UserCard", () => {
   it("greets the signed-in user by first name", () => {
@@ -36,10 +26,103 @@ describe("UserCard", () => {
     expect(screen.getByText("Login")).toBeInTheDocument();
   });
 
-  it("returns to a signed-out state after logout", async () => {
+  it("hides the Profile link when signed out", () => {
+    renderWithProviders(<UserCard />);
+    expect(screen.queryByText("Profile")).not.toBeInTheDocument();
+  });
+
+  it("shows Favorites and Watch Later when signed in", () => {
+    renderWithProviders(<UserCard />, { user: testUser });
+    expect(screen.getByText("Favorites")).toBeInTheDocument();
+    expect(screen.getByText("Watch Later")).toBeInTheDocument();
+  });
+
+  it("hides Favorites and Watch Later when signed out", () => {
+    renderWithProviders(<UserCard />);
+    expect(screen.queryByText("Favorites")).not.toBeInTheDocument();
+    expect(screen.queryByText("Watch Later")).not.toBeInTheDocument();
+  });
+
+  it("navigates to favorites and closes the dropdown", () => {
+    const onClose = vi.fn();
+    renderWithProviders(
+      <Routes>
+        <Route path="/" element={<UserCard onClose={onClose} />} />
+        <Route path="/favorites" element={<div>FAVORITES PAGE</div>} />
+      </Routes>,
+      { user: testUser },
+    );
+
+    fireEvent.click(screen.getByText("Favorites"));
+
+    expect(onClose).toHaveBeenCalled();
+    expect(screen.getByText("FAVORITES PAGE")).toBeInTheDocument();
+  });
+
+  it("navigates to watch later and closes the dropdown", () => {
+    const onClose = vi.fn();
+    renderWithProviders(
+      <Routes>
+        <Route path="/" element={<UserCard onClose={onClose} />} />
+        <Route path="/watch-later" element={<div>WATCH LATER PAGE</div>} />
+      </Routes>,
+      { user: testUser },
+    );
+
+    fireEvent.click(screen.getByText("Watch Later"));
+
+    expect(onClose).toHaveBeenCalled();
+    expect(screen.getByText("WATCH LATER PAGE")).toBeInTheDocument();
+  });
+
+  it("navigates to the profile page and closes the dropdown", () => {
+    const onClose = vi.fn();
+    renderWithProviders(
+      <Routes>
+        <Route path="/" element={<UserCard onClose={onClose} />} />
+        <Route path="/profile" element={<div>PROFILE PAGE</div>} />
+      </Routes>,
+      { user: testUser },
+    );
+
+    fireEvent.click(screen.getByText("Profile"));
+
+    expect(onClose).toHaveBeenCalled();
+    expect(screen.getByText("PROFILE PAGE")).toBeInTheDocument();
+  });
+
+  it("shows a loading state on the logout button while signing out", async () => {
+    let finishSignOut!: () => void;
+    const signOutMock = vi.mocked(authClient.signOut).mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          finishSignOut = () =>
+            resolve({ data: { success: true }, error: null });
+        }),
+    );
+
     renderWithProviders(<UserCard />, { user: testUser });
     fireEvent.click(screen.getByText("Logout"));
-    expect(await screen.findByText("Login")).toBeInTheDocument();
-    expect(logoutMock).toHaveBeenCalled();
+
+    const button = screen.getByRole("button", { name: /logging out/i });
+    expect(button).toBeDisabled();
+
+    // A second click while the request is in flight must not sign out twice.
+    fireEvent.click(button);
+    expect(signOutMock).toHaveBeenCalledTimes(1);
+
+    finishSignOut();
+    await vi.waitFor(() => expect(signOutMock).toHaveBeenCalledTimes(1));
+  });
+
+  it("signs out via Better Auth on logout", async () => {
+    const signOutMock = vi
+      .mocked(authClient.signOut)
+      .mockResolvedValue({ data: { success: true }, error: null });
+
+    renderWithProviders(<UserCard />, { user: testUser });
+    fireEvent.click(screen.getByText("Logout"));
+
+    await vi.waitFor(() => expect(signOutMock).toHaveBeenCalled());
   });
 });

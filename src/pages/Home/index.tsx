@@ -7,6 +7,7 @@ import ItemCard from "@/components/ui/ItemCard";
 import { useTrending } from "./queries/useTrending";
 import TrendingCarousel from "./components/TrendingCarousel";
 import TrendingCard from "./components/TrendingCard";
+import ContinueWatchingSection from "./components/ContinueWatchingSection";
 import Heading from "@/components/ui/Heading";
 import Skeleton from "@/components/skeletons/Skeleton";
 import SkeletonGrid from "@/components/skeletons/SkeletonGrid";
@@ -98,6 +99,7 @@ const Home: FC = () => {
         <TrendingCarouselSection />
       </QueryBoundary>
       <PageLayout>
+        <ContinueWatchingSection />
         <QueryBoundary fallback={<GridFallback />}>
           <TrendingGrid scope="movie" title="Trending Movies" />
         </QueryBoundary>

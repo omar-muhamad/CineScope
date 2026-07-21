@@ -2,13 +2,13 @@ import { FC } from "react";
 import { NavLink } from "react-router-dom";
 import { RiFilmFill } from "react-icons/ri";
 import { PiTelevisionSimpleFill } from "react-icons/pi";
-import { IoStar } from "react-icons/io5";
-import poster from "@/assets/images/default-poster.png";
-
+import { IoClose, IoStar } from "react-icons/io5";
 import Heading from "./Heading";
 import Text from "./Text";
 import SaveActions from "./SaveActions";
 import LazyImage from "./LazyImage";
+import PosterFallback from "./PosterFallback";
+import WatchedBadge from "./WatchedBadge";
 
 type ItemCardProps = {
   id: number;
@@ -19,6 +19,10 @@ type ItemCardProps = {
   title: string;
   /** Extra classes for the root `<li>` (e.g. a fixed width in a scroll row). */
   className?: string;
+  /** Hide the corner "watched" mark (e.g. on the history page it's noise). */
+  showWatchedBadge?: boolean;
+  /** When set, renders a corner remove button (used by the history page). */
+  onRemove?: () => void;
 };
 
 const ItemCard: FC<ItemCardProps> = ({
@@ -29,6 +33,8 @@ const ItemCard: FC<ItemCardProps> = ({
   rating,
   title,
   className,
+  showWatchedBadge = true,
+  onRemove,
 }) => {
   const imageSrc = `https://image.tmdb.org/t/p/w500/${imgSrc}`;
 
@@ -54,12 +60,30 @@ const ItemCard: FC<ItemCardProps> = ({
               See Details
             </Text>
           </div>
-          <LazyImage
-            className="w-full rounded-lg aspect-2/3 object-cover"
-            src={imgSrc ? imageSrc : poster}
-            alt={`${title} poster`}
-          />
+          {imgSrc ? (
+            <LazyImage
+              className="w-full rounded-lg aspect-2/3 object-cover"
+              src={imageSrc}
+              alt={`${title} poster`}
+            />
+          ) : (
+            <PosterFallback
+              media_type={media_type}
+              className="w-full rounded-lg aspect-2/3"
+            />
+          )}
+          {showWatchedBadge && <WatchedBadge id={id} media_type={media_type} />}
         </NavLink>
+        {onRemove && (
+          <button
+            type="button"
+            onClick={onRemove}
+            aria-label={`Remove ${title}`}
+            className="absolute top-1.5 left-1.5 z-20 flex size-7 cursor-pointer items-center justify-center rounded-full bg-black/70 text-white transition-colors hover:bg-orange"
+          >
+            <IoClose className="text-lg" />
+          </button>
+        )}
       </div>
       <div className="mt-2">
         <div className="flex gap-2">

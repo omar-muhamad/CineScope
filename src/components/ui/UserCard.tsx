@@ -1,20 +1,40 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
-import { IoLogOutOutline } from "react-icons/io5";
+import {
+  IoHeartOutline,
+  IoLogOutOutline,
+  IoPersonOutline,
+  IoTimeOutline,
+} from "react-icons/io5";
+import { MdHistory } from "react-icons/md";
 
 import { useAuth } from "@/auth/useAuth";
 import Button from "./Button";
 import Heading from "./Heading";
 import Text from "./Text";
 
-const UserCard: FC = () => {
+type UserCardProps = {
+  /** Close the dropdown before navigating (wired by Navbar). */
+  onClose?: () => void;
+};
+
+const UserCard: FC<UserCardProps> = ({ onClose }) => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const isLogged = Boolean(user);
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const handleNavigate = (path: string) => {
+    onClose?.();
+    navigate(path);
+  };
 
   const handleLogout = async () => {
+    if (loggingOut) return;
+    setLoggingOut(true);
     await signOut();
+    onClose?.();
     navigate("/", { replace: true });
   };
 
@@ -49,13 +69,64 @@ const UserCard: FC = () => {
       </div>
 
       {isLogged ? (
-        <Button
-          onClick={handleLogout}
-          className="mt-2 w-full flex items-center justify-center gap-2 py-2"
-        >
-          <IoLogOutOutline className="text-xl" />
-          Logout
-        </Button>
+        <>
+          <button
+            type="button"
+            onClick={() => handleNavigate("/profile")}
+            data-test-id="user-card-profile"
+            className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-white transition hover:bg-white/5"
+          >
+            <IoPersonOutline className="text-lg text-gray" />
+            Profile
+          </button>
+          <button
+            type="button"
+            onClick={() => handleNavigate("/favorites")}
+            data-test-id="user-card-favorites"
+            className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-white transition hover:bg-white/5"
+          >
+            <IoHeartOutline className="text-lg text-gray" />
+            Favorites
+          </button>
+          <button
+            type="button"
+            onClick={() => handleNavigate("/watch-later")}
+            data-test-id="user-card-watch-later"
+            className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-white transition hover:bg-white/5"
+          >
+            <IoTimeOutline className="text-lg text-gray" />
+            Watch Later
+          </button>
+          <button
+            type="button"
+            onClick={() => handleNavigate("/history")}
+            data-test-id="user-card-history"
+            className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-white transition hover:bg-white/5"
+          >
+            <MdHistory className="text-lg text-gray" />
+            Watch History
+          </button>
+          <Button
+            onClick={handleLogout}
+            disabled={loggingOut}
+            className="mt-2 w-full flex items-center justify-center gap-2 py-2 disabled:opacity-60"
+          >
+            {loggingOut ? (
+              <>
+                <span
+                  aria-hidden
+                  className="size-4 animate-spin rounded-full border-2 border-current/30 border-t-current"
+                />
+                Logging out...
+              </>
+            ) : (
+              <>
+                <IoLogOutOutline className="text-xl" />
+                Logout
+              </>
+            )}
+          </Button>
+        </>
       ) : (
         <Button className="mt-2 w-full py-2" onClick={() => navigate("/login")}>
           Login

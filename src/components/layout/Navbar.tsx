@@ -2,11 +2,13 @@ import { FC, useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { PiTelevisionSimpleFill } from "react-icons/pi";
 import { IoHeart, IoMenu, IoClose, IoTime } from "react-icons/io5";
+import { MdHistory } from "react-icons/md";
 import { RiFilmFill } from "react-icons/ri";
 import { FaUserCircle } from "react-icons/fa";
 
 import { useAuth } from "@/auth/useAuth";
 import Logo from "@/assets/icons/logo.svg?react";
+import Skeleton from "../skeletons/Skeleton";
 import UserCard from "../ui/UserCard";
 import NavSearch from "../common/NavSearch";
 import NavDropdown from "./NavDropdown";
@@ -52,6 +54,13 @@ const navLinks: NavLinkItem[] = [
     icon: IoTime,
     requiresAuth: true,
   },
+  {
+    id: 5,
+    title: "history",
+    path: "/history",
+    icon: MdHistory,
+    requiresAuth: true,
+  },
 ];
 
 const MOBILE_MENU_ID = "mobile-menu";
@@ -60,11 +69,16 @@ const Navbar: FC = () => {
   const [isUserIconClicked, setIsUserIconClicked] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const isLogged = Boolean(user);
-  // Auth-gated links (favorites, watch later) only show once signed in.
-  const visibleLinks = navLinks.filter(
-    (link) => !link.requiresAuth || isLogged,
+  // Personal links (favorites, watch later) live in the user card on desktop.
+  // The mobile drawer keeps them (the card isn't reachable there), gated the
+  // same way: while the initial session fetch is in flight they stay in the
+  // list and render as skeleton slots, so a signed-in reload never flashes
+  // the logged-out menu before flipping.
+  const desktopLinks = navLinks.filter((link) => !link.requiresAuth);
+  const mobileLinks = navLinks.filter(
+    (link) => !link.requiresAuth || isLogged || loading,
   );
   const avatarUrl = user?.avatarUrl ?? "";
 
@@ -116,7 +130,7 @@ const Navbar: FC = () => {
           data-testid="nav-links"
           className="hidden md:flex items-center gap-4"
         >
-          {visibleLinks.map((link) =>
+          {desktopLinks.map((link) =>
             link.children ? (
               <NavDropdown
                 key={link.id}
@@ -141,26 +155,32 @@ const Navbar: FC = () => {
           <NavSearch />
         </div>
         <div ref={userMenuRef} className="hidden md:block">
-          <button
-            className="size-10 flex shrink-0 rounded-full"
-            type="button"
-            aria-label="User image"
-            aria-haspopup="menu"
-            aria-expanded={isUserIconClicked}
-            onClick={handleClick}
-          >
-            {isLogged && avatarUrl ? (
-              <img
-                className="h-full w-full rounded-full object-cover"
-                src={avatarUrl}
-                alt="User avatar"
-                referrerPolicy="no-referrer"
-              />
-            ) : (
-              <FaUserCircle className="h-full w-full rounded-full text-orange hover:text-white" />
-            )}
-          </button>
-          {isUserIconClicked && <UserCard />}
+          {loading ? (
+            <Skeleton className="size-10 rounded-full ring-1 ring-white/10" />
+          ) : (
+            <button
+              className="size-10 flex shrink-0 rounded-full"
+              type="button"
+              aria-label="User image"
+              aria-haspopup="menu"
+              aria-expanded={isUserIconClicked}
+              onClick={handleClick}
+            >
+              {isLogged && avatarUrl ? (
+                <img
+                  className="h-full w-full rounded-full object-cover"
+                  src={avatarUrl}
+                  alt="User avatar"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <FaUserCircle className="h-full w-full rounded-full text-orange hover:text-white" />
+              )}
+            </button>
+          )}
+          {isUserIconClicked && (
+            <UserCard onClose={() => setIsUserIconClicked(false)} />
+          )}
         </div>
         <button
           className="md:hidden flex items-center justify-center size-8 shrink-0 text-2xl text-gray hover:text-white"
@@ -176,8 +196,9 @@ const Navbar: FC = () => {
       <MobileMenu
         id={MOBILE_MENU_ID}
         isOpen={isMobileMenuOpen}
-        navLinks={visibleLinks}
+        navLinks={mobileLinks}
         isLogged={isLogged}
+        loading={loading}
         onClose={() => setIsMobileMenuOpen(false)}
       />
     </nav>

@@ -17,10 +17,12 @@ config({ path: [".env.local", ".env"] });
  * checked-in migration files.
  */
 export default defineConfig({
-  schema: "./server/db/schema.ts",
+  schema: ["./server/db/schema.ts", "./server/db/auth-schema.ts"],
   out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {
-    url: process.env.DATABASE_URL!,
+    // Migrations prefer Neon's direct (unpooled) endpoint; the app itself
+    // always connects through the -pooler URL (see server/db/index.ts).
+    url: process.env.DATABASE_URL_UNPOOLED ?? process.env.DATABASE_URL!,
   },
 });
