@@ -4,14 +4,14 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { magicLink } from "better-auth/plugins";
 import { eq } from "drizzle-orm";
 
-import { db } from "./db";
-import * as schema from "./db/schema";
-import { env } from "./env";
+import { db } from "./db/index.js";
+import * as schema from "./db/schema.js";
+import { env } from "./env.js";
 import {
   sendChangeEmailVerificationEmail,
   sendMagicLinkEmail,
   sendVerificationEmail,
-} from "./mailer";
+} from "./mailer.js";
 
 const normalizeUsername = (value: unknown): string | null =>
   typeof value === "string" && value.trim() ? value.trim().toLowerCase() : null;

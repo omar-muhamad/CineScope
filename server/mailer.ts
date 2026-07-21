@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 
-import { env } from "./env";
+import { env } from "./env.js";
 
 /**
  * Auth email transport. With SMTP_HOST configured, mail goes out via

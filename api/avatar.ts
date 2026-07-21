@@ -1,8 +1,8 @@
 import { eq } from "drizzle-orm";
 
-import { db } from "../server/db";
-import { user } from "../server/db/schema";
-import { errorJson, requireUser, withErrorBody } from "../server/http";
+import { db } from "../server/db/index.js";
+import { user } from "../server/db/schema.js";
+import { errorJson, requireUser, withErrorBody } from "../server/http.js";
 
 /**
  * Read path for the uploaded avatar. `avatarData` is a returned:false field —

@@ -1,4 +1,4 @@
-import { auth } from "./auth";
+import { auth } from "./auth.js";
 
 /** The `{ code, message }` error body the client expects (see src/lib/api.ts). */
 export const errorJson = (status: number, code: string, message: string) =>

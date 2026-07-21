@@ -1,4 +1,4 @@
-import { auth } from "../../server/auth";
+import { auth } from "../../server/auth.js";
 
 /**
  * Better Auth catch-all — every /api/auth/* endpoint (magic link, Google

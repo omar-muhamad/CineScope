@@ -1,8 +1,8 @@
 import { and, desc, eq } from "drizzle-orm";
 
-import { db } from "../server/db";
-import { savedItems } from "../server/db/schema";
-import { errorJson, requireUser, withErrorBody } from "../server/http";
+import { db } from "../server/db/index.js";
+import { savedItems } from "../server/db/schema.js";
+import { errorJson, requireUser, withErrorBody } from "../server/http.js";
 
 /**
  * Favorites / watch-later CRUD, scoped to the session user (the authorization
