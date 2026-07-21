@@ -65,7 +65,10 @@ function App() {
             <Route path="/tv/on-tv" element={<Tv category="on_the_air" />} />
             <Route path="/tv/top-rated" element={<Tv category="top_rated" />} />
             <Route path="/search" element={<Search />} />
-            <Route path="/watch/:media_type/:id" element={<WatchOnline />} />
+            <Route
+              path="/watch/:media_type/:id/:season?/:episode?"
+              element={<WatchOnline />}
+            />
             <Route path="/:media_type/:id" element={<Details />} />
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/watch-later" element={<WatchLater />} />

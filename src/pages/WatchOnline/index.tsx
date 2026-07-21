@@ -1,5 +1,5 @@
-import { FC, useEffect, useMemo, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { FC, useEffect, useMemo } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { IoChevronBackOutline, IoChevronForwardOutline } from "react-icons/io5";
 
 import { useDetails } from "@/queries/useDetails";
@@ -30,6 +30,8 @@ import PageLayout from "@/components/layout/PageLayout";
 type WatchContentProps = {
   mediaType: string;
   id: string;
+  urlSeason?: number;
+  urlEpisode?: number;
 };
 
 /**
@@ -37,13 +39,17 @@ type WatchContentProps = {
  * episode data stays on `useQuery` so switching seasons never re-suspends
  * (which would unmount the playing iframe).
  */
-const WatchDetailsContent: FC<WatchContentProps> = ({ mediaType, id }) => {
+const WatchDetailsContent: FC<WatchContentProps> = ({
+  mediaType,
+  id,
+  urlSeason,
+  urlEpisode,
+}) => {
   const isTv = mediaType === "tv";
   const movie = mediaType === "movie";
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const [season, setSeason] = useState(1);
-  const [episode, setEpisode] = useState(1);
+  const navigate = useNavigate();
 
   // Player selection lives in the URL (?player=2 → "Player 2", 1-based) so a
   // shared/refreshed link keeps the chosen player; anything missing or out of
@@ -65,13 +71,6 @@ const WatchDetailsContent: FC<WatchContentProps> = ({ mediaType, id }) => {
 
   const { data: details } = useDetails(mediaType, id);
 
-  const { data: episodesData, isLoading: episodesLoading } = useSeasonEpisodes(
-    id,
-    season,
-    isTv,
-  );
-  const episodes = Array.isArray(episodesData) ? episodesData : [];
-
   // Seasons worth showing: skip Specials (season 0) and empty seasons.
   const availableSeasons = useMemo(
     () =>
@@ -81,16 +80,51 @@ const WatchDetailsContent: FC<WatchContentProps> = ({ mediaType, id }) => {
     [details.seasons],
   );
 
-  // Reset to the first real season/episode whenever a new show loads.
+  // Season/episode live in the path (/watch/tv/:id/:season/:episode) so a
+  // shared/refreshed link opens the exact episode; missing segments fall back
+  // to the first real season, episode 1.
+  const season = urlSeason ?? availableSeasons[0]?.season_number ?? 1;
+  const episode = urlEpisode ?? 1;
+
+  const goToEpisode = (s: number, e: number, opts?: { replace?: boolean }) => {
+    navigate(
+      {
+        pathname: `/watch/tv/${id}/${s}/${e}`,
+        search: searchParams.toString(),
+      },
+      opts,
+    );
+  };
+
+  // Canonicalize bare TV URLs (e.g. /watch/tv/123 from the details page) once
+  // details load, replacing so back doesn't bounce through the bare URL.
   useEffect(() => {
-    if (isTv && availableSeasons.length > 0) {
-      // Syncing local selection to async-loaded data; react-hooks 7's
-      // set-state-in-effect rule flags this, but it's the intended behavior.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSeason(availableSeasons[0].season_number);
-      setEpisode(1);
+    if (isTv && (urlSeason === undefined || urlEpisode === undefined)) {
+      navigate(
+        {
+          pathname: `/watch/tv/${id}/${season}/${episode}`,
+          search: searchParams.toString(),
+        },
+        { replace: true },
+      );
     }
-  }, [availableSeasons, isTv]);
+  }, [
+    isTv,
+    urlSeason,
+    urlEpisode,
+    id,
+    season,
+    episode,
+    navigate,
+    searchParams,
+  ]);
+
+  const { data: episodesData, isLoading: episodesLoading } = useSeasonEpisodes(
+    id,
+    season,
+    isTv,
+  );
+  const episodes = Array.isArray(episodesData) ? episodesData : [];
 
   const src = providers[providerIndex].build({
     media_type: mediaType,
@@ -162,10 +196,11 @@ const WatchDetailsContent: FC<WatchContentProps> = ({ mediaType, id }) => {
     : details.first_air_date?.slice(0, 4);
 
   const goPrev = () => {
-    if (!isFirst) setEpisode(episodes[currentIndex - 1].episode_number);
+    if (!isFirst)
+      goToEpisode(season, episodes[currentIndex - 1].episode_number);
   };
   const goNext = () => {
-    if (!isLast) setEpisode(episodes[currentIndex + 1].episode_number);
+    if (!isLast) goToEpisode(season, episodes[currentIndex + 1].episode_number);
   };
 
   return (
@@ -249,10 +284,7 @@ const WatchDetailsContent: FC<WatchContentProps> = ({ mediaType, id }) => {
             <SeasonSelector
               seasons={availableSeasons}
               season={season}
-              onSeasonChange={(s) => {
-                setSeason(s);
-                setEpisode(1);
-              }}
+              onSeasonChange={(s) => goToEpisode(s, 1)}
             />
             <div className="flex items-center gap-2 mt-6">
               <Heading as="h2">Episodes</Heading>
@@ -269,7 +301,7 @@ const WatchDetailsContent: FC<WatchContentProps> = ({ mediaType, id }) => {
               episodes={episodes}
               activeEpisode={episode}
               loading={episodesLoading}
-              onSelect={setEpisode}
+              onSelect={(e) => goToEpisode(season, e)}
               watchedEpisodes={watchedInSeason}
               onToggleWatched={user ? handleToggleWatched : undefined}
             />
@@ -291,14 +323,20 @@ const WatchDetailsSkeleton: FC = () => (
 );
 
 const WatchOnline: FC = () => {
-  const { media_type, id } = useParams();
+  const { media_type, id, season, episode } = useParams();
+
+  // Optional /:season/:episode segments are TV-only and must be numeric.
+  const validSegment = (v?: string) => v === undefined || /^\d+$/.test(v);
 
   // Guard written as an early return on the negation so TS narrows `media_type`
   // to "movie" | "tv" and `id` to string for the children below.
   if (
     !(media_type === "movie" || media_type === "tv") ||
     !id ||
-    !/^\d+$/.test(id)
+    !/^\d+$/.test(id) ||
+    !validSegment(season) ||
+    !validSegment(episode) ||
+    (media_type === "movie" && season !== undefined)
   ) {
     return <NotFound />;
   }
@@ -312,7 +350,12 @@ const WatchOnline: FC = () => {
           fallback={<WatchDetailsSkeleton />}
           resetKeys={resetKeys}
         >
-          <WatchDetailsContent mediaType={media_type} id={id} />
+          <WatchDetailsContent
+            mediaType={media_type}
+            id={id}
+            urlSeason={season !== undefined ? Number(season) : undefined}
+            urlEpisode={episode !== undefined ? Number(episode) : undefined}
+          />
         </QueryBoundary>
 
         <QueryBoundary
