@@ -63,6 +63,22 @@ const MovieInfoPanel: FC<MovieInfoPanelProps> = ({ id, details, saveMeta }) => {
   const imdbVotes = formatVotes(imdbInfo?.votes);
   const topGenres = details.genres?.slice(0, 3) ?? [];
 
+  // Director + writers come from the already-appended `credits.crew` (no extra
+  // fetch). Writing has several job titles (Screenplay/Writer/Story) and can
+  // repeat a name across them, so de-dupe and keep the first couple.
+  const crew = details.credits?.crew ?? [];
+  const director = crew.find((c) => c.job === "Director")?.name;
+  const writers = [
+    ...new Set(
+      crew.filter((c) => c.department === "Writing").map((c) => c.name),
+    ),
+  ].slice(0, 2);
+
+  // Studios with a logo only — the panel shows logos, not name chips.
+  const studios = (details.production_companies ?? [])
+    .filter((c) => c.logo_path)
+    .slice(0, 3);
+
   return (
     <div className="flex h-full flex-col rounded-xl bg-secondary-dark p-4">
       <div className="flex items-center justify-between gap-2">
@@ -148,6 +164,51 @@ const MovieInfoPanel: FC<MovieInfoPanelProps> = ({ id, details, saveMeta }) => {
         <Text size="sm" className="mt-2 text-[#c3c4c7]">
           {details.overview || "No overview available."}
         </Text>
+
+        {(director || writers.length > 0) && (
+          <dl className="mt-4 space-y-2 text-sm">
+            {director && (
+              <div className="flex gap-3">
+                <dt className="w-16 shrink-0 text-xs uppercase tracking-wide text-gray">
+                  Director
+                </dt>
+                <dd className="text-white">{director}</dd>
+              </div>
+            )}
+            {writers.length > 0 && (
+              <div className="flex gap-3">
+                <dt className="w-16 shrink-0 text-xs uppercase tracking-wide text-gray">
+                  {writers.length > 1 ? "Writers" : "Writer"}
+                </dt>
+                <dd className="text-white">{writers.join(", ")}</dd>
+              </div>
+            )}
+          </dl>
+        )}
+
+        {studios.length > 0 && (
+          <div className="mt-4">
+            <span className="text-xs uppercase tracking-wide text-gray">
+              Studios
+            </span>
+            <ul className="mt-2 flex flex-wrap items-center gap-2">
+              {studios.map((studio) => (
+                <li
+                  key={studio.id}
+                  className="flex h-8 items-center rounded bg-white/90 px-2"
+                >
+                  <img
+                    src={`https://image.tmdb.org/t/p/w200/${studio.logo_path}`}
+                    alt={studio.name}
+                    title={studio.name}
+                    loading="lazy"
+                    className="max-h-5 max-w-21 object-contain"
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
 
       <div className="mt-4 flex items-center gap-2">

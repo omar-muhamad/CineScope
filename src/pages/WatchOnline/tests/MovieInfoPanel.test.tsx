@@ -28,6 +28,30 @@ const details = {
   runtime: 125,
   external_ids: { imdb_id: "tt1234567" },
   videos: { results: [] },
+  credits: {
+    cast: [],
+    crew: [
+      {
+        id: 1,
+        name: "Jane Director",
+        job: "Director",
+        department: "Directing",
+      },
+      { id: 2, name: "Sam Scribe", job: "Screenplay", department: "Writing" },
+      // Same writer under a second job — should be de-duped, not listed twice.
+      { id: 2, name: "Sam Scribe", job: "Story", department: "Writing" },
+    ],
+  },
+  production_companies: [
+    {
+      id: 10,
+      name: "Acme Studios",
+      logo_path: "/acme.png",
+      origin_country: "US",
+    },
+    // No logo — filtered out of the studios row.
+    { id: 11, name: "No Logo Films", logo_path: null, origin_country: "US" },
+  ],
 } as unknown as DetailsData;
 
 const saveMeta = {
@@ -55,6 +79,22 @@ describe("MovieInfoPanel", () => {
     expect(screen.getByText("2h 5m")).toBeInTheDocument();
     expect(screen.getByText("2019")).toBeInTheDocument();
     expect(screen.getByText("A synopsis for the panel.")).toBeInTheDocument();
+
+    // Director + writer from the appended crew (writer de-duped across jobs).
+    expect(screen.getByText("Director")).toBeInTheDocument();
+    expect(screen.getByText("Jane Director")).toBeInTheDocument();
+    expect(screen.getByText("Writer")).toBeInTheDocument();
+    expect(screen.getByText("Sam Scribe")).toBeInTheDocument();
+
+    // Only the logo-bearing studio shows; the logo-less one is filtered out.
+    const studioLogo = screen.getByRole("img", { name: "Acme Studios" });
+    expect(studioLogo).toHaveAttribute(
+      "src",
+      "https://image.tmdb.org/t/p/w200//acme.png",
+    );
+    expect(
+      screen.queryByRole("img", { name: "No Logo Films" }),
+    ).not.toBeInTheDocument();
 
     expect(
       screen.getByRole("button", { name: /Trailer/i }),
