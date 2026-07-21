@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import PercentageCircle from "./PercentageCircle";
 import BookMark from "@/components/ui/BookMark";
 import WatchLater from "@/components/ui/WatchLater";
+import WatchedToggle from "@/components/ui/WatchedToggle";
 import Heading from "@/components/ui/Heading";
 import LazyImage from "@/components/ui/LazyImage";
 import PosterFallback from "@/components/ui/PosterFallback";
@@ -145,6 +146,14 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
                 </div>
                 <div className="h-10 w-10">
                   <WatchLater
+                    id={id}
+                    media_type={media_type}
+                    meta={saveMeta}
+                    className="w-full h-full"
+                  />
+                </div>
+                <div className="h-10 w-10">
+                  <WatchedToggle
                     id={id}
                     media_type={media_type}
                     meta={saveMeta}

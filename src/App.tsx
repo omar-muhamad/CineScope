@@ -9,6 +9,7 @@ import Details from "./pages/Details";
 import WatchOnline from "./pages/WatchOnline";
 import Favorites from "./pages/Favorites";
 import WatchLater from "./pages/WatchLater";
+import History from "./pages/History";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Onboarding from "./pages/Onboarding";
@@ -68,6 +69,7 @@ function App() {
             <Route path="/:media_type/:id" element={<Details />} />
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/watch-later" element={<WatchLater />} />
+            <Route path="/history" element={<History />} />
             <Route path="/login" element={<Login />} />
             <Route element={<RequireAuth />}>
               <Route path="/onboarding" element={<Onboarding />} />

@@ -2,6 +2,7 @@ import { FC, useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { PiTelevisionSimpleFill } from "react-icons/pi";
 import { IoHeart, IoMenu, IoClose, IoTime } from "react-icons/io5";
+import { MdHistory } from "react-icons/md";
 import { RiFilmFill } from "react-icons/ri";
 import { FaUserCircle } from "react-icons/fa";
 
@@ -51,6 +52,13 @@ const navLinks: NavLinkItem[] = [
     title: "watch later",
     path: "/watch-later",
     icon: IoTime,
+    requiresAuth: true,
+  },
+  {
+    id: 5,
+    title: "history",
+    path: "/history",
+    icon: MdHistory,
     requiresAuth: true,
   },
 ];

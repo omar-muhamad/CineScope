@@ -4,6 +4,14 @@ import { IoChevronBackOutline, IoChevronForwardOutline } from "react-icons/io5";
 
 import { useDetails } from "@/queries/useDetails";
 import { useSeasonEpisodes } from "./queries/useSeasonEpisodes";
+import { useAutoRecordWatch } from "./hooks/useAutoRecordWatch";
+import {
+  useRecordWatch,
+  useRemoveEpisodeFromHistory,
+  useWatchedEpisodes,
+} from "@/queries/useWatchHistory";
+import { useAuth } from "@/auth/useAuth";
+import type { MediaType } from "@/lib/tmdb";
 import QueryBoundary from "@/components/common/QueryBoundary";
 import MediaRowSkeleton from "@/components/common/MediaRowSkeleton";
 import {
@@ -90,6 +98,57 @@ const WatchDetailsContent: FC<WatchContentProps> = ({ mediaType, id }) => {
     season,
     episode,
   });
+
+  const { user } = useAuth();
+  const mediaId = Number(id);
+
+  // Card metadata persisted with history rows (same shape the save toggles
+  // use) so the history page renders without re-hitting TMDB.
+  const saveMeta = {
+    title: movie ? details.title : details.name,
+    poster_path: details.poster_path,
+    release_date: movie ? details.release_date : details.first_air_date,
+    vote_average: details.vote_average,
+  };
+
+  // TV waits until the selected episode exists in the loaded season, so an
+  // empty/stale selection is never recorded.
+  useAutoRecordWatch({
+    mediaType: mediaType as MediaType,
+    mediaId,
+    season: isTv ? season : 0,
+    episode: isTv ? episode : 0,
+    meta: saveMeta,
+    enabled: movie || episodes.some((ep) => ep.episode_number === episode),
+  });
+
+  // Watched episodes of this show, narrowed to the visible season as plain
+  // episode numbers for the list's Set lookups.
+  const watchedKeys = useWatchedEpisodes(mediaId);
+  const watchedInSeason = useMemo(() => {
+    const set = new Set<number>();
+    for (const key of watchedKeys) {
+      const [s, e] = key.split(":").map(Number);
+      if (s === season) set.add(e);
+    }
+    return set;
+  }, [watchedKeys, season]);
+
+  const recordWatch = useRecordWatch();
+  const removeEpisode = useRemoveEpisodeFromHistory();
+  const handleToggleWatched = (episodeNumber: number, next: boolean) => {
+    const key = {
+      mediaType: "tv" as const,
+      mediaId,
+      season,
+      episode: episodeNumber,
+    };
+    if (next) {
+      recordWatch.mutate({ ...key, meta: saveMeta });
+    } else {
+      removeEpisode.mutate(key);
+    }
+  };
 
   const currentIndex = episodes.findIndex(
     (ep) => ep.episode_number === episode,
@@ -211,6 +270,8 @@ const WatchDetailsContent: FC<WatchContentProps> = ({ mediaType, id }) => {
               activeEpisode={episode}
               loading={episodesLoading}
               onSelect={setEpisode}
+              watchedEpisodes={watchedInSeason}
+              onToggleWatched={user ? handleToggleWatched : undefined}
             />
           </div>
         </div>

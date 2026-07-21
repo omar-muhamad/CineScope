@@ -108,10 +108,11 @@ describe("Navbar while the session is resolving", () => {
       screen.queryByRole("button", { name: /^(login|logout)$/i }),
     ).toBeNull();
 
-    // The mobile menu keeps the gated links, so it holds their slots.
+    // The mobile menu keeps the gated links (favorites, watch later,
+    // history), so it holds their slots.
     expect(
       within(screen.getByTestId("mobile-nav-links")).getAllByTestId("skeleton"),
-    ).toHaveLength(2);
+    ).toHaveLength(3);
   });
 
   it("swaps the skeletons for the gated mobile links and the avatar once signed in", () => {

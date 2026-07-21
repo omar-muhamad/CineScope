@@ -29,4 +29,5 @@ export const queryKeys = {
     ["episodes", id, season] as const,
   favorites: (userId: string | undefined) => ["favorites", userId] as const,
   watchlist: (userId: string | undefined) => ["watchlist", userId] as const,
+  history: (userId: string | undefined) => ["history", userId] as const,
 };

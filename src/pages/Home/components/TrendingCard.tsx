@@ -8,6 +8,7 @@ import { PiTelevisionSimpleFill } from "react-icons/pi";
 import { IoStar } from "react-icons/io5";
 import LazyImage from "@/components/ui/LazyImage";
 import PosterFallback from "@/components/ui/PosterFallback";
+import WatchedBadge from "@/components/ui/WatchedBadge";
 
 type TrendingCardProps = {
   id: number;
@@ -46,6 +47,8 @@ const TrendingCard: FC<TrendingCardProps> = ({
             className="w-full rounded-lg aspect-2/3"
           />
         )}
+
+        <WatchedBadge id={id} media_type={media_type} />
 
         {/* Gradient + meta overlay for readability over the poster */}
         <div className="absolute inset-x-0 bottom-0 h-1/2 rounded-b-lg bg-linear-to-t from-black/90 via-black/50 to-transparent" />

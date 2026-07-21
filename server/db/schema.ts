@@ -61,3 +61,48 @@ export const savedItems = pgTable(
 );
 
 export type SavedItem = typeof savedItems.$inferSelect;
+
+/**
+ * Watch history. One row per watched movie or TV episode; `watched_at` is
+ * bumped on rewatch (upsert). Movies and show-level manual marks use the
+ * (season 0, episode 0) sentinel — real playable episodes always have
+ * season_number > 0 (the watch page filters out TMDB "Specials"), so the
+ * sentinel can't collide. Sentinel ints (not NULLs) keep the unique key sound.
+ * Card metadata is denormalized like saved_items so the history page renders
+ * without re-hitting TMDB.
+ */
+export const watchHistory = pgTable(
+  "watch_history",
+  {
+    id: bigint("id", { mode: "number" })
+      .primaryKey()
+      .generatedAlwaysAsIdentity(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    mediaType: text("media_type").notNull(), // 'movie' | 'tv'
+    mediaId: integer("media_id").notNull(), // TMDB id
+    season: integer("season").notNull().default(0),
+    episode: integer("episode").notNull().default(0),
+    title: text("title"),
+    posterPath: text("poster_path"),
+    releaseDate: text("release_date"),
+    voteAverage: real("vote_average"),
+    watchedAt: timestamp("watched_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    unique("watch_history_user_media_ep_uq").on(
+      t.userId,
+      t.mediaType,
+      t.mediaId,
+      t.season,
+      t.episode,
+    ),
+    // Serves the history fetch: WHERE user_id ORDER BY watched_at desc.
+    index("watch_history_user_watched_idx").on(t.userId, t.watchedAt),
+  ],
+);
+
+export type WatchHistoryRow = typeof watchHistory.$inferSelect;

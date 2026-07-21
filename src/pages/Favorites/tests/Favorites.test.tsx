@@ -4,13 +4,17 @@ import Favorites from "@/pages/Favorites";
 import type { MediaItem } from "@/types";
 import { renderWithProviders, testUser } from "@/tests/test-utils";
 
-const { fetchFavoritesMock, fetchWatchlistMock, removeSavedMock } = vi.hoisted(
-  () => ({
-    fetchFavoritesMock: vi.fn(),
-    fetchWatchlistMock: vi.fn(),
-    removeSavedMock: vi.fn(),
-  }),
-);
+const {
+  fetchFavoritesMock,
+  fetchWatchlistMock,
+  removeSavedMock,
+  fetchHistoryMock,
+} = vi.hoisted(() => ({
+  fetchFavoritesMock: vi.fn(),
+  fetchWatchlistMock: vi.fn(),
+  removeSavedMock: vi.fn(),
+  fetchHistoryMock: vi.fn(),
+}));
 
 vi.mock("@/api/saved", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/api/saved")>();
@@ -20,6 +24,12 @@ vi.mock("@/api/saved", async (importOriginal) => {
     fetchWatchlist: fetchWatchlistMock,
     removeSaved: removeSavedMock,
   };
+});
+
+// The cards' WatchedBadge reads the history cache when signed in.
+vi.mock("@/api/history", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/api/history")>();
+  return { ...actual, fetchHistory: fetchHistoryMock };
 });
 
 const favMovie: MediaItem = {
@@ -36,6 +46,7 @@ beforeEach(() => {
   fetchWatchlistMock.mockReset();
   removeSavedMock.mockReset();
   fetchWatchlistMock.mockResolvedValue([]);
+  fetchHistoryMock.mockReset().mockResolvedValue([]);
 });
 
 describe("Favorites Page", () => {

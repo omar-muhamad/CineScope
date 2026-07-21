@@ -7,6 +7,7 @@ import {
   IoPersonOutline,
   IoTimeOutline,
 } from "react-icons/io5";
+import { MdHistory } from "react-icons/md";
 
 import { useAuth } from "@/auth/useAuth";
 import Button from "./Button";
@@ -95,6 +96,15 @@ const UserCard: FC<UserCardProps> = ({ onClose }) => {
           >
             <IoTimeOutline className="text-lg text-gray" />
             Watch Later
+          </button>
+          <button
+            type="button"
+            onClick={() => handleNavigate("/history")}
+            data-test-id="user-card-history"
+            className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-white transition hover:bg-white/5"
+          >
+            <MdHistory className="text-lg text-gray" />
+            Watch History
           </button>
           <Button
             onClick={handleLogout}

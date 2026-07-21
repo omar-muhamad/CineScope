@@ -1,6 +1,9 @@
 import { FC } from "react";
 import {
   IoCalendarOutline,
+  IoCheckmarkCircle,
+  IoCheckmarkCircleOutline,
+  IoCheckmarkSharp,
   IoPlay,
   IoStar,
   IoTimeOutline,
@@ -17,6 +20,10 @@ type EpisodeListProps = {
   activeEpisode: number;
   loading?: boolean;
   onSelect: (episode: number) => void;
+  /** Episode numbers of the current season with watch history. */
+  watchedEpisodes?: Set<number>;
+  /** Manual un/mark; omitted when logged out (hides the per-row toggle). */
+  onToggleWatched?: (episode: number, next: boolean) => void;
 };
 
 const formatDate = (date: string | null) =>
@@ -33,6 +40,8 @@ const EpisodeList: FC<EpisodeListProps> = ({
   activeEpisode,
   loading,
   onSelect,
+  watchedEpisodes,
+  onToggleWatched,
 }) => {
   if (loading) {
     return (
@@ -56,13 +65,19 @@ const EpisodeList: FC<EpisodeListProps> = ({
     <ul className="flex flex-col gap-3">
       {episodes.map((ep) => {
         const isPlaying = ep.episode_number === activeEpisode;
+        const isWatched = watchedEpisodes?.has(ep.episode_number) ?? false;
 
         return (
-          <li key={ep.id}>
+          // Relative so the watched toggle can sit inside the row visually
+          // while staying a sibling of the row <button> (nested buttons are
+          // invalid HTML).
+          <li key={ep.id} className="relative">
             <button
               onClick={() => onSelect(ep.episode_number)}
               aria-pressed={isPlaying}
-              className={`group w-full text-left flex gap-3 sm:gap-4 p-3 rounded-xl border transition-colors duration-200 ${
+              className={`group w-full text-left flex gap-3 sm:gap-4 p-3 ${
+                onToggleWatched ? "pr-12" : ""
+              } rounded-xl border transition-colors duration-200 ${
                 isPlaying
                   ? "border-orange bg-secondary-dark"
                   : "border-transparent bg-secondary-dark/40 hover:bg-secondary-dark"
@@ -78,6 +93,14 @@ const EpisodeList: FC<EpisodeListProps> = ({
                   />
                 ) : (
                   <PosterFallback media_type="tv" className="w-full h-full" />
+                )}
+                {isWatched && (
+                  <span
+                    aria-hidden
+                    className="absolute top-1 right-1 flex size-5 items-center justify-center rounded-full bg-black/60"
+                  >
+                    <IoCheckmarkSharp className="text-xs text-orange" />
+                  </span>
                 )}
                 <div
                   className={`absolute inset-0 flex items-center justify-center bg-black/40 transition-opacity ${
@@ -98,6 +121,11 @@ const EpisodeList: FC<EpisodeListProps> = ({
                   {isPlaying && (
                     <span className="px-2 py-0.5 rounded-md bg-orange text-white text-xs">
                       Playing
+                    </span>
+                  )}
+                  {isWatched && (
+                    <span className="px-2 py-0.5 rounded-md bg-white/10 text-gray text-xs">
+                      Watched
                     </span>
                   )}
                 </div>
@@ -128,6 +156,26 @@ const EpisodeList: FC<EpisodeListProps> = ({
                 ) : null}
               </div>
             </button>
+
+            {onToggleWatched && (
+              <button
+                type="button"
+                onClick={() => onToggleWatched(ep.episode_number, !isWatched)}
+                aria-pressed={isWatched}
+                aria-label={
+                  isWatched
+                    ? `Remove episode ${ep.episode_number} from watch history`
+                    : `Mark episode ${ep.episode_number} as watched`
+                }
+                className="absolute right-3 top-1/2 -translate-y-1/2 flex size-8 cursor-pointer items-center justify-center rounded-full text-xl transition-colors hover:bg-white/10"
+              >
+                {isWatched ? (
+                  <IoCheckmarkCircle className="text-orange" />
+                ) : (
+                  <IoCheckmarkCircleOutline className="text-gray hover:text-white" />
+                )}
+              </button>
+            )}
           </li>
         );
       })}
