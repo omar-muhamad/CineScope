@@ -79,7 +79,11 @@ const LocationProbe: FC = () => (
   <div data-testid="location">{useLocation().pathname}</div>
 );
 
-const renderWatchPage = (route: string, user: AuthUser | null = testUser) =>
+const renderWatchPage = (
+  route: string,
+  user: AuthUser | null = testUser,
+  session?: { pending?: boolean },
+) =>
   renderWithProviders(
     <>
       <LocationProbe />
@@ -90,7 +94,7 @@ const renderWatchPage = (route: string, user: AuthUser | null = testUser) =>
         />
       </Routes>
     </>,
-    { user, route },
+    { user, route, session },
   );
 
 const expectLocation = (pathname: string) =>
@@ -159,5 +163,38 @@ describe("WatchOnline resume", () => {
 
     expect(await screen.findByText("S1 - E3")).toBeInTheDocument();
     await expectLocation("/watch/tv/100/1/3");
+  });
+
+  it("holds the bare-URL redirect while the session is still resolving", async () => {
+    // Regression: on a hard load the disabled history query reports nothing
+    // pending, and the redirect used to win the race against the session —
+    // canonicalizing a signed-in user to S1E1 before history could load.
+    renderWatchPage("/watch/tv/100", testUser, { pending: true });
+
+    expect(await screen.findByText("S1 - E1")).toBeInTheDocument();
+    expect(screen.getByTestId("location")).toHaveTextContent(
+      /^\/watch\/tv\/100$/,
+    );
+    expect(fetchHistoryMock).not.toHaveBeenCalled();
+  });
+
+  it("keeps an explicit season, resuming its episode from history", async () => {
+    fetchHistoryMock.mockResolvedValue([historyRow({ season: 2, episode: 2 })]);
+
+    renderWatchPage("/watch/tv/100/2");
+    await expectLocation("/watch/tv/100/2/2");
+  });
+
+  it("keeps an explicit season at E1 when history points to another season", async () => {
+    fetchHistoryMock.mockResolvedValue([historyRow({ season: 1, episode: 3 })]);
+
+    renderWatchPage("/watch/tv/100/2");
+    await expectLocation("/watch/tv/100/2/1");
+  });
+
+  it("rejects a season-0 (Specials) URL as not found", async () => {
+    renderWatchPage("/watch/tv/100/0/5");
+
+    expect(await screen.findByText(/Not Found/)).toBeInTheDocument();
   });
 });

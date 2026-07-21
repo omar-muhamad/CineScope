@@ -63,7 +63,7 @@ describe("Navbar personal links", () => {
     expect(nav.queryByRole("link", { name: /favorites/i })).toBeNull();
     expect(nav.queryByRole("link", { name: /watch later/i })).toBeNull();
 
-    await user.click(screen.getByRole("button", { name: "User image" }));
+    await user.click(screen.getByRole("button", { name: "Account menu" }));
 
     expect(
       screen.getByRole("button", { name: /favorites/i }),
@@ -103,7 +103,7 @@ describe("Navbar while the session is resolving", () => {
     ).toHaveLength(0);
 
     // The avatar button and the mobile Login/Logout button wait too.
-    expect(screen.queryByRole("button", { name: "User image" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Account menu" })).toBeNull();
     expect(
       screen.queryByRole("button", { name: /^(login|logout)$/i }),
     ).toBeNull();
@@ -120,7 +120,7 @@ describe("Navbar while the session is resolving", () => {
 
     expect(screen.queryAllByTestId("skeleton")).toHaveLength(0);
     expect(
-      screen.getByRole("button", { name: "User image" }),
+      screen.getByRole("button", { name: "Account menu" }),
     ).toBeInTheDocument();
     // Role queries can't reach the closed (aria-hidden) mobile menu; the
     // dedicated test above opens it and asserts the links.
@@ -142,7 +142,7 @@ describe("Navbar while the session is resolving", () => {
       }),
     ).toBeNull();
     expect(
-      screen.getByRole("button", { name: "User image" }),
+      screen.getByRole("button", { name: "Account menu" }),
     ).toBeInTheDocument();
   });
 });

@@ -31,6 +31,7 @@ const Profile = () => {
   const [lastName, setLastName] = useState(user?.lastName ?? "");
   const [username, setUsername] = useState(user?.username ?? "");
   const [avatar, setAvatar] = useState<string | null>(user?.avatarUrl ?? null);
+  const [avatarDirty, setAvatarDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveNotice, setSaveNotice] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -44,6 +45,18 @@ const Profile = () => {
 
   useEffect(() => () => clearTimeout(noticeTimer.current), []);
 
+  // user.avatarUrl resolves asynchronously (the uploaded-avatar query behind
+  // useAuth) — follow it until the user touches the picker. Without this, a
+  // save made before the query resolves diffs against a stale null and
+  // silently wipes the uploaded avatar. Adjusted during render (not an
+  // effect) so the commit never shows the stale value.
+  const avatarUrl = user?.avatarUrl ?? null;
+  const [seenAvatarUrl, setSeenAvatarUrl] = useState(avatarUrl);
+  if (seenAvatarUrl !== avatarUrl) {
+    setSeenAvatarUrl(avatarUrl);
+    if (!avatarDirty) setAvatar(avatarUrl);
+  }
+
   // RequireAuth only renders this page with a resolved, signed-in session.
   if (!user) return null;
 
@@ -55,6 +68,12 @@ const Profile = () => {
 
     const trimmedFirst = firstName.trim();
     const trimmedLast = lastName.trim();
+    // `required` accepts whitespace-only input; the trimmed values are what
+    // gets saved, so they are what must be non-empty.
+    if (!trimmedFirst || !trimmedLast) {
+      setSaveError("Names can't be empty.");
+      return;
+    }
     const nameChanged =
       trimmedFirst !== (user.firstName ?? "") ||
       trimmedLast !== (user.lastName ?? "");
@@ -74,7 +93,7 @@ const Profile = () => {
       payload.name = `${trimmedFirst} ${trimmedLast}`.trim();
     }
     if (username !== (user.username ?? "")) payload.username = username;
-    if (avatar !== user.avatarUrl) {
+    if (avatarDirty && avatar !== user.avatarUrl) {
       // The picker only yields a data-URL upload or null (removal). Uploads
       // go to avatarData (kept out of session payloads); a removal also
       // clears any provider photo in `image` so it doesn't resurface.
@@ -102,6 +121,7 @@ const Profile = () => {
     // refetches on its own (staleTime Infinity).
     if ("avatarData" in payload) {
       queryClient.setQueryData(queryKeys.avatar(user.id), avatar);
+      setAvatarDirty(false);
     }
     await refetchSession();
     setSaveNotice("Saved!");
@@ -144,7 +164,14 @@ const Profile = () => {
         onSubmit={handleSave}
         data-test-id="profile-form"
       >
-        <AvatarPicker id="profile-avatar" value={avatar} onChange={setAvatar} />
+        <AvatarPicker
+          id="profile-avatar"
+          value={avatar}
+          onChange={(value) => {
+            setAvatar(value);
+            setAvatarDirty(true);
+          }}
+        />
 
         <div className="flex gap-3 max-sm:flex-col">
           <IconInput
@@ -180,11 +207,11 @@ const Profile = () => {
           id="profile-username"
           type="text"
           required
-          pattern="[A-Za-z0-9._]{3,30}"
-          title="3-30 characters: letters, numbers, dots and underscores"
+          pattern="[a-z0-9._]{3,30}"
+          title="3-30 characters: lowercase letters, numbers, dots and underscores"
           autoComplete="username"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(e) => setUsername(e.target.value.toLowerCase())}
           placeholder="Username"
           aria-label="Username"
           data-test-id="profile-username"

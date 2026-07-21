@@ -10,12 +10,14 @@ export type ListType = "favorite" | "watchlist";
  * Card metadata captured at save time so the favorites / watch-later pages can
  * render without re-hitting TMDB. A single normalized `title` / `release_date`
  * is denormalized back into the `MediaItem` shape on read (see rowToMediaItem).
+ * Nullable because TMDB really does return null for missing posters/dates —
+ * the write paths normalize null away before it reaches the wire.
  */
 export type SavedMeta = {
-  title?: string;
-  poster_path?: string;
-  release_date?: string;
-  vote_average?: number;
+  title?: string | null;
+  poster_path?: string | null;
+  release_date?: string | null;
+  vote_average?: number | null;
 };
 
 type SavedRow = {
@@ -64,14 +66,16 @@ export const addSaved = async (
   mediaId: number,
   meta: SavedMeta,
 ): Promise<void> => {
+  // TMDB returns null (not undefined) for missing posters/dates; normalize so
+  // axios drops the keys instead of serializing null into the payload.
   await api.post("/saved", {
     listType,
     mediaType,
     mediaId,
-    title: meta.title,
-    posterPath: meta.poster_path,
-    releaseDate: meta.release_date,
-    voteAverage: meta.vote_average,
+    title: meta.title ?? undefined,
+    posterPath: meta.poster_path ?? undefined,
+    releaseDate: meta.release_date ?? undefined,
+    voteAverage: meta.vote_average ?? undefined,
   });
 };
 

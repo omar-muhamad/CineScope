@@ -93,6 +93,14 @@ const NavSearch: FC<NavSearchProps> = ({ variant = "nav", onSearch }) => {
     setActiveIndex(-1);
   };
 
+  // A fresh result list can be shorter than the placeholder list the user
+  // was arrowing through — an out-of-range index strands the highlight and
+  // makes Enter fall through to the full-search submit. Adjusted during
+  // render so the stale highlight never reaches the DOM.
+  if (activeIndex !== -1 && activeIndex >= (suggestions?.length ?? 0)) {
+    setActiveIndex(-1);
+  }
+
   // Close on outside click or Escape, like the other navbar dropdowns.
   // (Inlined setters — the `close` helper is recreated every render and
   // would needlessly churn the effect if listed as a dependency.)
@@ -146,9 +154,22 @@ const NavSearch: FC<NavSearchProps> = ({ variant = "nav", onSearch }) => {
     }
   };
 
+  // The listbox ul only exists in the results state; pointing aria-controls
+  // at it during skeleton/empty states would be a dangling reference.
+  const listboxVisible =
+    showPanel && !showSkeletons && (suggestions?.length ?? 0) > 0;
+
   return (
     <div
       ref={containerRef}
+      // Tabbing away must close the panel too — the outside-click handler
+      // only covers pointers. Option clicks never blur (the panel swallows
+      // mousedown), so this doesn't race suggestion navigation.
+      onBlur={(event) => {
+        if (!containerRef.current?.contains(event.relatedTarget as Node)) {
+          close();
+        }
+      }}
       className={`relative ${variant === "block" ? "w-full" : ""}`}
     >
       <form
@@ -181,7 +202,7 @@ const NavSearch: FC<NavSearchProps> = ({ variant = "nav", onSearch }) => {
           role="combobox"
           aria-autocomplete="list"
           aria-expanded={showPanel}
-          aria-controls={listboxId}
+          aria-controls={listboxVisible ? listboxId : undefined}
           aria-activedescendant={
             suggestions?.[activeIndex]
               ? `${listboxId}-option-${activeIndex}`
@@ -190,6 +211,17 @@ const NavSearch: FC<NavSearchProps> = ({ variant = "nav", onSearch }) => {
           className="w-full min-w-0 bg-transparent text-sm outline-hidden caret-orange placeholder:text-gray"
         />
       </form>
+      {/* Announce result-count changes to screen readers — the visual panel
+          swap is otherwise silent. */}
+      {showPanel && (
+        <span aria-live="polite" className="sr-only">
+          {showSkeletons
+            ? ""
+            : suggestions.length > 0
+              ? `${suggestions.length} suggestions available`
+              : "No results"}
+        </span>
+      )}
       {showPanel && (
         <div
           // Keep focus in the input while clicking options — losing it mid

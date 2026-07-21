@@ -1,8 +1,8 @@
 describe("Login page (magic link)", () => {
-  // Runs against `npm run dev` (vercel dev on :3000); the magic-link send is
-  // stubbed so no mailbox or database is needed.
+  // Runs against the cypress.config baseUrl (Vite on :5173); the magic-link
+  // send is stubbed so no mailbox or database is needed.
   beforeEach(() => {
-    cy.visit("http://localhost:3000/login");
+    cy.visit("/login");
   });
 
   it("shows the passwordless sign-in form", () => {

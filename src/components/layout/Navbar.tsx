@@ -154,6 +154,10 @@ const Navbar: FC = () => {
         <div className="hidden md:block">
           <NavSearch />
         </div>
+        {/* The trigger is a disclosure, not a menu button: UserCard is a plain
+            panel of links and buttons with no menu semantics/arrow-key nav, so
+            claiming aria-haspopup="menu" would promise interactions it
+            doesn't have. */}
         <div ref={userMenuRef} className="hidden md:block">
           {loading ? (
             <Skeleton className="size-10 rounded-full ring-1 ring-white/10" />
@@ -161,8 +165,7 @@ const Navbar: FC = () => {
             <button
               className="size-10 flex shrink-0 rounded-full"
               type="button"
-              aria-label="User image"
-              aria-haspopup="menu"
+              aria-label="Account menu"
               aria-expanded={isUserIconClicked}
               onClick={handleClick}
             >

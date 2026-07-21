@@ -48,11 +48,11 @@ const UsernameStep = ({ initialUsername, onDone }: UsernameStepProps) => {
         id="onboarding-username"
         type="text"
         required
-        pattern="[A-Za-z0-9._]{3,30}"
-        title="3-30 characters: letters, numbers, dots and underscores"
+        pattern="[a-z0-9._]{3,30}"
+        title="3-30 characters: lowercase letters, numbers, dots and underscores"
         autoComplete="username"
         value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        onChange={(e) => setUsername(e.target.value.toLowerCase())}
         placeholder="Username"
         aria-label="Username"
         data-test-id="onboarding-username"

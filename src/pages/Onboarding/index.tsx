@@ -62,10 +62,8 @@ const Onboarding = () => {
         <Brand />
 
         <div className="flex flex-col gap-2">
-          <div
-            className="flex items-center gap-2"
-            aria-label={`Step ${step + 1} of ${STEPS.length}`}
-          >
+          {/* Decorative — the visible "Step N of M" text below carries the info. */}
+          <div className="flex items-center gap-2" aria-hidden={true}>
             {STEPS.map((s, index) => (
               <span
                 key={s.title}

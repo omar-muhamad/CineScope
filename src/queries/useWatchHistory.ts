@@ -72,8 +72,9 @@ export const useWatchedEpisodes = (showId: number) => {
 /**
  * The most recently watched episode of one show (rows are newest-first),
  * excluding the (0,0) show-level sentinel. The watch page resumes bare
- * /watch/tv/:id URLs here; isLoading lets it hold that redirect until the
- * history fetch settles (false when logged out — the query never runs).
+ * /watch/tv/:id URLs here. isPending is true until rows exist — including
+ * while the query is still disabled (session resolving / logged out), so
+ * callers must pair it with the auth state to know whether data is coming.
  */
 export const useLastWatchedEpisode = (showId: number) => {
   const history = useWatchHistory();
@@ -83,7 +84,7 @@ export const useLastWatchedEpisode = (showId: number) => {
     );
     return row ? { season: row.season, episode: row.episode } : undefined;
   }, [history.data, showId]);
-  return { lastWatched, isLoading: history.isLoading };
+  return { lastWatched, isPending: history.isPending };
 };
 
 /**
@@ -148,9 +149,12 @@ type HistoryContext = {
 
 /**
  * Shared mutation factory: writes to the app API and optimistically patches
- * the cached raw rows (badges and pages re-derive instantly). Rolls back on
- * error, invalidates on settle to reconcile with the server — the same
- * protocol as useBookmarks' useToggle.
+ * the cached raw rows (badges and pages re-derive instantly). The patch
+ * mirrors the server upsert exactly, so success needs no refetch — history is
+ * the highest-write cache in the app, and refetching the full list after
+ * every auto-recorded episode would be pure waste. Errors roll back and then
+ * invalidate, which also reconciles any overlapping mutation's patch the
+ * rollback may have clobbered.
  */
 const useHistoryMutation = <TVars>(
   mutationFn: (vars: TVars) => Promise<void>,
@@ -165,19 +169,24 @@ const useHistoryMutation = <TVars>(
       const key = queryKeys.history(user?.id);
       await qc.cancelQueries({ queryKey: key });
 
+      // Patch even when the initial fetch hasn't landed (cancelQueries just
+      // killed it) — the empty-cache case reconciles in onSettled below.
       const previous = qc.getQueryData<HistoryRow[]>(key);
-      if (previous) {
-        qc.setQueryData<HistoryRow[]>(key, patch(previous, vars));
-      }
+      qc.setQueryData<HistoryRow[]>(key, patch(previous ?? [], vars));
 
       return { key, previous };
     },
     onError: (_err, _vars, context) => {
       if (!context) return;
       qc.setQueryData(context.key, context.previous);
+      qc.invalidateQueries({ queryKey: context.key });
     },
-    onSettled: () => {
-      qc.invalidateQueries({ queryKey: queryKeys.history(user?.id) });
+    onSettled: (_data, _err, _vars, context) => {
+      // With loaded rows the patch already mirrors the server; only a
+      // mutation that raced the initial fetch needs the real list.
+      if (context?.previous === undefined) {
+        qc.invalidateQueries({ queryKey: queryKeys.history(user?.id) });
+      }
     },
   });
 };

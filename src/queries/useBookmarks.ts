@@ -74,11 +74,17 @@ const buildItem = (
 ): MediaItem => ({
   id,
   media_type: mediaType,
-  poster_path: meta.poster_path,
-  vote_average: meta.vote_average,
+  poster_path: meta.poster_path ?? undefined,
+  vote_average: meta.vote_average ?? undefined,
   ...(mediaType === "movie"
-    ? { title: meta.title, release_date: meta.release_date }
-    : { name: meta.title, first_air_date: meta.release_date }),
+    ? {
+        title: meta.title ?? undefined,
+        release_date: meta.release_date ?? undefined,
+      }
+    : {
+        name: meta.title ?? undefined,
+        first_air_date: meta.release_date ?? undefined,
+      }),
 });
 
 /**
