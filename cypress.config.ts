@@ -2,8 +2,10 @@ import { defineConfig } from "cypress";
 
 /**
  * E2E runs expect the full dev stack on localhost:
- *   npm run dev:server  (API on :3001, proxied under /api)
- *   npm run dev         (Vite on :5173)
+ *   npm run dev      (vercel dev on :3000 — serves /api)
+ *   npm run dev:web  (Vite on :5173, proxying /api → :3000)
+ * The browser must drive :5173 — vercel dev answers Vite module paths with
+ * the SPA rewrite (500s), see the verify skill notes.
  */
 export default defineConfig({
   e2e: {
