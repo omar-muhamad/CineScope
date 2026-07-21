@@ -20,6 +20,10 @@ export const authClient = createAuthClient({
         firstName: { type: "string", required: false },
         lastName: { type: "string", required: false },
         onboardingComplete: { type: "boolean", required: false },
+        // Write-only from the client's perspective: sent via updateUser but
+        // returned:false server-side, so it's never present on session users.
+        // Read it through GET /api/avatar (src/api/avatar.ts) instead.
+        avatarData: { type: "string", required: false },
       },
     }),
   ],

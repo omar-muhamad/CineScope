@@ -48,10 +48,17 @@ export const auth = betterAuth({
   session: {
     expiresIn: 60 * 60 * 24 * 30, // 30 days, matches the old refresh-token TTL
     updateAge: 60 * 60 * 24,
-    // cookieCache stays OFF deliberately: Better Auth serializes the whole
-    // user object — including our data-URL avatar in `image` — into chunked
-    // cookies, ~100KB of headers on every request. Every getSession therefore
-    // does one Neon roundtrip; acceptable at this scale.
+    // Safe to cache the user in a cookie because the only large field —
+    // the data-URL avatar — lives in `avatarData` (returned: false, stripped
+    // from responses and this cookie alike); `image` only ever holds small
+    // provider photo URLs. getSession answers from the signed session_data
+    // cookie (~1KB) with zero Neon roundtrips; updateUser rewrites it, so
+    // profile edits are never stale. Trade-off: a revoked session keeps
+    // working for up to maxAge on routes that don't disableCookieCache.
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 5,
+    },
   },
 
   rateLimit: {
@@ -104,6 +111,16 @@ export const auth = betterAuth({
         type: "boolean",
         required: false,
         defaultValue: false,
+        input: true,
+      },
+      // Uploaded avatar as a ~50-100KB data URL. returned: false keeps it out
+      // of every session response AND the cookieCache cookie — which is what
+      // makes cookieCache viable at all. `image` stays reserved for small
+      // provider photo URLs (Google). Read path: GET /api/avatar.
+      avatarData: {
+        type: "string",
+        required: false,
+        returned: false,
         input: true,
       },
     },

@@ -27,6 +27,7 @@ export const queryKeys = {
     ["imdbRating", imdbId] as const,
   episodes: (id: string | undefined, season: number) =>
     ["episodes", id, season] as const,
+  avatar: (userId: string | undefined) => ["avatar", userId] as const,
   favorites: (userId: string | undefined) => ["favorites", userId] as const,
   watchlist: (userId: string | undefined) => ["watchlist", userId] as const,
   history: (userId: string | undefined) => ["history", userId] as const,

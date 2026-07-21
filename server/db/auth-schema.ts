@@ -24,6 +24,7 @@ export const user = pgTable("user", {
   firstName: text("first_name"),
   lastName: text("last_name"),
   onboardingComplete: boolean("onboarding_complete").default(false),
+  avatarData: text("avatar_data"),
 });
 
 export const session = pgTable(

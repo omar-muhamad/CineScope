@@ -1,7 +1,10 @@
 import { useCallback, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 
+import { fetchAvatar } from "@/api/avatar";
 import { authClient, type SessionUser } from "@/lib/auth-client";
 import { queryClient } from "@/lib/queryClient";
+import { queryKeys } from "@/lib/queryKeys";
 
 /**
  * App-facing user shape, mapped from the Better Auth session user. Keeps the
@@ -22,14 +25,18 @@ export type AuthUser = {
   onboardingComplete: boolean;
 };
 
-const toAuthUser = (raw: SessionUser): AuthUser => ({
+const toAuthUser = (
+  raw: SessionUser,
+  uploadedAvatar: string | null,
+): AuthUser => ({
   id: raw.id,
   email: raw.email,
   emailVerified: raw.emailVerified,
   username: raw.username ?? null,
   firstName: raw.firstName ?? null,
   lastName: raw.lastName ?? null,
-  avatarUrl: raw.image ?? null,
+  // An uploaded avatar wins over the provider photo left in `image`.
+  avatarUrl: uploadedAvatar ?? raw.image ?? null,
   onboardingComplete: raw.onboardingComplete ?? false,
 });
 
@@ -42,9 +49,20 @@ export const useAuth = () => {
   const { data, isPending, refetch } = authClient.useSession();
   const raw = data?.user;
 
+  // Uploaded avatars are split out of the session payload (avatarData,
+  // returned:false) so the cookieCache cookie stays small — fetch once per
+  // sign-in and keep it until logout; avatar edits write through with
+  // setQueryData (Profile, onboarding AvatarStep) rather than refetching.
+  const { data: uploadedAvatar } = useQuery({
+    queryKey: queryKeys.avatar(raw?.id),
+    queryFn: fetchAvatar,
+    enabled: !!raw,
+    staleTime: Infinity,
+  });
+
   const user = useMemo<AuthUser | null>(
-    () => (raw ? toAuthUser(raw) : null),
-    [raw],
+    () => (raw ? toAuthUser(raw, uploadedAvatar ?? null) : null),
+    [raw, uploadedAvatar],
   );
 
   const signOut = useCallback(async () => {

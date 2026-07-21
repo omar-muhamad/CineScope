@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
+import { useAuth } from "@/auth/useAuth";
 import { authClient } from "@/lib/auth-client";
+import { queryKeys } from "@/lib/queryKeys";
 import AvatarPicker from "@/components/ui/AvatarPicker";
 import Button from "@/components/ui/Button";
 import Text from "@/components/ui/Text";
@@ -15,6 +18,8 @@ type AvatarStepProps = {
 /** Step 3 — optional avatar. Both buttons flip onboardingComplete; Finish
  *  also persists an avatar change (upload or removal). */
 const AvatarStep = ({ initialAvatar, onDone }: AvatarStepProps) => {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
   const [avatar, setAvatar] = useState<string | null>(initialAvatar);
   const [busy, setBusy] = useState<"skip" | "finish" | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -25,7 +30,14 @@ const AvatarStep = ({ initialAvatar, onDone }: AvatarStepProps) => {
     setError(null);
     const changedAvatar = kind === "finish" && avatar !== initialAvatar;
     const { error: updateError } = await authClient.updateUser({
-      ...(changedAvatar ? { image: avatar } : {}),
+      // A change is either a data-URL upload → avatarData (kept out of
+      // session payloads), or a removal → also clear the provider photo in
+      // `image` so it doesn't resurface.
+      ...(changedAvatar
+        ? avatar
+          ? { avatarData: avatar }
+          : { avatarData: null, image: null }
+        : {}),
       onboardingComplete: true,
     });
     if (updateError) {
@@ -34,6 +46,11 @@ const AvatarStep = ({ initialAvatar, onDone }: AvatarStepProps) => {
         updateError.message ?? "Your profile couldn't be saved. Try again.",
       );
       return;
+    }
+    // Write through useAuth's avatar cache (staleTime Infinity — it won't
+    // refetch on its own) so the new avatar shows as soon as we land home.
+    if (changedAvatar && user) {
+      queryClient.setQueryData(queryKeys.avatar(user.id), avatar);
     }
     await onDone();
   };

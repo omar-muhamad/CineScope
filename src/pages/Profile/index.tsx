@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   IoAtOutline,
   IoLogOutOutline,
@@ -9,6 +10,7 @@ import {
 
 import { useAuth } from "@/auth/useAuth";
 import { authClient } from "@/lib/auth-client";
+import { queryKeys } from "@/lib/queryKeys";
 import AvatarPicker from "@/components/ui/AvatarPicker";
 import Button from "@/components/ui/Button";
 import Heading from "@/components/ui/Heading";
@@ -22,6 +24,7 @@ import Text from "@/components/ui/Text";
  */
 const Profile = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { user, signOut, refetchSession } = useAuth();
 
   const [firstName, setFirstName] = useState(user?.firstName ?? "");
@@ -63,6 +66,7 @@ const Profile = () => {
       name: string;
       username: string;
       image: string | null;
+      avatarData: string | null;
     }> = {};
     if (nameChanged) {
       payload.firstName = trimmedFirst;
@@ -70,7 +74,13 @@ const Profile = () => {
       payload.name = `${trimmedFirst} ${trimmedLast}`.trim();
     }
     if (username !== (user.username ?? "")) payload.username = username;
-    if (avatar !== user.avatarUrl) payload.image = avatar;
+    if (avatar !== user.avatarUrl) {
+      // The picker only yields a data-URL upload or null (removal). Uploads
+      // go to avatarData (kept out of session payloads); a removal also
+      // clears any provider photo in `image` so it doesn't resurface.
+      payload.avatarData = avatar;
+      if (!avatar) payload.image = null;
+    }
 
     if (Object.keys(payload).length === 0) {
       setSaveNotice("Nothing to save — your profile is up to date.");
@@ -87,6 +97,11 @@ const Profile = () => {
           : (error.message ?? "Your changes couldn't be saved. Try again."),
       );
       return;
+    }
+    // Write the new avatar through the cache — useAuth's avatar query never
+    // refetches on its own (staleTime Infinity).
+    if ("avatarData" in payload) {
+      queryClient.setQueryData(queryKeys.avatar(user.id), avatar);
     }
     await refetchSession();
     setSaveNotice("Saved!");

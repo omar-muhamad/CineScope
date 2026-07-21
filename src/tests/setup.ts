@@ -16,6 +16,13 @@ vi.mock("@/lib/auth-client", () => ({
   },
 }));
 
+// useAuth fetches the uploaded avatar (GET /api/avatar) for every signed-in
+// render — stub it so tests never touch the network. Tests that care about an
+// uploaded avatar can override with vi.mocked(fetchAvatar).mockResolvedValue.
+vi.mock("@/api/avatar", () => ({
+  fetchAvatar: vi.fn(),
+}));
+
 // The config-level reset flags only cover vi.spyOn spies — reset the module
 // mock's vi.fn()s explicitly so call history and per-test implementations
 // never leak between tests. (Dynamic import: resolves to the mock above.)
@@ -30,4 +37,7 @@ beforeEach(async () => {
     authClient.changeEmail,
     authClient.getSession,
   ].forEach((fn) => vi.mocked(fn).mockReset());
+
+  const { fetchAvatar } = await import("@/api/avatar");
+  vi.mocked(fetchAvatar).mockReset().mockResolvedValue(null);
 });

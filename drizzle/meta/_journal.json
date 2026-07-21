@@ -15,6 +15,13 @@
       "when": 1784598297002,
       "tag": "0001_nasty_giant_man",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784608509200,
+      "tag": "0002_productive_princess_powerful",
+      "breakpoints": true
     }
   ]
 }
