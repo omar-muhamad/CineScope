@@ -7,7 +7,7 @@ import {
 } from "react-icons/io5";
 
 import { Episode } from "@/types";
-import poster from "@/assets/images/default-poster.png";
+import PosterFallback from "@/components/ui/PosterFallback";
 import Heading from "@/components/ui/Heading";
 import Text from "@/components/ui/Text";
 import SkeletonEpisode from "./SkeletonEpisode";
@@ -56,9 +56,6 @@ const EpisodeList: FC<EpisodeListProps> = ({
     <ul className="flex flex-col gap-3">
       {episodes.map((ep) => {
         const isPlaying = ep.episode_number === activeEpisode;
-        const still = ep.still_path
-          ? `https://image.tmdb.org/t/p/w300/${ep.still_path}`
-          : poster;
 
         return (
           <li key={ep.id}>
@@ -72,12 +69,16 @@ const EpisodeList: FC<EpisodeListProps> = ({
               }`}
             >
               <div className="relative w-28 sm:w-40 shrink-0 aspect-video rounded-lg overflow-hidden bg-main-dark">
-                <img
-                  src={still}
-                  alt={ep.name}
-                  loading="lazy"
-                  className="w-full h-full object-cover"
-                />
+                {ep.still_path ? (
+                  <img
+                    src={`https://image.tmdb.org/t/p/w300/${ep.still_path}`}
+                    alt={ep.name}
+                    loading="lazy"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <PosterFallback media_type="tv" className="w-full h-full" />
+                )}
                 <div
                   className={`absolute inset-0 flex items-center justify-center bg-black/40 transition-opacity ${
                     isPlaying

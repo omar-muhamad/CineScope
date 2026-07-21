@@ -7,7 +7,7 @@ import { RiFilmFill } from "react-icons/ri";
 import { PiTelevisionSimpleFill } from "react-icons/pi";
 import { IoStar } from "react-icons/io5";
 import LazyImage from "@/components/ui/LazyImage";
-import poster from "@/assets/images/default-poster.png";
+import PosterFallback from "@/components/ui/PosterFallback";
 
 type TrendingCardProps = {
   id: number;
@@ -27,9 +27,6 @@ const TrendingCard: FC<TrendingCardProps> = ({
   title,
 }) => {
   const movie = media_type === "movie";
-  const imageSrc = imgSrc
-    ? `https://image.tmdb.org/t/p/w500/${imgSrc}`
-    : poster;
 
   return (
     <li className="group/card relative shrink-0 w-[42vw] sm:w-[28vw] md:w-[20vw] lg:w-[16vw]">
@@ -37,11 +34,18 @@ const TrendingCard: FC<TrendingCardProps> = ({
         className="relative block"
         to={movie ? `/movie/${id}` : `/tv/${id}`}
       >
-        <LazyImage
-          className="w-full rounded-lg aspect-2/3 object-cover"
-          src={imageSrc}
-          alt={`${title} poster`}
-        />
+        {imgSrc ? (
+          <LazyImage
+            className="w-full rounded-lg aspect-2/3 object-cover"
+            src={`https://image.tmdb.org/t/p/w500/${imgSrc}`}
+            alt={`${title} poster`}
+          />
+        ) : (
+          <PosterFallback
+            media_type={media_type}
+            className="w-full rounded-lg aspect-2/3"
+          />
+        )}
 
         {/* Gradient + meta overlay for readability over the poster */}
         <div className="absolute inset-x-0 bottom-0 h-1/2 rounded-b-lg bg-linear-to-t from-black/90 via-black/50 to-transparent" />

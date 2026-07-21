@@ -21,8 +21,9 @@ const CastCard: FC<CastCardProps> = ({ name, character, profilePath }) => {
           alt={`${name} headshot`}
         />
       ) : (
-        <div className="w-full rounded-lg aspect-2/3 bg-secondary-dark flex items-center justify-center">
+        <div className="w-full rounded-lg aspect-2/3 bg-secondary-dark flex flex-col items-center justify-center gap-1.5">
           <IoPerson className="text-4xl text-white/30" />
+          <span className="text-xs text-white/30">No photo</span>
         </div>
       )}
       <Heading

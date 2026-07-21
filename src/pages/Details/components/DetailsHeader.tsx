@@ -6,6 +6,7 @@ import BookMark from "@/components/ui/BookMark";
 import WatchLater from "@/components/ui/WatchLater";
 import Heading from "@/components/ui/Heading";
 import LazyImage from "@/components/ui/LazyImage";
+import PosterFallback from "@/components/ui/PosterFallback";
 import Text from "@/components/ui/Text";
 import MediaMeta from "./MediaMeta";
 import PlayButton from "./PlayButton";
@@ -87,11 +88,18 @@ const DetailsHeader: FC<DetailsHeaderProps> = ({
           className="w-full max-md:py-5 px-4 md:px-16 md:py-5  h-full flex gap-4 md:gap-6 backdrop-blur-[3px] md:rounded-bl-2xl bg-black/70"
         >
           <div className="h-full">
-            <LazyImage
-              className="aspect-2/3 rounded-md md:rounded-xl bg-secondary-dark object-cover"
-              src={`https://image.tmdb.org/t/p/w300/${posterUrl}`}
-              alt={`${title} poster`}
-            />
+            {posterUrl ? (
+              <LazyImage
+                className="aspect-2/3 rounded-md md:rounded-xl bg-secondary-dark object-cover"
+                src={`https://image.tmdb.org/t/p/w300/${posterUrl}`}
+                alt={`${title} poster`}
+              />
+            ) : (
+              <PosterFallback
+                media_type={media_type}
+                className="aspect-2/3 w-32 md:w-75 rounded-md md:rounded-xl"
+              />
+            )}
           </div>
 
           <div className="md:mt-5 grow">

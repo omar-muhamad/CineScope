@@ -3,12 +3,11 @@ import { NavLink } from "react-router-dom";
 import { RiFilmFill } from "react-icons/ri";
 import { PiTelevisionSimpleFill } from "react-icons/pi";
 import { IoStar } from "react-icons/io5";
-import poster from "@/assets/images/default-poster.png";
-
 import Heading from "./Heading";
 import Text from "./Text";
 import SaveActions from "./SaveActions";
 import LazyImage from "./LazyImage";
+import PosterFallback from "./PosterFallback";
 
 type ItemCardProps = {
   id: number;
@@ -54,11 +53,18 @@ const ItemCard: FC<ItemCardProps> = ({
               See Details
             </Text>
           </div>
-          <LazyImage
-            className="w-full rounded-lg aspect-2/3 object-cover"
-            src={imgSrc ? imageSrc : poster}
-            alt={`${title} poster`}
-          />
+          {imgSrc ? (
+            <LazyImage
+              className="w-full rounded-lg aspect-2/3 object-cover"
+              src={imageSrc}
+              alt={`${title} poster`}
+            />
+          ) : (
+            <PosterFallback
+              media_type={media_type}
+              className="w-full rounded-lg aspect-2/3"
+            />
+          )}
         </NavLink>
       </div>
       <div className="mt-2">

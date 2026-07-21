@@ -1,31 +1,27 @@
 import { FC } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
-import defaultPoster from "@/assets/images/default-poster.png";
 
 type LazyImageProps = {
   className?: string;
   src: string;
   alt: string;
-  /** Shown (blurred) until the real image finishes loading. */
-  placeholderSrc?: string;
 };
 
-const LazyImage: FC<LazyImageProps> = ({
-  className,
-  src,
-  alt,
-  placeholderSrc = defaultPoster,
-}) => {
+/**
+ * Lazy image that fades in over a solid theme-colored box while loading.
+ * Callers that may have no image at all should render a PosterFallback
+ * instead of passing a broken src.
+ */
+const LazyImage: FC<LazyImageProps> = ({ className, src, alt }) => {
   return (
     <LazyLoadImage
       className={className}
       effect="blur"
       src={src}
       alt={alt}
-      placeholderSrc={placeholderSrc}
       delayTime={100}
-      wrapperClassName={className}
+      wrapperClassName={`bg-secondary-dark ${className ?? ""}`}
     />
   );
 };
