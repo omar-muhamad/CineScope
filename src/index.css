@@ -10,14 +10,7 @@
   --font-outfitLight: outfit-light, sans-serif;
   --font-outfitMedium: outfit-medium, sans-serif;
 
-  --animate-shimmer: shimmer 1.5s infinite;
   --animate-dropdown: dropdown 0.12s ease-out;
-
-  @keyframes shimmer {
-    100% {
-      transform: translateX(100%);
-    }
-  }
 
   @keyframes dropdown {
     from {
