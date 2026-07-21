@@ -9,10 +9,10 @@ import Skeleton from "./Skeleton";
 const SkeletonCard: FC = () => {
   return (
     <li data-testid="skeleton-card">
-      <Skeleton className="w-full rounded-lg aspect-[2/3]" />
+      <Skeleton className="w-full rounded-lg aspect-2/3" />
       <div className="mt-2">
-        <Skeleton className="h-3 w-2/3 rounded" />
-        <Skeleton className="h-4 w-5/6 rounded mt-2" />
+        <Skeleton className="h-3 w-2/3 rounded-sm" />
+        <Skeleton className="h-4 w-5/6 rounded-sm mt-2" />
       </div>
     </li>
   );

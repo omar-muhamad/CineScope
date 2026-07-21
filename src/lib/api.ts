@@ -1,17 +1,23 @@
 import axios from "axios";
 
-export const checkBookmarked = async ({ id }: { id: number }) => {
-  const params = {
-    api_key: import.meta.env.VITE_APP_API_KEY,
-  };
-  const response = await axios.get(
-    `https://api.themoviedb.org/3/list/8299412/item_status`,
-    {
-      params: {
-        ...params,
-        movie_id: id,
-      },
-    }
-  );
-  return response.data.item_present;
-};
+import { authClient } from "@/lib/auth-client";
+import { queryClient } from "@/lib/queryClient";
+
+/**
+ * App API client for the saved-lists endpoints. Auth rides on Better Auth's
+ * httpOnly session cookie — same-origin requests carry it automatically, so
+ * there are no tokens, refreshes, or interceptor retries to manage here.
+ */
+export const api = axios.create({ baseURL: "/api" });
+
+// A 401 from a protected call means the session expired or was revoked
+// mid-session. Drop per-user caches and refetch the session (bypassing any
+// cookie cache) so the shared store flips the whole UI to signed-out. No
+// retry — the user must sign in again.
+api.interceptors.response.use(undefined, (error: unknown) => {
+  if (axios.isAxiosError(error) && error.response?.status === 401) {
+    queryClient.clear();
+    void authClient.getSession({ query: { disableCookieCache: true } });
+  }
+  return Promise.reject(error);
+});

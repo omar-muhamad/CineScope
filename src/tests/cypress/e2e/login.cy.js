@@ -1,25 +1,47 @@
-describe("Login page", () => {
+describe("Login page (magic link)", () => {
+  // Runs against the cypress.config baseUrl (Vite on :5173); the magic-link
+  // send is stubbed so no mailbox or database is needed.
   beforeEach(() => {
-    cy.visit("http://localhost:5173/login");
+    cy.visit("/login");
   });
 
-  it("has a heading login", () => {
-    const heading = cy.get('[data-test-id="login-heading"]');
-
-    heading.should("exist").should("have.text", "Login");
+  it("shows the passwordless sign-in form", () => {
+    cy.get('[data-test-id="login-heading"]').should(
+      "have.text",
+      "Sign in to CineScope",
+    );
+    cy.get('[data-test-id="google-signin"]').should("exist");
+    cy.get('[data-test-id="auth-email"]').should("exist");
+    // No password fields anywhere.
+    cy.get('input[type="password"]').should("not.exist");
   });
 
-  it("has a login button", () => {
-    const button = cy.get('[data-test-id="login-button"]');
+  it("sends a magic link and shows the sent panel", () => {
+    cy.intercept("POST", "/api/auth/sign-in/magic-link", {
+      statusCode: 200,
+      body: { status: true },
+    }).as("sendMagicLink");
 
-    button.should("exist").should("have.text", "Login");
+    cy.get('[data-test-id="auth-email"]').type("someone@example.com");
+    cy.get('[data-test-id="auth-submit"]').click();
+
+    cy.wait("@sendMagicLink")
+      .its("request.body.email")
+      .should("eq", "someone@example.com");
+    cy.get('[data-test-id="magic-sent"]').should("be.visible");
+    cy.contains("someone@example.com");
   });
 
-  it("successfully logs in", async () => {
-    const button = cy.get('[data-test-id="login-button"]');
+  it("lets the user go back and use a different email", () => {
+    cy.intercept("POST", "/api/auth/sign-in/magic-link", {
+      statusCode: 200,
+      body: { status: true },
+    });
 
-    await button.click();
+    cy.get('[data-test-id="auth-email"]').type("someone@example.com");
+    cy.get('[data-test-id="auth-submit"]').click();
+    cy.get('[data-test-id="magic-change-email"]').click();
 
-    cy.url().should("eq", "http://localhost:5173/");
+    cy.get('[data-test-id="auth-email"]').should("exist");
   });
 });
