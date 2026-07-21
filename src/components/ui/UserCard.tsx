@@ -1,7 +1,12 @@
 import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
-import { IoLogOutOutline, IoPersonOutline } from "react-icons/io5";
+import {
+  IoHeartOutline,
+  IoLogOutOutline,
+  IoPersonOutline,
+  IoTimeOutline,
+} from "react-icons/io5";
 
 import { useAuth } from "@/auth/useAuth";
 import Button from "./Button";
@@ -19,9 +24,9 @@ const UserCard: FC<UserCardProps> = ({ onClose }) => {
   const isLogged = Boolean(user);
   const [loggingOut, setLoggingOut] = useState(false);
 
-  const handleProfile = () => {
+  const handleNavigate = (path: string) => {
     onClose?.();
-    navigate("/profile");
+    navigate(path);
   };
 
   const handleLogout = async () => {
@@ -66,12 +71,30 @@ const UserCard: FC<UserCardProps> = ({ onClose }) => {
         <>
           <button
             type="button"
-            onClick={handleProfile}
+            onClick={() => handleNavigate("/profile")}
             data-test-id="user-card-profile"
             className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-white transition hover:bg-white/5"
           >
             <IoPersonOutline className="text-lg text-gray" />
             Profile
+          </button>
+          <button
+            type="button"
+            onClick={() => handleNavigate("/favorites")}
+            data-test-id="user-card-favorites"
+            className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-white transition hover:bg-white/5"
+          >
+            <IoHeartOutline className="text-lg text-gray" />
+            Favorites
+          </button>
+          <button
+            type="button"
+            onClick={() => handleNavigate("/watch-later")}
+            data-test-id="user-card-watch-later"
+            className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-white transition hover:bg-white/5"
+          >
+            <IoTimeOutline className="text-lg text-gray" />
+            Watch Later
           </button>
           <Button
             onClick={handleLogout}

@@ -63,11 +63,13 @@ const Navbar: FC = () => {
   const userMenuRef = useRef<HTMLDivElement>(null);
   const { user, loading } = useAuth();
   const isLogged = Boolean(user);
-  // Auth-gated links (favorites, watch later) only show once signed in.
-  // While the initial session fetch is in flight they stay in the list and
-  // render as skeleton slots, so a signed-in reload never flashes the
-  // logged-out navbar before flipping.
-  const visibleLinks = navLinks.filter(
+  // Personal links (favorites, watch later) live in the user card on desktop.
+  // The mobile drawer keeps them (the card isn't reachable there), gated the
+  // same way: while the initial session fetch is in flight they stay in the
+  // list and render as skeleton slots, so a signed-in reload never flashes
+  // the logged-out menu before flipping.
+  const desktopLinks = navLinks.filter((link) => !link.requiresAuth);
+  const mobileLinks = navLinks.filter(
     (link) => !link.requiresAuth || isLogged || loading,
   );
   const avatarUrl = user?.avatarUrl ?? "";
@@ -120,14 +122,8 @@ const Navbar: FC = () => {
           data-testid="nav-links"
           className="hidden md:flex items-center gap-4"
         >
-          {visibleLinks.map((link) =>
-            link.requiresAuth && !isLogged ? (
-              // Session still resolving — hold the slot instead of popping in.
-              <Skeleton
-                key={link.id}
-                className="h-7 w-24 rounded-md ring-1 ring-white/10"
-              />
-            ) : link.children ? (
+          {desktopLinks.map((link) =>
+            link.children ? (
               <NavDropdown
                 key={link.id}
                 title={link.title}
@@ -192,7 +188,7 @@ const Navbar: FC = () => {
       <MobileMenu
         id={MOBILE_MENU_ID}
         isOpen={isMobileMenuOpen}
-        navLinks={visibleLinks}
+        navLinks={mobileLinks}
         isLogged={isLogged}
         loading={loading}
         onClose={() => setIsMobileMenuOpen(false)}

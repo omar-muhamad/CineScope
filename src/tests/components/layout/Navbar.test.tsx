@@ -54,52 +54,92 @@ describe("Navbar dropdowns", () => {
   });
 });
 
+describe("Navbar personal links", () => {
+  it("keeps favorites and watch later out of the desktop nav — they live in the user card", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Navbar />, { user: testUser });
+    const nav = within(screen.getByTestId("nav-links"));
+
+    expect(nav.queryByRole("link", { name: /favorites/i })).toBeNull();
+    expect(nav.queryByRole("link", { name: /watch later/i })).toBeNull();
+
+    await user.click(screen.getByRole("button", { name: "User image" }));
+
+    expect(
+      screen.getByRole("button", { name: /favorites/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /watch later/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("keeps them in the mobile menu, where the user card isn't reachable", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Navbar />, { user: testUser });
+
+    await user.click(screen.getByRole("button", { name: "Open menu" }));
+    const mobileNav = within(screen.getByTestId("mobile-nav-links"));
+
+    expect(mobileNav.getByRole("link", { name: /favorites/i })).toHaveAttribute(
+      "href",
+      "/favorites",
+    );
+    expect(
+      mobileNav.getByRole("link", { name: /watch later/i }),
+    ).toHaveAttribute("href", "/watch-later");
+  });
+});
+
 describe("Navbar while the session is resolving", () => {
   it("holds skeleton slots instead of flashing the logged-out navbar", () => {
     renderWithProviders(<Navbar />, {
       user: testUser,
       session: { pending: true },
     });
-    const nav = within(screen.getByTestId("nav-links"));
 
-    // Auth-gated links aren't committed either way yet — placeholders only.
-    expect(nav.queryByRole("link", { name: /favorites/i })).toBeNull();
-    expect(nav.getAllByTestId("skeleton")).toHaveLength(2);
+    // The desktop nav carries no auth-gated links anymore — no placeholders.
+    expect(
+      within(screen.getByTestId("nav-links")).queryAllByTestId("skeleton"),
+    ).toHaveLength(0);
 
     // The avatar button and the mobile Login/Logout button wait too.
     expect(screen.queryByRole("button", { name: "User image" })).toBeNull();
     expect(
       screen.queryByRole("button", { name: /^(login|logout)$/i }),
     ).toBeNull();
+
+    // The mobile menu keeps the gated links, so it holds their slots.
     expect(
       within(screen.getByTestId("mobile-nav-links")).getAllByTestId("skeleton"),
     ).toHaveLength(2);
   });
 
-  it("swaps the skeletons for gated links and the avatar once signed in", () => {
+  it("swaps the skeletons for the gated mobile links and the avatar once signed in", () => {
     renderWithProviders(<Navbar />, { user: testUser });
-    const nav = within(screen.getByTestId("nav-links"));
 
-    expect(nav.getByRole("link", { name: /favorites/i })).toHaveAttribute(
-      "href",
-      "/favorites",
-    );
-    expect(nav.getByRole("link", { name: /watch later/i })).toHaveAttribute(
-      "href",
-      "/watch-later",
-    );
-    expect(nav.queryAllByTestId("skeleton")).toHaveLength(0);
+    expect(screen.queryAllByTestId("skeleton")).toHaveLength(0);
     expect(
       screen.getByRole("button", { name: "User image" }),
     ).toBeInTheDocument();
+    // Role queries can't reach the closed (aria-hidden) mobile menu; the
+    // dedicated test above opens it and asserts the links.
+    expect(
+      within(screen.getByTestId("mobile-nav-links")).queryAllByTestId(
+        "skeleton",
+      ),
+    ).toHaveLength(0);
   });
 
   it("drops the gated slots entirely once resolved signed out", () => {
     renderWithProviders(<Navbar />);
-    const nav = within(screen.getByTestId("nav-links"));
 
-    expect(nav.queryByRole("link", { name: /favorites/i })).toBeNull();
-    expect(nav.queryAllByTestId("skeleton")).toHaveLength(0);
+    expect(screen.queryAllByTestId("skeleton")).toHaveLength(0);
+    expect(
+      within(screen.getByTestId("mobile-nav-links")).queryByRole("link", {
+        name: /favorites/i,
+        hidden: true,
+      }),
+    ).toBeNull();
     expect(
       screen.getByRole("button", { name: "User image" }),
     ).toBeInTheDocument();

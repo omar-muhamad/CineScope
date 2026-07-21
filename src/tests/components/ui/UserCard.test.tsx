@@ -31,6 +31,50 @@ describe("UserCard", () => {
     expect(screen.queryByText("Profile")).not.toBeInTheDocument();
   });
 
+  it("shows Favorites and Watch Later when signed in", () => {
+    renderWithProviders(<UserCard />, { user: testUser });
+    expect(screen.getByText("Favorites")).toBeInTheDocument();
+    expect(screen.getByText("Watch Later")).toBeInTheDocument();
+  });
+
+  it("hides Favorites and Watch Later when signed out", () => {
+    renderWithProviders(<UserCard />);
+    expect(screen.queryByText("Favorites")).not.toBeInTheDocument();
+    expect(screen.queryByText("Watch Later")).not.toBeInTheDocument();
+  });
+
+  it("navigates to favorites and closes the dropdown", () => {
+    const onClose = vi.fn();
+    renderWithProviders(
+      <Routes>
+        <Route path="/" element={<UserCard onClose={onClose} />} />
+        <Route path="/favorites" element={<div>FAVORITES PAGE</div>} />
+      </Routes>,
+      { user: testUser },
+    );
+
+    fireEvent.click(screen.getByText("Favorites"));
+
+    expect(onClose).toHaveBeenCalled();
+    expect(screen.getByText("FAVORITES PAGE")).toBeInTheDocument();
+  });
+
+  it("navigates to watch later and closes the dropdown", () => {
+    const onClose = vi.fn();
+    renderWithProviders(
+      <Routes>
+        <Route path="/" element={<UserCard onClose={onClose} />} />
+        <Route path="/watch-later" element={<div>WATCH LATER PAGE</div>} />
+      </Routes>,
+      { user: testUser },
+    );
+
+    fireEvent.click(screen.getByText("Watch Later"));
+
+    expect(onClose).toHaveBeenCalled();
+    expect(screen.getByText("WATCH LATER PAGE")).toBeInTheDocument();
+  });
+
   it("navigates to the profile page and closes the dropdown", () => {
     const onClose = vi.fn();
     renderWithProviders(
