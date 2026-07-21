@@ -96,6 +96,8 @@ export type DetailsData = {
   genres: { id: number; name: string }[];
   vote_average: number;
   overview: string;
+  /** Movie-only; TMDB returns it on the /movie endpoint (null when unknown). */
+  runtime?: number | null;
   imdb_id?: string;
   external_ids?: { imdb_id: string | null };
   seasons?: Season[];

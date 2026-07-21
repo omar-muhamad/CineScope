@@ -24,6 +24,8 @@ import Skeleton from "@/components/skeletons/Skeleton";
 import PlayerSelector from "./components/PlayerSelector";
 import SeasonSelector from "./components/SeasonSelector";
 import EpisodeList from "./components/EpisodeList";
+import EpisodeRail from "./components/EpisodeRail";
+import MovieInfoPanel from "./components/MovieInfoPanel";
 import { providers } from "./lib/providers";
 import NotFound from "@/pages/NotFound";
 import PageLayout from "@/components/layout/PageLayout";
@@ -235,6 +237,11 @@ const WatchDetailsContent: FC<WatchContentProps> = ({
     if (!isLast) goToEpisode(season, episodes[currentIndex + 1].episode_number);
   };
 
+  // The rail only has content for movies (always) and for TV with real
+  // seasons. Without it, the player takes the full width instead of leaving an
+  // empty second column (e.g. a Specials-only / unreleased show).
+  const hasSidebar = movie || availableSeasons.length > 0;
+
   return (
     <section>
       <Heading as="h1" className="text-orange font-bold max-md:text-xl">
@@ -258,60 +265,110 @@ const WatchDetailsContent: FC<WatchContentProps> = ({
         </p>
       )}
 
-      {/* Player module: toggle + nav on top, video below */}
-      <div className="mt-8 rounded-xl overflow-hidden bg-secondary-dark md:p-4">
-        <div className="flex items-center justify-between gap-2 rounded-t-lg bg-main-dark">
-          <PlayerSelector
-            providers={providers}
-            active={providerIndex}
-            onSelect={onPlayerSelect}
-          />
+      {/* Theater layout: the player on the left, a context rail on the right —
+          the episode list for TV, an "about" panel for movies. Below lg the
+          rail is hidden and the full episode section drops beneath the player.
+          The player module occupies the same slot for both media types and
+          never moves between branches, so switching season/episode/player
+          never remounts (and reloads) the iframe. */}
+      <div
+        className={`mt-8 ${
+          hasSidebar
+            ? "grid gap-4 lg:grid-cols-[minmax(0,1fr)_clamp(320px,26vw,400px)] lg:items-stretch lg:gap-6"
+            : ""
+        }`}
+      >
+        {/* Player module: toggle + nav on top, video below */}
+        <div className="min-w-0 rounded-xl overflow-hidden bg-secondary-dark md:p-4">
+          <div className="flex items-center justify-between gap-2 rounded-t-lg bg-main-dark">
+            <PlayerSelector
+              providers={providers}
+              active={providerIndex}
+              onSelect={onPlayerSelect}
+            />
 
-          {isTv && episodes.length > 0 && (
-            <div className="flex">
-              <button
-                onClick={goPrev}
-                disabled={isFirst}
-                aria-label="Previous episode"
-                className="flex items-center gap-1 px-5 py-3 text-sm text-gray hover:text-white hover:bg-white/5 transition-colors duration-200 disabled:opacity-40 disabled:hover:text-gray disabled:hover:bg-transparent"
-              >
-                <IoChevronBackOutline />
-              </button>
-              <button
-                onClick={goNext}
-                disabled={isLast}
-                aria-label="Next episode"
-                className="flex items-center gap-1 px-5 py-3 text-sm rounded-tr-lg text-gray hover:text-white hover:bg-white/5 transition-colors duration-200 disabled:opacity-40 disabled:hover:text-gray disabled:hover:bg-transparent"
-              >
-                <IoChevronForwardOutline />
-              </button>
+            {isTv && episodes.length > 0 && (
+              <div className="flex">
+                <button
+                  onClick={goPrev}
+                  disabled={isFirst}
+                  aria-label="Previous episode"
+                  className="flex items-center gap-1 px-5 py-3 text-sm text-gray hover:text-white hover:bg-white/5 transition-colors duration-200 disabled:opacity-40 disabled:hover:text-gray disabled:hover:bg-transparent"
+                >
+                  <IoChevronBackOutline />
+                </button>
+                <button
+                  onClick={goNext}
+                  disabled={isLast}
+                  aria-label="Next episode"
+                  className="flex items-center gap-1 px-5 py-3 text-sm rounded-tr-lg text-gray hover:text-white hover:bg-white/5 transition-colors duration-200 disabled:opacity-40 disabled:hover:text-gray disabled:hover:bg-transparent"
+                >
+                  <IoChevronForwardOutline />
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="w-full aspect-video bg-black rounded-b-lg">
+            <iframe
+              src={src}
+              className="w-full h-full rounded-b-lg border-0"
+              title="Video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen *"
+              allowFullScreen
+              referrerPolicy="no-referrer"
+            ></iframe>
+          </div>
+        </div>
+
+        {/* Context rail (lg+). Absolutely positioned inside a stretched grid
+            cell so its content never grows the row: the row height stays equal
+            to the player, and the rail's own body scrolls to fit. Only rendered
+            when there's something to show (see hasSidebar). */}
+        {hasSidebar && (
+          <aside className="hidden lg:block lg:relative">
+            <div className="lg:absolute lg:inset-0">
+              {isTv ? (
+                <div className="flex h-full flex-col rounded-xl bg-secondary-dark p-4">
+                  <SeasonSelector
+                    fullWidth
+                    seasons={availableSeasons}
+                    season={season}
+                    onSeasonChange={(s) => goToEpisode(s, 1)}
+                  />
+                  <div className="mt-4 flex-1 min-h-0 overflow-y-auto pr-1">
+                    <EpisodeRail
+                      episodes={episodes}
+                      activeEpisode={episode}
+                      loading={episodesLoading}
+                      onSelect={(e) => goToEpisode(season, e)}
+                      watchedEpisodes={watchedInSeason}
+                      onToggleWatched={user ? handleToggleWatched : undefined}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <MovieInfoPanel
+                  id={mediaId}
+                  details={details}
+                  saveMeta={saveMeta}
+                />
+              )}
             </div>
-          )}
-        </div>
-
-        <div className="w-full aspect-video bg-black rounded-b-lg">
-          <iframe
-            src={src}
-            className="w-full h-full rounded-b-lg border-0"
-            title="Video player"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen *"
-            allowFullScreen
-            referrerPolicy="no-referrer"
-          ></iframe>
-        </div>
+          </aside>
+        )}
       </div>
 
-      {/* Season selector + episode list (TV only) */}
+      {/* Season selector + full episode list — full width beneath the player
+          on small screens; the rail replaces this at lg. (TV only) */}
       {isTv && availableSeasons.length > 0 && (
-        <div className="mt-6">
+        <div className="mt-6 lg:hidden">
           <div>
-            <div className="flex items-center gap-2 mt-6">
+            <div className="flex items-center gap-2">
               <Heading as="h2">Seasons</Heading>
-              {availableSeasons.length > 0 && (
-                <span className="px-2 py-0.5 rounded-full bg-secondary-dark text-sm text-gray">
-                  {availableSeasons.length}
-                </span>
-              )}
+              <span className="px-2 py-0.5 rounded-full bg-secondary-dark text-sm text-gray">
+                {availableSeasons.length}
+              </span>
             </div>
             <SeasonSelector
               seasons={availableSeasons}
@@ -347,9 +404,19 @@ const WatchDetailsContent: FC<WatchContentProps> = ({
 const WatchDetailsSkeleton: FC = () => (
   <>
     <Skeleton className="h-9 w-1/2 max-w-md rounded-sm" />
-    <div className="mt-8 rounded-xl bg-secondary-dark p-4">
-      <Skeleton className="h-12 w-full rounded-t-lg" />
-      <Skeleton className="w-full aspect-video rounded-b-lg" />
+    <div className="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_clamp(320px,26vw,400px)] lg:gap-6">
+      <div className="min-w-0 rounded-xl bg-secondary-dark p-4">
+        <Skeleton className="h-12 w-full rounded-t-lg" />
+        <Skeleton className="w-full aspect-video rounded-b-lg" />
+      </div>
+      <div className="hidden rounded-xl bg-secondary-dark p-4 lg:block">
+        <Skeleton className="h-14 w-full rounded-lg" />
+        <div className="mt-4 flex flex-col gap-2">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-16 w-full rounded-lg" />
+          ))}
+        </div>
+      </div>
     </div>
   </>
 );
