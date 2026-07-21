@@ -6,6 +6,7 @@ import { useDetails } from "@/queries/useDetails";
 import { useSeasonEpisodes } from "./queries/useSeasonEpisodes";
 import { useAutoRecordWatch } from "./hooks/useAutoRecordWatch";
 import {
+  useLastWatchedEpisode,
   useRecordWatch,
   useRemoveEpisodeFromHistory,
   useWatchedEpisodes,
@@ -86,6 +87,13 @@ const WatchDetailsContent: FC<WatchContentProps> = ({
   const season = urlSeason ?? availableSeasons[0]?.season_number ?? 1;
   const episode = urlEpisode ?? 1;
 
+  const { user } = useAuth();
+  const mediaId = Number(id);
+
+  // Resume point for bare URLs: the show's most recently watched episode.
+  const { lastWatched, isLoading: historyLoading } =
+    useLastWatchedEpisode(mediaId);
+
   const goToEpisode = (s: number, e: number, opts?: { replace?: boolean }) => {
     navigate(
       {
@@ -98,16 +106,19 @@ const WatchDetailsContent: FC<WatchContentProps> = ({
 
   // Canonicalize bare TV URLs (e.g. /watch/tv/123 from the details page) once
   // details load, replacing so back doesn't bounce through the bare URL.
+  // Shows with watch history resume at the last watched episode, so the
+  // redirect waits for the history fetch (a render or two when signed in;
+  // isLoading stays false when logged out).
   useEffect(() => {
-    if (isTv && (urlSeason === undefined || urlEpisode === undefined)) {
-      navigate(
-        {
-          pathname: `/watch/tv/${id}/${season}/${episode}`,
-          search: searchParams.toString(),
-        },
-        { replace: true },
-      );
-    }
+    if (!isTv || (urlSeason !== undefined && urlEpisode !== undefined)) return;
+    if (historyLoading) return;
+    navigate(
+      {
+        pathname: `/watch/tv/${id}/${lastWatched?.season ?? season}/${lastWatched?.episode ?? episode}`,
+        search: searchParams.toString(),
+      },
+      { replace: true },
+    );
   }, [
     isTv,
     urlSeason,
@@ -115,6 +126,8 @@ const WatchDetailsContent: FC<WatchContentProps> = ({
     id,
     season,
     episode,
+    lastWatched,
+    historyLoading,
     navigate,
     searchParams,
   ]);
@@ -133,9 +146,6 @@ const WatchDetailsContent: FC<WatchContentProps> = ({
     episode,
   });
 
-  const { user } = useAuth();
-  const mediaId = Number(id);
-
   // Card metadata persisted with history rows (same shape the save toggles
   // use) so the history page renders without re-hitting TMDB.
   const saveMeta = {
@@ -145,15 +155,20 @@ const WatchDetailsContent: FC<WatchContentProps> = ({
     vote_average: details.vote_average,
   };
 
-  // TV waits until the selected episode exists in the loaded season, so an
-  // empty/stale selection is never recorded.
+  // TV waits until the URL is canonical (so the pre-resume render of a bare
+  // URL never records episode 1) and the selected episode exists in the
+  // loaded season, so an empty/stale selection is never recorded.
   useAutoRecordWatch({
     mediaType: mediaType as MediaType,
     mediaId,
     season: isTv ? season : 0,
     episode: isTv ? episode : 0,
     meta: saveMeta,
-    enabled: movie || episodes.some((ep) => ep.episode_number === episode),
+    enabled:
+      movie ||
+      (urlSeason !== undefined &&
+        urlEpisode !== undefined &&
+        episodes.some((ep) => ep.episode_number === episode)),
   });
 
   // Watched episodes of this show, narrowed to the visible season as plain

@@ -70,6 +70,23 @@ export const useWatchedEpisodes = (showId: number) => {
 };
 
 /**
+ * The most recently watched episode of one show (rows are newest-first),
+ * excluding the (0,0) show-level sentinel. The watch page resumes bare
+ * /watch/tv/:id URLs here; isLoading lets it hold that redirect until the
+ * history fetch settles (false when logged out — the query never runs).
+ */
+export const useLastWatchedEpisode = (showId: number) => {
+  const history = useWatchHistory();
+  const lastWatched = useMemo(() => {
+    const row = (history.data ?? []).find(
+      (r) => r.mediaType === "tv" && r.mediaId === showId && r.season > 0,
+    );
+    return row ? { season: row.season, episode: row.episode } : undefined;
+  }, [history.data, showId]);
+  return { lastWatched, isLoading: history.isLoading };
+};
+
+/**
  * History rows deduped to one card per title (rows are newest-first, so the
  * first occurrence carries the latest watched_at), in MediaItem shape for the
  * shared grid page.
