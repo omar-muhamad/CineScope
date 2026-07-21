@@ -2,7 +2,7 @@ import { FC } from "react";
 import { useParams } from "react-router-dom";
 
 import { useDetails } from "@/queries/useDetails";
-import { useImdbRating } from "./queries/useImdbRating";
+import { useImdbInfo } from "./queries/useImdbInfo";
 import DetailsHeader from "./components/DetailsHeader";
 import CastList from "./components/CastList";
 import SkeletonCastList from "./components/SkeletonCastList";
@@ -28,7 +28,7 @@ const DetailsHeaderSection: FC<SectionProps> = ({ mediaType, id }) => {
 
   // Progressive enhancement — non-blocking useQuery against the flaky OMDb API.
   const imdbId = details.external_ids?.imdb_id ?? details.imdb_id ?? null;
-  const { data: imdbRating } = useImdbRating(imdbId);
+  const { data: imdbInfo } = useImdbInfo(imdbId);
 
   const cast = details.credits?.cast ?? [];
 
@@ -47,7 +47,7 @@ const DetailsHeaderSection: FC<SectionProps> = ({ mediaType, id }) => {
         media_type={mediaType === "movie" ? "movie" : "tv"}
         genres={details.genres}
         rating={details.vote_average}
-        imdbRating={imdbRating}
+        imdbRating={imdbInfo?.rating}
         certification={getCertification(details, mediaType)}
         trailerKey={getTrailerKey(details)}
         overview={details.overview}

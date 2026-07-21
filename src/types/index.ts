@@ -60,6 +60,22 @@ export type CastMember = {
   known_for_department?: string;
 };
 
+/** A crew member from a title's `credits` — keyed on `job`/`department`. */
+export type CrewMember = {
+  id: number;
+  name: string;
+  job: string;
+  department: string;
+};
+
+/** A studio/network from a title's `production_companies`. */
+export type ProductionCompany = {
+  id: number;
+  name: string;
+  logo_path: string | null;
+  origin_country: string;
+};
+
 /** A page of results from a paginated TMDB list endpoint. */
 export type Paginated<T> = {
   page: number;
@@ -96,6 +112,8 @@ export type DetailsData = {
   genres: { id: number; name: string }[];
   vote_average: number;
   overview: string;
+  /** Movie-only; TMDB returns it on the /movie endpoint (null when unknown). */
+  runtime?: number | null;
   imdb_id?: string;
   external_ids?: { imdb_id: string | null };
   seasons?: Season[];
@@ -114,5 +132,7 @@ export type DetailsData = {
   };
   credits?: {
     cast: CastMember[];
+    crew?: CrewMember[];
   };
+  production_companies?: ProductionCompany[];
 };

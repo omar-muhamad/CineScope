@@ -27,7 +27,7 @@ type NavSearchProps = {
 };
 
 const variantClasses = {
-  nav: "w-32 sm:w-40 focus-within:w-56 sm:focus-within:w-72 transition-[width] duration-300 ease-in-out",
+  nav: "w-32 sm:w-44 focus-within:w-56 sm:focus-within:w-72 transition-[width] duration-300 ease-in-out",
   block: "w-full",
 };
 

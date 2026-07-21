@@ -158,7 +158,7 @@ const Navbar: FC = () => {
             panel of links and buttons with no menu semantics/arrow-key nav, so
             claiming aria-haspopup="menu" would promise interactions it
             doesn't have. */}
-        <div ref={userMenuRef} className="hidden md:block">
+        <div ref={userMenuRef} className="relative hidden md:block">
           {loading ? (
             <Skeleton className="size-10 rounded-full ring-1 ring-white/10" />
           ) : (

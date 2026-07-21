@@ -7,12 +7,15 @@ type SeasonSelectorProps = {
   seasons: Season[];
   season: number;
   onSeasonChange: (season: number) => void;
+  /** Stretch to the container width (drops the fixed md width for the rail). */
+  fullWidth?: boolean;
 };
 
 const SeasonSelector: FC<SeasonSelectorProps> = ({
   seasons,
   season,
   onSeasonChange,
+  fullWidth = false,
 }) => {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -43,7 +46,10 @@ const SeasonSelector: FC<SeasonSelectorProps> = ({
   };
 
   return (
-    <div ref={containerRef} className="mt-2 relative w-full md:w-87.5">
+    <div
+      ref={containerRef}
+      className={`mt-2 relative w-full ${fullWidth ? "" : "md:w-87.5"}`}
+    >
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
