@@ -1,8 +1,8 @@
 import { and, desc, eq } from "drizzle-orm";
 
-import { db } from "../server/db";
-import { watchHistory } from "../server/db/schema";
-import { errorJson, requireUser, withErrorBody } from "../server/http";
+import { db } from "../server/db/index.js";
+import { watchHistory } from "../server/db/schema.js";
+import { errorJson, requireUser, withErrorBody } from "../server/http.js";
 
 /**
  * Watch-history CRUD, scoped to the session user. One row per watched movie
