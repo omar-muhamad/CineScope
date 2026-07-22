@@ -224,7 +224,6 @@ const WatchDetailsContent: FC<WatchContentProps> = ({
   const isFirst = currentIndex <= 0;
   const isLast = currentIndex < 0 || currentIndex >= episodes.length - 1;
 
-  const currentEpisode = currentIndex >= 0 ? episodes[currentIndex] : undefined;
   const releaseYear = movie
     ? details.release_date?.slice(0, 4)
     : details.first_air_date?.slice(0, 4);
@@ -251,19 +250,12 @@ const WatchDetailsContent: FC<WatchContentProps> = ({
             ({releaseYear})
           </span>
         )}
-      </Heading>
-
-      {isTv && (
-        <p className="mt-2 text-gray max-md:text-sm">
-          Now watching:{" "}
-          <span className="font-semibold text-white">
+        {isTv && (
+          <span className="ml-2 font-semibold text-lg text-white">
             S{season} - E{episode}
           </span>
-          {currentEpisode?.name && (
-            <span className="ml-2">{currentEpisode.name}</span>
-          )}
-        </p>
-      )}
+        )}
+      </Heading>
 
       {/* Theater layout: the player on the left, a context rail on the right —
           the episode list for TV, an "about" panel for movies. Below lg the
@@ -272,9 +264,9 @@ const WatchDetailsContent: FC<WatchContentProps> = ({
           never moves between branches, so switching season/episode/player
           never remounts (and reloads) the iframe. */}
       <div
-        className={`mt-8 ${
+        className={`mt-6 ${
           hasSidebar
-            ? "grid gap-4 lg:grid-cols-[minmax(0,1fr)_clamp(320px,26vw,400px)] lg:items-stretch lg:gap-6"
+            ? "grid gap-4 lg:grid-cols-[minmax(0,1fr)_clamp(320px,26vw,500px)] lg:items-stretch lg:gap-6"
             : ""
         }`}
       >
