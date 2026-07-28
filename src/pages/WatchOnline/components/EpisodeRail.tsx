@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useLayoutEffect, useRef } from "react";
 import {
   IoCheckmarkDone,
   IoCheckmarkOutline,
@@ -7,6 +7,7 @@ import {
 } from "react-icons/io5";
 
 import { Episode } from "@/types";
+import { findScrollParent, scrollTopForRow } from "../lib/railScroll";
 import PosterFallback from "@/components/ui/PosterFallback";
 import Skeleton from "@/components/skeletons/Skeleton";
 import Text from "@/components/ui/Text";
@@ -46,9 +47,55 @@ const EpisodeRail: FC<EpisodeRailProps> = ({
   watchedEpisodes,
   onToggleWatched,
 }) => {
+  const listRef = useRef<HTMLUListElement | null>(null);
+  const activeRowRef = useRef<HTMLLIElement | null>(null);
+  const hasScrolledRef = useRef(false);
+
+  // Keep the playing episode in view: long seasons open with the rail scrolled
+  // to the top, which hides the episode the user is actually watching. Keyed on
+  // the first episode's id rather than the array so a season switch re-runs
+  // (both seasons can start at episode 1) while unrelated re-renders don't.
+  const firstEpisodeId = episodes?.[0]?.id;
+
+  useLayoutEffect(() => {
+    const row = activeRowRef.current;
+    const scroller = findScrollParent(row ?? listRef.current);
+    if (!scroller) return;
+
+    // No matching row — a new season is loading, or the selected episode isn't
+    // in it at all (seasons that continue TMDB's numbering rather than restart
+    // at 1). Either way the previous season's offset is meaningless, so show
+    // the new list from its start instead of stranding it mid-scroll. The list
+    // changing wholesale counts as a fresh start, so the centring that follows
+    // once the new season lands jumps rather than animating across it.
+    if (!row) {
+      scroller.scrollTop = 0;
+      hasScrolledRef.current = false;
+      return;
+    }
+
+    const rowRect = row.getBoundingClientRect();
+    const top = scrollTopForRow({
+      scrollTop: scroller.scrollTop,
+      viewport: scroller.clientHeight,
+      rowTop:
+        rowRect.top - scroller.getBoundingClientRect().top + scroller.scrollTop,
+      rowHeight: rowRect.height,
+    });
+    if (top === null) return;
+
+    // Jump on the first real scroll (the rail is just appearing); animate later
+    // ones, which follow a deliberate episode change.
+    scroller.scrollTo({
+      top,
+      behavior: hasScrolledRef.current ? "smooth" : "auto",
+    });
+    hasScrolledRef.current = true;
+  }, [activeEpisode, firstEpisodeId]);
+
   if (loading) {
     return (
-      <ul className="flex flex-col gap-2">
+      <ul ref={listRef} className="flex flex-col gap-2">
         {Array.from({ length: 8 }).map((_, i) => (
           <li
             key={i}
@@ -76,7 +123,7 @@ const EpisodeRail: FC<EpisodeRailProps> = ({
   }
 
   return (
-    <ul className="flex flex-col gap-2">
+    <ul ref={listRef} className="flex flex-col gap-2">
       {episodes.map((ep) => {
         const isPlaying = ep.episode_number === activeEpisode;
         const isWatched = watchedEpisodes?.has(ep.episode_number) ?? false;
@@ -84,6 +131,7 @@ const EpisodeRail: FC<EpisodeRailProps> = ({
         return (
           <li
             key={ep.id}
+            ref={isPlaying ? activeRowRef : undefined}
             className={`flex items-stretch gap-1 overflow-hidden rounded-lg border transition-colors duration-200 ${
               isPlaying
                 ? "border-orange bg-secondary-dark"
