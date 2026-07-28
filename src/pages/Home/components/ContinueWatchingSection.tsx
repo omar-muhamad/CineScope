@@ -1,10 +1,9 @@
-import { FC, useState } from "react";
 import { useQueries } from "@tanstack/react-query";
+import { FC, useState } from "react";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 
-import Heading from "@/components/ui/Heading";
-import Skeleton from "@/components/skeletons/Skeleton";
 import { fetchDetails } from "@/api/tmdb";
+import Skeleton from "@/components/skeletons/Skeleton";
 import { queryKeys } from "@/lib/queryKeys";
 import { useContinueWatching } from "@/queries/useWatchHistory";
 import ContinueWatchingBanner, {
@@ -41,8 +40,7 @@ const ContinueWatchingSection: FC = () => {
   // once the fetch settles, the accepted trade-off of reserving space.
   if (isLoading) {
     return (
-      <section className="w-full mt-6 md:mt-10">
-        <Skeleton className="h-8 w-56 rounded-sm" />
+      <section className="w-full mt-6">
         <Skeleton className={`w-full ${BANNER_HEIGHT} rounded-lg mt-6`} />
         <div className="mt-3 flex justify-center">
           <Skeleton className="h-2 w-24 rounded-full" />
@@ -59,11 +57,7 @@ const ContinueWatchingSection: FC = () => {
   const step = (delta: number) => setIndex((active + delta + count) % count);
 
   return (
-    <section className="w-full mt-6 md:mt-10">
-      <Heading as="h2" className="text-orange font-bold max-md:text-xl">
-        Continue Watching
-      </Heading>
-
+    <section className="w-full mt-6">
       <div className="relative mt-6">
         <div className="overflow-hidden rounded-lg">
           <ul

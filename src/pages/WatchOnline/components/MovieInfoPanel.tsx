@@ -168,7 +168,7 @@ const MovieInfoPanel: FC<MovieInfoPanelProps> = ({ id, details, saveMeta }) => {
         {(director || writers.length > 0) && (
           <dl className="mt-4 space-y-2 text-sm">
             {director && (
-              <div className="flex gap-3">
+              <div className="flex items-center gap-3">
                 <dt className="w-16 shrink-0 text-xs uppercase tracking-wide text-gray">
                   Director
                 </dt>
@@ -176,7 +176,7 @@ const MovieInfoPanel: FC<MovieInfoPanelProps> = ({ id, details, saveMeta }) => {
               </div>
             )}
             {writers.length > 0 && (
-              <div className="flex gap-3">
+              <div className="flex items-center gap-3">
                 <dt className="w-16 shrink-0 text-xs uppercase tracking-wide text-gray">
                   {writers.length > 1 ? "Writers" : "Writer"}
                 </dt>

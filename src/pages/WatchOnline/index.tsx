@@ -266,12 +266,12 @@ const WatchDetailsContent: FC<WatchContentProps> = ({
       <div
         className={`mt-6 ${
           hasSidebar
-            ? "grid gap-4 lg:grid-cols-[minmax(0,1fr)_clamp(320px,26vw,500px)] lg:items-stretch lg:gap-6"
+            ? "grid gap-4 lg:grid-cols-3 lg:items-stretch lg:gap-6"
             : ""
         }`}
       >
         {/* Player module: toggle + nav on top, video below */}
-        <div className="min-w-0 rounded-xl overflow-hidden bg-secondary-dark md:p-4">
+        <div className="min-w-0 lg:col-span-2 rounded-xl overflow-hidden bg-secondary-dark md:p-4">
           <div className="flex items-center justify-between gap-2 rounded-t-lg bg-main-dark">
             <PlayerSelector
               providers={providers}
@@ -461,7 +461,7 @@ const WatchOnline: FC = () => {
           <RecommendationsRow
             mediaType={media_type}
             id={id}
-            className="mt-16"
+            className="mt-10"
           />
         </QueryBoundary>
 
