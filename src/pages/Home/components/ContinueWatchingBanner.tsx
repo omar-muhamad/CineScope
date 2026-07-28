@@ -46,7 +46,23 @@ const ContinueWatchingBanner: FC<ContinueWatchingBannerProps> = ({
         to={`/watch/${item.media_type}/${item.id}`}
         tabIndex={active ? undefined : -1}
       >
-        <div className="flex-1 flex pl-10 md:pl-16 items-center">
+        <div className="relative w-2/5 sm:w-1/2 lg:w-2/5 shrink-0">
+          {imgSrc ? (
+            <LazyImage
+              className="absolute inset-0 h-full w-full object-cover"
+              src={imgSrc}
+              alt={`${title} backdrop`}
+            />
+          ) : (
+            <PosterFallback
+              media_type={item.media_type}
+              className="absolute inset-0 h-full w-full"
+            />
+          )}
+          {/* Fade the backdrop's edge into the card background */}
+          <div className="absolute inset-0 bg-linear-to-r from-transparent via-transparent to-secondary-dark" />
+        </div>
+        <div className="flex-1 flex pl-10 md:pl-16">
           <div className="flex flex-col min-w-0 items-start justify-center gap-1 px-4 sm:px-6 md:px-8">
             <Heading as="h2" className="text-orange font-bold max-md:text-xl">
               Continue Watching
@@ -65,22 +81,6 @@ const ContinueWatchingBanner: FC<ContinueWatchingBannerProps> = ({
               Resume
             </span>
           </div>
-        </div>
-        <div className="relative w-2/5 sm:w-1/2 lg:w-2/5 shrink-0">
-          {imgSrc ? (
-            <LazyImage
-              className="absolute inset-0 h-full w-full object-cover"
-              src={imgSrc}
-              alt={`${title} backdrop`}
-            />
-          ) : (
-            <PosterFallback
-              media_type={item.media_type}
-              className="absolute inset-0 h-full w-full"
-            />
-          )}
-          {/* Fade the backdrop's edge into the card background */}
-          <div className="absolute inset-0 bg-linear-to-l from-transparent via-transparent to-secondary-dark" />
         </div>
       </NavLink>
     </li>
